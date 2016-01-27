@@ -25,7 +25,6 @@ celexinput=open("/Users/ps22344/Downloads/eow.cd", "r")
 lexicon=[]
 for line in celexinput:
 	lexicon.append(line.split("\\")[1])
-lexicon.append("i'm")
 	
 print "length of lexicon", len(lexicon)
 
@@ -105,7 +104,9 @@ for sub in subdirs:
 			# if ratio < 2:
 # 				print snippet3, ratio
 meanratio=numpy.array(means).mean()	
+stdratio=numpy.array(means).std()	
 print "mean ratio", meanratio
+print "mean std", stdratio
  			
 print "length of shortlist", len(shortlist) 		
  	# print "length dicti", len(cliddict)
@@ -116,3 +117,5 @@ print "length of shortlist", len(shortlist)
 
 
 print "finish"
+
+os.system('say "your program has finished"')
