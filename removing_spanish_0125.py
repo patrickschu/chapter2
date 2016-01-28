@@ -24,8 +24,11 @@ celexinput=open("/Users/ps22344/Downloads/eow.cd", "r")
 #i guess we just throw it all into a list called lexicon
 lexicon=[]
 for line in celexinput:
-	lexicon.append(line.split("\\")[1])
-	
+	lexicon.append(line.split("\\")[1].lower())
+
+# we add some common English words not in Celex
+
+lexicon=lexicon+["i'm", "etc"]
 print "length of lexicon", len(lexicon)
 
 
@@ -49,6 +52,7 @@ def adtextextractor(text, fili):
 #this one compares input to celex or other list of allowed words
 #it returns a 1 if yes, a zero if not
 #its a completely unncessary function but here we go
+#at some point. let us time this and compare to listcomp below
 def lexiconcheck(word, lexicon):
 	if word in lexicon:
 		return 1
@@ -67,7 +71,7 @@ outputdir="/Users/ps22344/Downloads/craig_0126"
 
 #read in subdir, make file list
 subdirs=[s for s in os.listdir(directory) if not s.startswith(".")]
-#subdirs=["adfiles2_output_0116"]
+#subdirs=["files9_output_0102"]
 #print subdirs
 
 #set up list of short texts where out magic won't work
@@ -82,31 +86,36 @@ for sub in subdirs:
  	for fili in filis:
  		#yes we should read the file in first
  		#this is just to show we can do it that way too with the joini thing
- 		text=adtextextractor(codecs.open(os.path.join(directory, sub, fili), "r", "utf-8").read(), fili).split()
+ 		text1=adtextextractor(codecs.open(os.path.join(directory, sub, fili), "r", "utf-8").read(), fili)
+ 		text2=re.sub("<.*/?>", " ", text1)
+ 		#the final product needs to be called text so the script below does not screw up		
+ 		text=text2.split()
  		length=len(text)
  		
  		#how long a text do we need? ah 10 should be good
- 		if len(text) < 10:
+ 		if length < 10:
  			#print "alarm, this text is so very short", len(text), fili
  			shortlist.append(os.path.join(directory, sub, fili))
  			#print shortlist
  		else: 
- 			snippet=text[int(length/10): int(length/10) + 10]
+ 			snippet1=text[int(length/10): int(length/10) + 10]
 			#print snippet.translate(None, string.punctuation)
 			#check out our text cleaning tool. we can use this later
-			#first we delete tags
-			snippet2=[re.sub("<.*/?>", "", s) for s in snippet]
+			#first we delete tags, tags need be deleted earlier or they screw up splitting
+			#snippet2=[re.sub("<.*/?>", "", s) for s in snippet]
 			#snippet2=[s.translate(None, string.punctuation).lower() for s in snippet]
-			snippet3=[s.strip(string.punctuation).lower() for s in snippet2]
+			snippet=[s.strip(string.punctuation).lower() for s in snippet1]
 			#print snippet3, fili
-			ratio= sum([lexiconcheck(s, lexicon) for s in snippet3])
+			ratio= len([s for s in snippet if s in lexicon])
 			means.append(ratio)
-			# if ratio < 2:
-# 				print snippet3, ratio
+			if ratio  > 1 and ratio < 5 :
+ 				print snippet, ratio, fili
 meanratio=numpy.array(means).mean()	
-stdratio=numpy.array(means).std()	
+stdratio=numpy.array(means).std()
+medianratio=numpy.array(means).median()	
 print "mean ratio", meanratio
-print "mean std", stdratio
+print "std ratio", stdratio
+print "median ratio", medianratio
  			
 print "length of shortlist", len(shortlist) 		
  	# print "length dicti", len(cliddict)
@@ -117,5 +126,5 @@ print "length of shortlist", len(shortlist)
 
 
 print "finish"
-
+print ('\a')
 os.system('say "your program has finished"')
