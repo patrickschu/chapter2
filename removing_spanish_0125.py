@@ -108,8 +108,8 @@ for sub in subdirs:
 			#print snippet3, fili
 			ratio= len([s for s in snippet if s in lexicon])
 			means.append(ratio)
-			if ratio  > 1 and ratio < 5 :
- 				print snippet, ratio, fili
+			if ratio  < 4 :
+ 				print snippet, ratio, os.path.join(directory, sub, fili)
 meanratio=numpy.array(means).mean()	
 stdratio=numpy.array(means).std()
 medianratio=numpy.array(means).median()	
