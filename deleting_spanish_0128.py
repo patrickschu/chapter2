@@ -1,16 +1,6 @@
 ## go thru, delete all texts with ratio lower than X
-
+##this one we haven't run yet, have we?
 ## all the good ones should be protected
-try: 
-	
-	except Some Error, err:
-		print fili, "is protected", err
-		
-		
-		
-		
-
-
 import os
 import re
 import codecs
@@ -79,7 +69,7 @@ def lexiconcheck(word, lexicon):
 #read in the files
 
 #set up top dir
-directory="/Users/ps22344/Downloads/craig_0125"
+directory="/Users/ps22344/Downloads/craig_0201"
 outputdir="/Users/ps22344/Downloads/craig_0126"
 
 #read in subdir, make file list
@@ -120,30 +110,18 @@ for sub in subdirs:
 			snippet=[s.strip(string.punctuation).lower() for s in snippet1]
 			#print snippet3, fili
 			ratio= len([s for s in snippet if s in lexicon])
-			means.append(ratio)
-			if ratio  == 4 :
+			if ratio  < 4 :
 				try:
-					
-				except Some Error, err:
-					print fili, "is protected", err
-				
-				
-				
- 				print snippet, ratio, os.path.join(directory, sub, fili)
-meanratio=numpy.array(means).mean()	
-stdratio=numpy.array(means).std()
-medianratio=numpy.array(means).median()	
-print "mean ratio", meanratio
-print "std ratio", stdratio
-print "median ratio", medianratio
+					os.remove(os.path.join(directory, sub, fili))
+					print "deleted: ", os.path.join(directory, sub, fili)
+				except OSError, err:
+					print os.path.join(directory, sub, fili), "is protected", err
  			
-print "length of shortlist", len(shortlist) 		
- 	# print "length dicti", len(cliddict)
-#   	f=open("cliddict_log_0121_fullpath"+sub+".txt", "a")
-#  	for item in cliddict:
-#  		f.write(item+","+" ".join(cliddict[item])+"\n")
-#  	f.close()
+print "length of shortlist", len(shortlist) 	
 
+print "shortlist"
+for shortie in shortlist:
+	print shortie
 
 print "finish"
 print ('\a')
