@@ -52,21 +52,31 @@ for sub in subdirs:
 		inputfile=os.path.join(directory, sub, fili)
 		inputi=codecs.open(inputfile, "r", "utf-8")
 		inputtext=inputi.read()
-		#we extract category, gender, plat versus ad for now
-		category=tagextractor(inputtext, "category1", inputfile)
+		#we extract gender
 		gender=tagextractor(inputtext, "gender", inputfile)
 		if gender not in acceptable:
-			#we need to supply title and text, too
+			#we need to supply title, cat and text, too
+			category=tagextractor(inputtext, "category1", inputfile)
+			texti=adtextextractor(inputtext, inputfile)
+			title=tagextractor(inputtext, "title", inputfile)
+			print "\n\n------------------\n"			
 			print gender, inputfile
+			print title
+			print texti
 			count=count+1
 			eval=raw_input("category?  ")
-			rightcategorytags=re.sub('<category1=(.*?)>', '<category1='+str(eval)+'>', inputtext)
-			print rightcategorytags
+			print eval[0]
+			rightgendertags=re.sub('<gender=(.*?)>', '<gender='+str(eval[0])+'>', inputtext)
+			rightgendercategorytags=re.sub('<category1=(.*?)>', '<category1='+str(eval)+'>', rightgendertags)
+			rightgendercategoryaddresseetags=re.sub('<addressee1=(.*?)>', '<addressee1='+str(eval[2])+'>', rightgendercategorytags)
+			print rightgendercategoryaddresseetags
+			print "adres", eval[2]
+			print "gender", eval[0]
 			inputi.close()
 		#here is what this looks like in the file:
 		#<gender=w> <category1=w4m>
 			outputi=codecs.open(inputfile, "w", "utf-8")
-			outputi.write(rightcategorytags)
+			outputi.write(rightgendercategoryaddresseetags)
 			outputi.close()
 			print "file processed: ", inputfile
 		# adtype=tagextractor(input, "plat", inputfile)
