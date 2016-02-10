@@ -29,6 +29,7 @@ from nltk.tokenize import word_tokenize
 print "start"
 os.chdir("C://")
 
+#
 #setting up some functions
 def tagextractor(text, tag, fili):
     regexstring="<"+tag+"=(.*?)>"
@@ -43,7 +44,7 @@ def adtextextractor(text, fili):
     if len(result) != 1:
         print "alarm in adtextextractor", fili, result
     return result[0]
-    
+#    
 #read in the files
 
 #set up top dir
@@ -57,30 +58,23 @@ outputfile=os.path.join("Users","ps22344","Downloads", outputname)
 
 output=codecs.open(outputfile, "a")
 #read in subdir, make file list
-#subdirs=os.listdir(directory)
+
 subdirs=[s for s in os.listdir(directory) if not s.startswith("\.")]
-subdirs=["files9_output_0102"]
+#subdirs=["files9_output_0102"]
 
-
-##these are our NLTK options
-##from nltk.tokenize.simple   import (SpaceTokenizer, TabTokenizer, LineTokenizer,
-##                                    line_tokenize)
-##from nltk.tokenize.regexp   import (RegexpTokenizer, WhitespaceTokenizer,
-##                                    BlanklineTokenizer, WordPunctTokenizer,
-##                                    wordpunct_tokenize, regexp_tokenize,
-##                                    blankline_tokenize)
-##from nltk.tokenize.punkt    import PunktSentenceTokenizer
-##from nltk.tokenize.sexpr    import SExprTokenizer, sexpr_tokenize
-##from nltk.tokenize.treebank import TreebankWordTokenizer
-##from nltk.tokenize.stanford import StanfordTokenizer
-##from nltk.tokenize.texttiling import TextTilingTokenizer
-##from nltk.tokenize.casual   import (TweetTokenizer, casual_tokenize)
-##from nltk.tokenize.mwe      import MWETokenizer
-
-#from nltk.tokenize import word_tokenize
+#
+#set up counts, dictis
 count=0
+#stores counts for each word
 dicti=defaultdict(int)
+#stores counts for each word by category
 catdicti=defaultdict(lambda:defaultdict(int))
+#stores the number of total words per category
+wordcountdicti=defaultdict(int)
+
+#
+#iterate over files
+
 for sub in subdirs:
     print sub
 #   #filis=os.listdir(directory+"/"+item)
@@ -103,38 +97,80 @@ for sub in subdirs:
         text=word_tokenize(text2)
         # alot of items are just punctuation. needs to go.
         text = [w.lower() for w in text if not re.search("\W+", w)]
+        #we enter each word intor our dictis
         for word in text:
             dicti[word]=dicti[word]+1
             catdicti[word][category]=catdicti[word][category]+1
-            #print catdicti
     
-        
-##        if count < 20:
-##            print fili, length, text[10:20]
-##            count+=1
-        
-        #output.write(inputfile+","+category+","+gender+","+adtype+","+str(length)+"\n")
 
 
+#some prints to check on stuff
 print "lenght of dict", len(dicti)
 print "length of catdict", len(catdicti)
 
 #calculate frequency for each entry
 # hwo do we calculate the tokens per cat???
+#we establish the categories we're dealing with by seeing which ones the
+#loop above entered into the dictionary
 cats=[catdicti[e].keys() for e in catdicti]
+#flatten the list
 flatcats=[i for sublist in cats for i in sublist]
+#los the duplicates: this is the sets of categories we'll be looking at
 setcats=set(flatcats)
-print t
+
 print "len cats", len(cats)
 print "len flattened", len(flatcats)
-print "len set", len(setcats)
+print "len set", len(setcats), setcats
 
+total=0
+
+#we iterate over our list of categories
+#for each, we extract the entry for each word
 for cati in setcats:
+    wordcount=[catdicti[entry][cati] for entry in catdicti]
+    print cati
+    print "number of results", len(wordcount)
+    print "word count", sum(wordcount)
+    total=total+sum(wordcount)
+    wordcountdicti[cati]=sum(wordcount)
+
+
+print "total words", total
+print wordcountdicti
+
+for item in catdicti:
+    print item, catdicti[item]
+    print wordcountdicti
+    break
     
+#
+#now we use the totals to transform the entries in the catdicti into frequencies
+#lets get rid of zero entries first. they are annoying
+for entry in catdicti:
+    #print entry,  catdicti[entry]
+    catdicti[entry]={k: float(v) for k, v in catdicti[entry].items() if v}
+    #print  entry, catdicti[entry]
+    
+##    
+for entry in catdicti:
+    #print len(catdicti[entry])
+    for i in catdicti[entry]:
+       #print entry, catdicti[entry][i], catdicti[entry][i]/wordcountdicti[i]
+       catdicti[entry][i]=catdicti[entry][i]/wordcountdicti[i]*1000000
+       #print entry, catdicti[entry][i]#, catdicti[entry][i]/wordcountdicti[i]
+
+for item in catdicti:   
+    print item, catdicti[item]
+    #print wordcountdicti
+    break
 
 
-
-
+##now its getting real: the division
+# let's exclude all words < 100 from the overall dictionary
+for entry in dicti:
+    print entry,  catdicti[entry]
+    catdicti[entry]={k: float(v) for k, v in catdicti[entry].items() if v > 99}
+    print entry,  catdicti[entry]
 
 
 ##for item in catdicti:
