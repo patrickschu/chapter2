@@ -45,6 +45,24 @@ def adtextextractor(text, fili):
         print "alarm in adtextextractor", fili, result
     return result[0]
 
+#writing functions
+#writes a dictionary to file, line by line
+def dictwriter(name, dictionary):
+    output=codecs.open(os.path.join("Users","ps22344","Desktop", name+".txt"),"a", "utf-8")
+    #stole this from SO: http://stackoverflow.com/questions/8519599/python-dictionary-to-string-custom-format
+    output.write('\n'.join(['%s, %s' % (key, value) for (key, value) in dictionary.items()]))
+    #output.write(unicode(dictionary))
+    output.close()
+
+    
+#wsrites list from sorted dictionaries
+def listwriter(name, listi):
+    output=codecs.open(os.path.join("Users","ps22344","Desktop", name+".txt"),"a", "utf-8")
+    listi=[(i,unicode(t)) for (i,t) in listi]
+    output.write('\n'.join([','.join(i) for i in listi]))
+    output.close()
+
+
 #calculating lexical distance
 # our formula: category frequency - overall frequency = diff
 #diff / (category frequency/100) --> puts it in percentages
@@ -230,31 +248,30 @@ for cati in setcats:
 #what comparisons do we want to make?
 comps=['w4w_w4m', 'w4w_m4m', 'w4m_m4m', 'w4w_m4w', 'w4m_m4w', 'm4m_m4w']
 
-def dictwriter(name, dictionary):
-    output=codecs.open(name+".txt","a", "utf-8")
-    #stole this from SO: http://stackoverflow.com/questions/8519599/python-dictionary-to-string-custom-format
-    output.write('\n'.join(['%s, %s' % (key, value) for (key, value) in dictionary.items()]))
-    output.close()
+
 
 for compi in comps:
-    tempdicti=distancemachine(compi, compdicti[compi.split("_")[0]], compdicti[compi.split("_")[0]])
-    dictwriter(compi, tempdicti)
+    print compi.split("_")[0]
+    tempdicti=distancemachine(compi, compdicti[compi.split("_")[0]], compdicti[compi.split("_")[1]])
+    sortedtemp=sorted(tempdicti.items(), key=lambda x: x[1], reverse=True)
+    #dictwriter(compi, sortedtemp)
+    listwriter(compi, sortedtemp)
     print compi, "done"
         
-# if we rock, we use the name to extract relevant categories from dict
-w4w_w4m=distancemachine("w4w_w4m",compdicti['w4w'], compdicti['w4m'])
-w4w_m4m=distancemachine("w4w_m4",compdicti['w4w'], compdicti['m4m'])
-w4m_m4m=distancemachine("w4m_m4m",compdicti['w4m'], compdicti['w4m'])
-w4w_m4w=distancemachine("w4w_m4w",compdicti['w4w'], compdicti['m4w'])
-w4m_m4w=distancemachine("w4m_m4w",compdicti['w4m'], compdicti['m4w'])
-m4m_m4w=distancemachine("m4m_m4w",compdicti['m4m'], compdicti['m4w'])
+### if we rock, we use the name to extract relevant categories from dict. (turns out we rock!)
+##w4w_w4m=distancemachine("w4w_w4m",compdicti['w4w'], compdicti['w4m'])
+##w4w_m4m=distancemachine("w4w_m4",compdicti['w4w'], compdicti['m4m'])
+##w4m_m4m=distancemachine("w4m_m4m",compdicti['w4m'], compdicti['w4m'])
+##w4w_m4w=distancemachine("w4w_m4w",compdicti['w4w'], compdicti['m4w'])
+##w4m_m4w=distancemachine("w4m_m4w",compdicti['w4m'], compdicti['m4w'])
+##m4m_m4w=distancemachine("m4m_m4w",compdicti['m4m'], compdicti['m4w'])
 
 
-print len(w4w_w4m)
-print len(w4w_m4m)
-print len(w4m_m4m)
-print len(w4m_m4w)
-print len(m4m_m4w)
+##print len(w4w_w4m)
+##print len(w4w_m4m)
+##print len(w4m_m4m)
+##print len(w4m_m4w)
+##print len(m4m_m4w)
 
 
     
