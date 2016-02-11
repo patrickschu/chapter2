@@ -59,8 +59,7 @@ outputfile=os.path.join("Users","ps22344","Downloads", outputname)
 output=codecs.open(outputfile, "a")
 #read in subdir, make file list
 
-subdirs=[s for s in os.listdir(directory) if not s.startswith("\.")]
-#subdirs=["files9_output_0102"]
+
 
 #
 #set up counts, dictis
@@ -74,8 +73,23 @@ wordcountdicti=defaultdict(int)
 
 #
 #iterate over files
+subdirs=[s for s in os.listdir(directory) if not s.startswith("\.")]
+ads=['adfiles2_output_0116',
+'adfiles3_output_0116',
+'adfiles4_output_0116',
+'adfiles_output_0116']
 
-for sub in subdirs:
+stp=['files2_output_0102'
+'files3_output_0102',
+'files4_output_0102',
+'files5_output_0102',
+'files8_output_0102',
+'files9_output_0102',
+'files_output_0101']
+#subdirs=["files9_output_0102"]
+
+
+for sub in ads:
     print sub
 #   #filis=os.listdir(directory+"/"+item)
     filis=[f for f in os.listdir(directory+"/"+sub) if not f.startswith(".")]
@@ -138,10 +152,10 @@ for cati in setcats:
 print "total words", total
 print wordcountdicti
 
-for item in catdicti:
-    print item, catdicti[item]
-    print wordcountdicti
-    break
+##for item in catdicti:
+##    print item, catdicti[item]
+##    print wordcountdicti
+##    break
     
 #
 #now we use the totals to transform the entries in the catdicti into frequencies
@@ -159,18 +173,59 @@ for entry in catdicti:
        catdicti[entry][i]=catdicti[entry][i]/wordcountdicti[i]*1000000
        #print entry, catdicti[entry][i]#, catdicti[entry][i]/wordcountdicti[i]
 
-for item in catdicti:   
-    print item, catdicti[item]
-    #print wordcountdicti
-    break
+##for item in catdicti:   
+##    print item, catdicti[item]
+##    #print wordcountdicti
+##    break
 
 
 ##now its getting real: the division
 # let's exclude all words < 100 from the overall dictionary
-for entry in dicti:
-    print entry,  catdicti[entry]
-    catdicti[entry]={k: float(v) for k, v in catdicti[entry].items() if v > 99}
-    print entry,  catdicti[entry]
+allwords=sum(dicti.values())
+print "all", dicti['all']
+print "allwords: ", allwords
+print "length dicti", len(dicti)
+dicti={k: (float(v)/allwords)*1000000 for k, v in dicti.items() if v > 99}
+print "length dicti > 99", len(dicti)
+
+#go thru the catdicti, and for each entry transform by subtracting from total
+# some percentagewise transformation req'rd
+## from the notes on box:
+#take smaller value, divide by 100 to get 1 percent;
+##difference / 1 percent == how bis is the difference percentagewise?
+## our formula: category frequency - overall frequency = diff
+##diff / (category frequency/100) --> puts it in percentages
+
+faillist=[]
+
+for entry in catdicti:
+    for i in catdicti[entry]:
+        try:
+            #print  catdicti[entry][i]
+        #print dicti[entry]
+        #try:
+            catdicti[entry][i]=(catdicti[entry][i]-dicti[entry])/(catdicti[entry][i]/100)
+            print  entry, i, catdicti[entry][i]
+            print dicti[entry], catdicti[entry]
+            print "----\n\n"
+        except KeyError , err:
+            #print "key", err
+            pass
+            faillist.append((entry, i))
+            #print err
+            #print "assi"
+    
+print "faillist", len(faillist)
+
+
+
+
+
+##for each word, we end up with a percentage difference
+##for item in dicti:
+##    print item, dicti[item]
+##    break
+
 
 
 ##for item in catdicti:
