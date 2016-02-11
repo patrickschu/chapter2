@@ -44,6 +44,24 @@ def adtextextractor(text, fili):
     if len(result) != 1:
         print "alarm in adtextextractor", fili, result
     return result[0]
+
+#calculating lexical distance
+# our formula: category frequency - overall frequency = diff
+#diff / (category frequency/100) --> puts it in percentages
+#better: we move the whole distance business to a function
+#
+#this function takes two dictionaries with frequencies and relates those to each other
+#computing what we might call distance
+def distancemachine (name, freqs1, freqs2):
+    result=defaultdict(float)
+    for entry in freqs1:
+        try:
+            result[entry]= (freqs1[entry]-freqs2[entry])/(freqs1[entry]/100)
+        except KeyError, err:
+            faillist.append((err, name))
+    return result
+
+
 #    
 #read in the files
 
@@ -64,6 +82,9 @@ output=codecs.open(outputfile, "a")
 #
 #set up counts, dictis
 count=0
+#faillist for keys that do not exist in dict during comparison
+#has tuples with name of offending dicts and word
+faillist=[]
 #stores counts for each word
 dicti=defaultdict(int)
 #stores counts for each word by category
@@ -76,7 +97,7 @@ compdicti=defaultdict(dict)
 
 #
 #iterate over files
-subdirs=[s for s in os.listdir(directory) if not s.startswith("\.")]
+subdirs=[s for s in os.listdir(directory) if not s.startswith(".")]
 ads=['adfiles2_output_0116',
 'adfiles3_output_0116',
 'adfiles4_output_0116',
@@ -89,7 +110,7 @@ stp=['files2_output_0102'
 'files8_output_0102',
 'files9_output_0102',
 'files_output_0101']
-subdirs=["files9_output_0102"]
+#subdirs=["files9_output_0102"]
 
 
 for sub in subdirs:
@@ -149,10 +170,12 @@ print "len set", len(setcats), ",".join(setcats)
 #to calculate frequencies, we need the total number of words per category
 #we iterate over our list of categories
 #for each, we extract the entry for each word and add
+##THIS THING SHOULD BE REPLACED BY OUR COOL COMPDICTI BELOW
+## OR READ INTO DIFFERENT DICTS IN THE FIRST PLACE?
 
 for cati in setcats:
-    wordcount=[catdicti[entry][cati] for entry in catdicti]
     print cati
+    wordcount=[catdicti[entry][cati] for entry in catdicti]
     print "number of results", len(wordcount)
     print "word count", sum(wordcount)
     wordcountdicti[cati]=sum(wordcount)
@@ -191,44 +214,52 @@ dicti={k: (float(v)/allwords)*1000000 for k, v in dicti.items() if v > 99}
 print "length dicti > 99", len(dicti)
 
 
-## distance to overall frequency
-#go thru the catdicti, and for each entry transform by subtracting from total count stored in dicti
-# some percentagewise transformation req'rd
-# our formula: category frequency - overall frequency = diff
-#diff / (category frequency/100) --> puts it in percentages
 
-#better: we move the whole distance business to a function
-#
-#this function takes two dictionaries with frequencies and relates those to each other
-#computing what we might call distance
-def distancemachine (freqs1, freqs2):
-    result=defaultdict(float)
+        #print entry, catdicti[entry][i]#, catdicti[entry][i]/wordcountdicti[i]
 
 
     
 #for each entry in the catdict, we want only the entry with the category we looking at
 for cati in setcats:
-    for entry in catdicti:
-        compdicti[cati][entry]={v for k,v in catdicti[entry].items() if k == cati}
+    #note that we iterate over the overall dictionary to make sure we only get the 99+ words
+    for entry in dicti:
+        if cati in catdicti[entry]:
+            #print entry, catdicti[entry]
+            compdicti[cati][entry]=catdicti[entry][cati]
 
-print len(compdicti)
+#what comparisons do we want to make?
+comps=['w4w_w4m', 'w4w_m4m', 'w4m_m4m', 'w4w_m4w', 'w4m_m4w', 'm4m_m4w']
 
-compdicti={k:v for k, v in compdicti if v}
-print len(compdicti)
-##
-##for e in compdicti:
-##    print e, compdicti[e]
-##    break
+def dictwriter(name, dictionary):
+    output=codecs.open(name+".txt","a", "utf-8")
+    #stole this from SO: http://stackoverflow.com/questions/8519599/python-dictionary-to-string-custom-format
+    output.write('\n'.join(['%s, %s' % (key, value) for (key, value) in dictionary.items()]))
+    output.close()
+
+for compi in comps:
+    tempdicti=distancemachine(compi, compdicti[compi.split("_")[0]], compdicti[compi.split("_")[0]])
+    dictwriter(compi, tempdicti)
+    print compi, "done"
+        
+# if we rock, we use the name to extract relevant categories from dict
+w4w_w4m=distancemachine("w4w_w4m",compdicti['w4w'], compdicti['w4m'])
+w4w_m4m=distancemachine("w4w_m4",compdicti['w4w'], compdicti['m4m'])
+w4m_m4m=distancemachine("w4m_m4m",compdicti['w4m'], compdicti['w4m'])
+w4w_m4w=distancemachine("w4w_m4w",compdicti['w4w'], compdicti['m4w'])
+w4m_m4w=distancemachine("w4m_m4w",compdicti['w4m'], compdicti['m4w'])
+m4m_m4w=distancemachine("m4m_m4w",compdicti['m4m'], compdicti['m4w'])
 
 
-
-
-
-
+print len(w4w_w4m)
+print len(w4w_m4m)
+print len(w4m_m4m)
+print len(w4m_m4w)
+print len(m4m_m4w)
 
 
     
-##faillist=[]
+print len(faillist)
+print faillist[0]
 ##
 ##for entry in catdicti:
 ##    for i in catdicti[entry]:
