@@ -1,6 +1,4 @@
-## go thru, delete all texts with ratio lower than X
-##this one we haven't run yet, have we?
-## all the good ones should be protected
+## go thru, delete all texts with English - to non-English ratio lower than X
 import os
 import re
 import codecs
@@ -14,12 +12,8 @@ print string.punctuation
 print "start"
 
 ###this finds spanish-only posts and removes them
-
-
-## load a spell checker such as pyenchant; or: celex; or: open office. 
-## compare the spell checker with text from ad; report if very low overlap
-#reading CELEX
-#the formatting of eol.cd is: 8\abacus\8\1\B\8\0\ab-a-cus
+#reading English dictionary from CELEX
+#the formatting of eow.cd is: 8\abacus\8\1\B\8\0\ab-a-cus
 #
 #opening the celexfile
 celexinput=open("/Users/ps22344/Downloads/eow.cd", "r")
@@ -30,7 +24,6 @@ for line in celexinput:
 	lexicon.append(line.split("\\")[1].lower())
 
 # we add some common English words not in Celex
-
 lexicon=lexicon+["i'm", "etc"]
 print "length of lexicon", len(lexicon)
 
@@ -52,20 +45,6 @@ def adtextextractor(text, fili):
 		print "alarm in adtextextractor", fili, result
 	return result[0]
 	
-#this one compares input to celex or other list of allowed words
-#it returns a 1 if yes, a zero if not
-#its a completely unncessary function but here we go
-#at some point. let us time this and compare to listcomp below
-def lexiconcheck(word, lexicon):
-	if word in lexicon:
-		return 1
-	else:
-		return 0
-	
-	
-	
-	
-
 #read in the files
 
 #set up top dir
@@ -77,7 +56,7 @@ subdirs=[s for s in os.listdir(directory) if not s.startswith(".")]
 #subdirs=["files9_output_0102"]
 #print subdirs
 
-#set up list of short texts where out magic won't work
+#set up list of short texts where our magic won't work
 shortlist=[]
 means=[]
 
@@ -94,15 +73,12 @@ for sub in subdirs:
  		#the final product needs to be called text so the script below does not screw up		
  		text=text2.split()
  		length=len(text)
- 		
- 		#how long a text do we need? ah 10 should be good
+ 		#how long a text do we need?  10 should be good
  		if length < 10:
  			#print "alarm, this text is so very short", len(text), fili
  			shortlist.append(os.path.join(directory, sub, fili))
- 			#print shortlist
  		else: 
  			snippet1=text[int(length/10): int(length/10) + 10]
-			#print snippet.translate(None, string.punctuation)
 			#check out our text cleaning tool. we can use this later
 			#first we delete tags, tags need be deleted earlier or they screw up splitting
 			#snippet2=[re.sub("<.*/?>", "", s) for s in snippet]
