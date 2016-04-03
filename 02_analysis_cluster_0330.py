@@ -1,16 +1,16 @@
-import os, re,shutil,string,numpy,nltk,codecs, scipy, scipy.cluster, numpy as np
+import os, re,shutil,string,numpy,nltk,codecs, scipy, scipy.cluster, numpy as np, time
 from collections import defaultdict
 from nltk.tokenize import word_tokenize
 
 print "start"
-
+starttime=time.time()
 #moving parts
 topdir=os.path.join("/Users/ps22344/Downloads","craig_0208")
 folders=[i for i in os.listdir(topdir) if not i.startswith(".")]
 ##we establish the number of clusters we want
 clusters=range(0,4)
 ## the number of times a word needs to occur to be included in the featuredict
-threshold=1000
+threshold=100
 
 
 
@@ -69,7 +69,7 @@ wordmatrix=np.empty(shape=(1,len(featuredict)+1))
 print "matrix initial shape", np.shape(wordmatrix)
 
 # making a dictionary for the categories
-catdicti=defaultdict(float)
+catdicti={}
 catnumber=0
 
 for folder in folders:
@@ -78,7 +78,7 @@ for folder in folders:
     print "building matrices: we have {} files in folder {}".format(len(filis), folder)
     #collect a dictionary with all words
     #lowercase them    
-    for fili in filis[:40]:
+    for fili in filis:
         inputfile=codecs.open(os.path.join(pathi, fili), "r", "utf-8").read()
         inputtext=adtextextractor(inputfile, fili)
         # lets establish the category
@@ -86,8 +86,10 @@ for folder in folders:
         try: 
         	cat=catdicti[tagextractor(inputfile, "category1", fili)]
         except:
-        	catdicti[i]=catnumber
+        	print "this is not in here"
+        	catdicti[tagextractor(inputfile, "category1", fili)]=catnumber
         	catnumber=catnumber+1
+        	cat=catdicti[tagextractor(inputfile, "category1", fili)]
         #we tokenize. note that punctuation is still in here
         splittext=nltk.word_tokenize(inputtext)
         # we lowercase
@@ -146,12 +148,14 @@ for i in clusters:
 	for s in set(clustercounts[float(i)]):
 		print set(clustercounts[float(i)])
 		stats[i][s] = clustercounts[float(i)].count(s)
-	
+#better to give percentage for each category
+# how many of category 1 are in cluster x?	
 for cluster in stats:
 	print "for cluster {} we have the following stats: {}".format(cluster, stats[cluster])
 # for i in labellist_enum:
 # 	if i[1] == 3:
 # 		print i[1]
+
 
 # for c in clusters:
 # 	print c
@@ -165,6 +169,7 @@ for cluster in stats:
 
 #calculate distance to centroid
 
-
+endtime=time.time()
+print "finished. this took us {} seconds".format(endtime - starttime)
 
 
