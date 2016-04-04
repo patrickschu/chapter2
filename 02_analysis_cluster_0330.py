@@ -1,6 +1,9 @@
-import os, re,shutil,string,numpy,nltk,codecs, scipy, scipy.cluster, numpy as np, time
+import os, re,shutil,string,numpy,nltk,codecs, scipy, scipy.cluster, numpy as np, time, sklearn.cluster
 from collections import defaultdict
 from nltk.tokenize import word_tokenize
+# read the clustering documentation here: 
+# http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.cluster.vq.kmeans2.html
+
 
 print "start"
 starttime=time.time()
@@ -127,6 +130,11 @@ wordmatrix_with_cat=wordmatrix[1:wordmatrix.shape[0],]
 # print wordmatrix_with_cat[0:4,]
 
 centroids, labels=scipy.cluster.vq.kmeans2(wordmatrix_without_cat, len(clusters), minit='points')
+#for testing purposes, here we fit the scikit learn kmeans
+t=sklearn.cluster.KMeans(n_clusters=4)
+x=t.fit(wordmatrix_without_cat)
+
+
 # 
 # #note that labels are for a specific line in the data
 # #we can see if cluster is consistent re certain data points
@@ -137,7 +145,7 @@ labellist=labels.tolist()
 #     print "For cluster {} there are {} items".format(c, labellist.count(c))
     
 #check out the groups within in each cluster
-labellist_enum=enumerate(labellist)
+labellist_enum=list(enumerate(labellist))
 
 #
 ###CLUSTERSTATS
@@ -205,63 +213,55 @@ for i in catstats:
 			round(float(catstats[i][c])/catstats[i]['total']*100)
 			)
 		print "\n---\n"
-	# 	if clusterstats[i][c]['count'] > catthreshold:
-# 			print "category {:>5}, coded as {:>4}: {:>4} items, or {:>4} percent of the cluster".format(
-# 			c,
-# 			clusterstats[i][c]['code'],
-# 			clusterstats[i][c]['count'],
-# 			round(clusterstats[i][c]['percentage'])
-# 			)
-# 	print "\n---\n"
+		
+		
+		
+		
+		
+		
+		
+		
+		
+#
+###DISPERSION
+#
+# How good are our clusters?
+# maybe just calculate the square of the distance to the centroid, then sum
+# ??
+# then average out per data point
+# look at real outliers (more than 2 stdevs)
+
+#in this distancedict, we collect the indexes for each cluster 
+#that way we can access the actual data points
+distancedict=defaultdict(list)
+for item in labellist_enum:
+	#establish index numbers for each cluster
+	#items are (index, value). thus: item[0] - index, item[1]-cluster
+	distancedict[item[1]].append(item[0])
+
+print "\n---------------\nThe dispersion of clusters:\n"
+
+# print distancedict[1]
+for c in clusters:
+	print "CLUSTER ",c, ":"
+	centroid_by_cluster=centroids[c]
+	wordmatrix_by_cluster=[wordmatrix_without_cat[i] for i in distancedict[c]]
+	difference=[pow((np.array(centroid_by_cluster) - np.array(i)),2) for i in wordmatrix_by_cluster]
+	# print wordmatrix_by_cluster[0][:3]
+# 	print centroid_by_cluster[:3]
+# 	print difference[0][:3]
+	totaldifference=sum([sum(i) for i in difference])
+	meantotaldifference= totaldifference/len(wordmatrix_by_cluster)
+	print "Total difference is {} for {} data points, mean difference: {}".format(
+	totaldifference, 
+	len(wordmatrix_by_cluster),
+	meantotaldifference*1000)
+	print "\n---\n"
 	
-# 	total.append([clusterstats[c][i]['count'] for c in clusterstats])
-# 	print total
 	
-# 	for c in catdicti:
-# 		clusterstats[i]=(c, catdicti[c], clustercounts[i].count(catdicti[c]), 
-# 			round(float(clustercounts[i].count(catdicti[c]))/len(clustercounts[i])*100))
-# 		if clustercounts[i].count(catdicti[c]) > catthreshold:
-# 			
-# 		# better to make new data file?
-# 			print "category {}, coded as {}: {} items, or {} percent of the cluster".format(c, 
-# 			catdicti[c], clustercounts[i].count(catdicti[c]), 
-# 			round(float(clustercounts[i].count(catdicti[c]))/len(clustercounts[i])*100))
-# 	print clusterstats
-# 	print "\n-------\n"
 
-# 			
-# 		else:
-# 			continue
-# # 
-# for i in clustercounts:
-# 	print i 
-# 	for c in clusters:
-# 		print c
-# 		print clustercounts[i].count(float(c))
-# 	print "\n---\n"
-# 
-# stats=defaultdict(dict)	
-# for i in clusters:
-# 	print i
-# 	for s in set(clustercounts[float(i)]):
-# 		print set(clustercounts[float(i)])
-# 		stats[i][s] = clustercounts[float(i)].count(s)
-# #better to give percentage for each category
-# # how many of category 1 are in cluster x?	
-# for cluster in stats:
-# 	print "for cluster {} we have the following stats: {}".format(cluster, stats[cluster])
-# # for i in labellist_enum:
-# # 	if i[1] == 3:
-# # 		print i[1]
-
-
-# for c in clusters:
-# 	print c
-# 	if l
-# 	contents=[wordmatrix_with_cat [i[0]][0] for i in labellist_enum if i[1] == float(c)]
-# 	print len(contents)
-
-
+	
+	
 
 
 
