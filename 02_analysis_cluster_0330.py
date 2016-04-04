@@ -10,12 +10,7 @@ folders=[i for i in os.listdir(topdir) if not i.startswith(".")]
 ##we establish the number of clusters we want
 clusters=range(0,4)
 ## the number of times a word needs to occur to be included in the featuredict
-threshold=100
-
-
-
-
-
+threshold=1000
 
 print "we have {} folders".format(len(folders))
 
@@ -170,6 +165,9 @@ for cluster in stats:
 #calculate distance to centroid
 
 endtime=time.time()
-print "finished. this took us {} seconds".format(endtime - starttime)
+print "finished. the threshold was {}, this took us {} seconds".format(threshold, endtime - starttime)
+
+#exclude too low categories
+#express as: percentage of category, percentage of cluster, distance from centroid
 
 
