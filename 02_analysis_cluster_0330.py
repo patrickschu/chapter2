@@ -15,7 +15,7 @@ folders=[i for i in os.listdir(topdir) if not i.startswith(".")]
 ##we establish the number of clusters we want
 clusters=range(0,4)
 ## the number of times a word needs to occur to be included in the featuredict
-threshold=1000
+threshold=4000
 
 ## stat settings
 #how many times do we need to see a category for it to be included in the stats
@@ -72,7 +72,7 @@ print "Our vocab has {} entries".format(len(vocab))
 
 #here we set the threshold
 featuredict= {key:value for key, value in vocab.items() if value > float(threshold) }
-print "Our feature dictinoary has {} entries".format(len(featuredict))
+print "Our feature dictionary has {} entries".format(len(featuredict))
 
 #constructing matrix
 wordmatrix=np.empty(shape=(1,len(featuredict)+1))
@@ -120,7 +120,7 @@ print catdicti
 print "features of word matrix: shape {}, dtype {}".format(np.shape(wordmatrix), wordmatrix.dtype)
 print "---------------\nEnd of public service announcements\n\n"
 
-#In 2D, the first dimension corresponds to rows, the second to columns.
+#"In 2D, the first dimension corresponds to rows, the second to columns."
 # we don't look at the first row cause that was just for initialization
 # the one without cats we put into the clustering algorithm
 wordmatrix_without_cat=wordmatrix[1:wordmatrix.shape[0],1:wordmatrix.shape[1]]
@@ -253,22 +253,58 @@ for c in clusters:
 	totaldifference=sum([sum(i) for i in difference])
 	meantotaldifference= totaldifference/len(wordmatrix_by_cluster)
 	print "Total difference is {} for {} data points, mean difference: {}".format(
-	totaldifference, 
+	round(totaldifference), 
 	len(wordmatrix_by_cluster),
-	meantotaldifference*1000)
+	round(meantotaldifference*1000))
 	print "\n---\n"
 	
 	
+#
+###PREDICTORS
+#
+#which words drive our clusters?
+# we have a number of centroids == len(clusters)
+#centroids=[x,y,z]
+# for each x,y,z we calculate the range
+# note that we would have to scale them if we dont have per word counts
+# then we have to relate the centroids to the value in the vocab
+# they should have the same index but vocab is a dict
+# but it is fixed; if we do an items(). ?
+#ranges=[range() for c in centroids
+range=np.ptp(centroids, axis=0)	
+#range_with_words=[(i, 
+#note that this was stolen from 
+# http://stackoverflow.com/questions/26984414/efficiently-sorting-a-numpy-array-in-descending-order
+# http://stackoverflow.com/questions/14875248/python-numpy-sort-array
+sorted_range= np.sort(range)[::-1]
+sorted_range_index=np.argsort(range)[::-1]
+print "range", range
+print "sorted range", sorted_range
+print "indexes", sorted_range_index
+print "original keys", featuredict.keys()
+print "original items", featuredict.items()
+sorted_range_keys=[featuredict.keys()[i] for i in sorted_range_index]
+sorted_range_values=[float(featuredict.values()[i]) for i in sorted_range_index]
+sorted_range_ranges=[range[i] for i in sorted_range_index]
+sorted_range_centroids=[centroids[:,i].tolist() for i in sorted_range_index]
+#flattened = [val for sublist in list_of_lists for val in sublist]
 
-	
-	
 
+#t=[i[0] for i in sorted_range_centroids for i in [l] ]	
+# t=[entry[0] for entry in i for l in sorted_range_centroids]
+		
+# print "the keys", sorted_range_keys
+# print "the values", sorted_range_values
+# print "the ranges", sorted_range_ranges
+print "the original range", sorted_range_centroids
 
-
-#calculate distance to centroid
+#now that were doing it this way, we could have sorted on the list in the first place
+#but its whatevs at this point
+result=zip(sorted_range_ranges, sorted_range_centroids, sorted_range_keys, sorted_range_values)
+print "result", result
 
 endtime=time.time()
-print "Finished. the threshold was {}, this took us {} seconds".format(threshold, endtime - starttime)
+print "Finished. the threshold was {}, this took us {} minutes".format(threshold, (endtime - starttime)/60)
 
 #exclude too low categories
 #express as: percentage of category, percentage of cluster, distance from centroid
