@@ -146,6 +146,11 @@ def matrixmachine(folderlist, featuredict, external_category):
 	wordmatrix_with_cat=wordmatrix[1:wordmatrix.shape[0],]
 	return (wordmatrix_without_cat, wordmatrix_with_cat)
 	
+	
+	
+#
+###CREATING CLUSTERS
+#
 #this makes clusters; takes the dataset (matrix) and the algorithm
 def clustermachine(matrix, algorithm, clusters=4):
 	no_of_clusters=range(clusters)
