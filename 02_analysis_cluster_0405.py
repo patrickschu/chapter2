@@ -10,13 +10,11 @@ print "\n---------------\nSome public service announcements"
 #moving parts
 pathi=os.path.join("/Users/ps22344/Downloads","craig_0208")
 
-#how many times do we need to see a category for it to be included in the stats
-#move to stats functions
-catthreshold=10
+	#
+	###FUNCTIONS
+	##
 
-
-
-#setting up some functions
+#setting up some helper functions
 def tagextractor(text, tag, fili):
     regexstring="<"+tag+"=(.*?)>"
     result=re.findall(regexstring, text, re.DOTALL)
@@ -30,10 +28,6 @@ def adtextextractor(text, fili):
     if len(result) != 1:
         print "alarm in adtextextractor", fili, result
     return result[0]
-
-#folders=['files9_output_0102']
-
-
 
 #
 ###BUILDING VOCAB
@@ -64,15 +58,6 @@ def dictmaker(folderlist, threshold=1000):
 	featuredict= {key:value for key, value in vocab.items() if value > float(threshold) }
 	print "Our feature dictionary has {} entries\n---------------\n".format(len(featuredict))
 	return featuredict
-
-
-
-
-#how often a category has to be in the cluster to be included in statistics
-catnumber=0
-
-
-
 
 #
 ##FINDING CATEGOIRES
@@ -136,7 +121,6 @@ def matrixmachine(folderlist, featuredict, external_category):
 			#print wordvector
 			#we append it to the matrix
 			wordmatrix=np.append(wordmatrix, [wordvector], axis=0)
-	print catdicti
 	print "Features of word matrix: shape {}, dtype {}".format(np.shape(wordmatrix), wordmatrix.dtype)
 	print "---------------\nEnd of public service announcements\n\n"
 	#"In 2D, the first dimension corresponds to rows, the second to columns."
@@ -144,9 +128,7 @@ def matrixmachine(folderlist, featuredict, external_category):
 	# the one without cats we put into the clustering algorithm
 	wordmatrix_without_cat=wordmatrix[1:wordmatrix.shape[0],1:wordmatrix.shape[1]]
 	wordmatrix_with_cat=wordmatrix[1:wordmatrix.shape[0],]
-	return (wordmatrix_without_cat, wordmatrix_with_cat)
-	
-	
+	return (wordmatrix_without_cat, wordmatrix_with_cat, catdicti)
 	
 #
 ###CREATING CLUSTERS
@@ -155,105 +137,105 @@ def matrixmachine(folderlist, featuredict, external_category):
 def clustermachine(matrix, algorithm, clusters=4):
 	no_of_clusters=range(clusters)
 	centroids, labels=algorithm(matrix, len(no_of_clusters), minit='points')
-	#for testing purposes, here we fit the scikit learn kmeans
-	t=sklearn.cluster.KMeans(n_clusters=4)
-	x=t.fit(matrix)
-	# #note that labels are for a specific line in the data
 	# #we can see if cluster is consistent re certain data points
 	labellist=labels.tolist()
+	#enum gives us (index, cluster)
 	labellist_enum=list(enumerate(labellist))
-	#this needs to output
-	#return (clusterlabel, index, [cat x, cat y], 
-	return centroids, labels 
+	#return (clusterlabel, index, datapoint, [cat x, cat y], 
+	result=[(y,x,matrix[x].tolist()) for (x,y) in labellist_enum]
+	return centroids, labels, result
 
+#
+###CLUSTERSTATS
+#
+#cat_threshold indicates how many times we need to see a category for it to be included in the stats
+def statsmachine(labellist, matrix_with_cat, catdict, cat_threshold=100):
 
-	
+	#STATS PER CLUSTER FIRST
+	print "\n---------------\nThe makeup of clusters:\n"
+	# we connect labels to category of entry
+	# remember that labellist consists of tuples where i[0] is the 
+	# cluster label and i[1] the index, [2] the actual vector
+
+	#clustercounts collects a list with the items for each cluster
+	clustercounts=defaultdict(list)
+	#the lenght of the lists tells us the size of the cluster
+	# later on, we can use the items to determine the makeup of the cluster
+	# clustercounts looks like this {0:[1,1,1,1,2,1,1,2 ...], 1: [2,2,0,0,0,2...]}
+	for i in labellist:
+		clustercounts[i[0]].append(matrix_with_cat[i[1],0])
+	#clusterstats contains the statistics of each cluster
+	#is makes a sub dict for each cluster:
+	#CLUSTER: {cat1: {count:x, alias:x}, cat2: {ibid}...}
+	#e.g. 0 {u'w4w': {'count': 111, 'percentage': 32.080924855491325, 'code': 5}, u'm4w': {'count': 6 ...
+		clusterstats=defaultdict()
+	for i in clustercounts:
+		print "Cluster {} contains {} items".format(i, len(clustercounts[i]))
+		
+		clusterstats[i]={c: {
+		'code':catdict[c],
+		'count':clustercounts[i].count(catdict[c]),
+		'percentage':float(clustercounts[i].count(catdict[c]))/len(clustercounts[i])*100
+		} 
+		for c in catdict}
+
+	print "\n---------------\nThe stats of clusters:\n"
+	for i in clusterstats:
+		print "CLUSTER ",i, ":"
+		for c in clusterstats[i]:
+			if clusterstats[i][c]['count'] > cat_threshold:
+				print "category {:>5}, coded as {:>3}: {:>4} items, or {:>4} percent of the cluster".format(
+				c,
+				clusterstats[i][c]['code'],
+				clusterstats[i][c]['count'],
+				round(clusterstats[i][c]['percentage'])
+				)
+		print "\n---\n"
+	#NOW STATS PER CATEGORY	
+	#
+	catstats=defaultdict()
+	#for each cat in the catdicti, we collect the total count
+	for i in catdict:
+		catstats[i]={str(c): clusterstats[c][i]['count'] for c in clusterstats}
+		catstats[i]['total']=sum(catstats[i].values())
+	print "\n---------------\nThe stats of categories:\n"
+	for i in catstats:	
+		if catstats[i]['total'] > cat_threshold:
+			print "CATEGORY ",i.upper(), ":"
+			for c in clusterstats:
+				c=str(c)
+				print "cluster {:>2} contains {:>5} out of {:>5} items in this category, or {:>4} percent of the total".format(
+				c,
+				catstats[i][c], 
+				catstats[i]['total'],
+				round(float(catstats[i][c])/catstats[i]['total']*100)
+				)
+			print "\n---\n"
 	
 	#######MAIN#########
 	
 def main():
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
-	folders=['files9_output_0102']
+	#folders=['files9_output_0102']
 	print "We have {} folders".format(len(folders))
 	featuredict=dictmaker(folders)
-	wordmatrix_without_cat, wordmatrix_with_cat = matrixmachine(folders, featuredict, "category1")
-	print "Shape of the matrix", wordmatrix_without_cat.shape
-	centroids, labels=clustermachine(wordmatrix_without_cat, scipy.cluster.vq.kmeans2)
+	wordmatrix_without_cat, wordmatrix_with_cat, catdicti = matrixmachine(folders, featuredict, "category1")
+	centroids, labels, labellist=clustermachine(wordmatrix_without_cat, scipy.cluster.vq.kmeans2)
 	print "Centroids and labels established"
+	stats=statsmachine(labellist, wordmatrix_with_cat, catdicti, 200)
+	print "finito"
 
+# def dispersionmachine():
+# 
 
 
 main()
 
-
-
-
-#
-###CLUSTERSTATS
-#
-# print "\n---------------\nThe makeup of clusters:\n"
-# # we connect labels to category of entry
-# # remember that labellist_enum consists of tuples where i[0] is the 
-# # list index and i[1] the value, i.e. the number of the cluster
-# 
-# #clustercounts collects a list with the items for each cluster
-# clustercounts=defaultdict(list)
-# for i in labellist_enum:
-#  	clustercounts[i[1]].append(wordmatrix_with_cat[i[0],0])
-# 
-# #clusterstats contains the statistics of each cluster
-# clusterstats=defaultdict()
-# 
-# for i in clustercounts:
-# 	print "Cluster {} contains {} items".format(i, len(clustercounts[i]))
-# 	#this dict comprehension makes a sub dict for each cluster:
-# 	#CLUSTER: {cat1: {count:x, alias:x}, cat2: {ibid}...}
-# 	#e.g. 0 {u'w4w': {'count': 111, 'percentage': 32.080924855491325, 'code': 5}, u'm4w': {'count': 6 ...
-# 	clusterstats[i]={c: {
-# 	'code':catdicti[c],
-# 	'count':clustercounts[i].count(catdicti[c]),
-# 	'percentage':float(clustercounts[i].count(catdicti[c]))/len(clustercounts[i])*100
-# 	} 
-# 	for c in catdicti}
 # 	
-# print "\n---------------\nThe stats of clusters:\n"
-# 
-# for i in clusterstats:
-# 	print "CLUSTER ",i, ":"
-# 	for c in clusterstats[i]:
-# 		if clusterstats[i][c]['count'] > catthreshold:
-# 			print "category {:>5}, coded as {:>4}: {:>4} items, or {:>4} percent of the cluster".format(
-# 			c,
-# 			clusterstats[i][c]['code'],
-# 			clusterstats[i][c]['count'],
-# 			round(clusterstats[i][c]['percentage'])
-# 			)
-# 	print "\n---\n"
+
 # 		
 # #
-# ###CATEGORYSTATS
-# #
-# catstats=defaultdict()
-# #for each cat in the catdicti, we collect the total count
-# for i in catdicti:
-# 	catstats[i]={str(c): clusterstats[c][i]['count'] for c in clusterstats}
-# 	catstats[i]['total']=sum(catstats[i].values())
-# 
-# 
-# print "\n---------------\nThe stats of categories:\n"
-# 	
-# for i in catstats:	
-# 	if catstats[i]['total'] > catthreshold:
-# 		print "CATEGORY ",i.upper(), ":"
-# 		for c in clusters:
-# 			c=str(c)
-# 			print "cluster {:>2} contains {:>5} out of {:>5} items in this category, or {:>4} percent of the total".format(
-# 			c,
-# 			catstats[i][c], 
-# 			catstats[i]['total'],
-# 			round(float(catstats[i][c])/catstats[i]['total']*100)
-# 			)
-# 		print "\n---\n"
+
 # 		
 # 		
 # 		
