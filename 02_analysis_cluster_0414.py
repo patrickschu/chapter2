@@ -1,5 +1,6 @@
 import clustertools as ct 
-import os, re, shutil,string,numpy,nltk,codecs, scipy, scipy.cluster, numpy as np, time, sklearn.cluster, sklearn.mixture
+import os, re, shutil,string,numpy,nltk,codecs, scipy, scipy.cluster, numpy as np, time, sklearn
+from sklearn import cluster, mixture, metrics
 from collections import defaultdict
 from nltk.tokenize import word_tokenize
 # read the clustering documentation here: 
@@ -13,6 +14,16 @@ starttime=time.time()
 print "\n---------------\nSome public service announcements"
 #moving parts
 pathi=os.path.join("/Users/ps22344/Downloads","craig_0208")
+
+
+# heres what sklearn ppl do
+# Estimated number of clusters: 3
+# Homogeneity: 0.953
+# Completeness: 0.883
+# V-measure: 0.917
+# Adjusted Rand Index: 0.952
+# Adjusted Mutual Information: 0.883
+# Silhouette Coefficient: 0.626
 
 
 #
@@ -45,6 +56,10 @@ def dictmaker(folderlist, threshold=1000):
 	print "Our feature dictionary has {} entries\n---------------\n".format(len(featuredict))
 	return featuredict
 
+
+
+
+
 #
 ##FINDING CATEGOIRES
 #this just extracts the categories from our files
@@ -73,6 +88,8 @@ def categorymachine(folderlist):
 #     print "For cluster {} there are {} items".format(c, labellist.count(c))
     
 #check out the groups within in each cluster
+
+
 
 	#
 	###BUILDING MATRICES
@@ -117,25 +134,30 @@ def matrixmachine(folderlist, featuredict, external_category):
 	wordmatrix_with_cat=wordmatrix[1:wordmatrix.shape[0],]
 	return (wordmatrix_without_cat, wordmatrix_with_cat, catdicti)
 	
+	
+	
 	#
 	###CREATING CLUSTERS
 	#
 #this makes clusters; takes the dataset (matrix) and the algorithm
 def clustermachine(matrix, algorithm, clusters=4):
 	
+	#we need a similarity matrix
+	similarity_matrix=metrics.pairwise.euclidean_distances(matrix)	
+
 	#meanshift and kmeans take features
 	#others need distance matrixes
 	no_of_clusters=range(clusters)
 	
-	
+	result=[]
 	## # 1: kmeans
 	model=sklearn.cluster.KMeans(clusters)
 	clustering=model.fit(matrix)
 	centroids=clustering.cluster_centers_
 	labels=clustering.labels_
 	inertia=clustering.inertia_
-	kmeans=ct.Cluster(matrix, model, clustering.cluster_centers_, clustering.labels_)
-	
+	kmeans=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
+	result.append(kmeans)
 
 	
 	# ## #2: MeanShift
@@ -143,37 +165,37 @@ def clustermachine(matrix, algorithm, clusters=4):
  	clustering=model.fit(matrix)
 	centroids=clustering.cluster_centers_
  	labels=clustering.labels_
- 	meanshift=ct.Cluster(matrix, model, clustering.cluster_centers_, clustering.labels_)
-	
+ 	meanshift=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
+	result.append(meanshift)
 	
 	## #3: Affinity Propagation
 	model=sklearn.cluster.AffinityPropagation()
-	clustering=model.fit(matrix)
+	clustering=model.fit(similarity_matrix)
 	centroid_index=model.cluster_centers_indices_
 	centroids=clustering.cluster_centers_
  	labels=clustering.labels_
  	aff_matrix=clustering.affinity_matrix_
  	its= clustering.n_iter_
- 	affinity=ct.Cluster(matrix, model, clustering.cluster_centers_, clustering.labels_)
- 
+ 	affinity=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
+ 	result.append(affinity)
 	
 	## #4: Spectral clustering
 	model=sklearn.cluster.SpectralClustering()
-	clustering=model.fit(matrix)
+	clustering=model.fit(similarity_matrix)
 	labels=clustering.labels_
  	aff_matrix=clustering.affinity_matrix_
  	spectral= ct.Cluster(matrix, model, clustering.labels_)
-
+	result.append(spectral)
  	
  	 ##watch out --------- centroids are indices!!!!!	
 	## # 5: DBCASN
-	model=sklearn.cluster.DBSCAN(min_samples=10)
+	model=sklearn.cluster.DBSCAN()
 	clustering=model.fit(matrix)
 	core_samples=clustering.core_sample_indices_
 	components=clustering.components_
 	labels=clustering.labels_
 	dbscan= ct.Cluster(matrix, model, clustering.labels_, clustering.core_sample_indices_)
-	
+	result.append(dbscan)
 	
 	##GUASSIN DOEs NOT FIT OUR SCHEMA AT THIS POINT
 	
@@ -185,7 +207,7 @@ def clustermachine(matrix, algorithm, clusters=4):
  	means=model.means_
  	covars=model.covars_
 	converged=clustering.converged_
-	
+	#NOT IN
 	
 
 	#These are essentially trees; maybe need a different approach. 
@@ -197,7 +219,7 @@ def clustermachine(matrix, algorithm, clusters=4):
 	leaves=clustering.n_leaves_
 	components=clustering.n_components_
 	ward= ct.Cluster(matrix, model, clustering.labels_)
-	
+	result.append(ward)
 
 
 	## #8: Birch Hierarchical 	
@@ -206,10 +228,10 @@ def clustermachine(matrix, algorithm, clusters=4):
 	labels=clustering.labels_
 	root=clustering.root_
 	subcluster_labels=clustering.subcluster_labels_
-	
 	birch= ct.Cluster(matrix, model, clustering.labels_)
-	return birch.labels
-	##
+	result.append(birch)
+	
+	return(result)
 	
 	
 	
@@ -293,23 +315,90 @@ def statsmachine(labellist, matrix_with_cat, catdict, cat_threshold=100):
 	
 def main():
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
-	folders=['files9_output_0102']
+	#folders=['files9_output_0102']
 	print "We have {} folders".format(len(folders))
 	featuredict=dictmaker(folders)
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti = matrixmachine(folders, featuredict, "category1")
 	x=clustermachine(wordmatrix_without_cat, scipy.cluster.vq.kmeans2)
-	print x
+	f=[(i.name, i.no_of_clusters) for i in x]
+	print f
+	g=[(i.name, i.centroids) for i in x]
+	# for i in x:
+# 		print x.getClusterNumber()
 	# #centroids, labels, labellist=clustermachine(wordmatrix_without_cat, scipy.cluster.vq.kmeans2)
 # 	print "Centroids and labels established"
 # 	stats=statsmachine(labellist, wordmatrix_with_cat, catdicti, 200)
 # 	print "finito"
 
-# def dispersionmachine():
-# 
 
 
 main()
 
+
+## for each, give stats:
+-per cluster:
+		1. size (len per label)
+		range(no_of_clusters) 
+		for i in range(n_0_c) list.count(i)
+		dicti[i]=list.count(i)
+		
+		2. split up btw categories how? (number, percentage) (dict of clusters, len per label)
+		for i in categories:
+			get relevant index from matrix with cats, i.e. col 1 is cat
+			find index in labels (might depend on algo how to do it)
+			dict[i] cluster 1:
+					cluster 2:
+					sum(values) is total
+				
+		3. feature distinctive of cluster
+				get centroids/prototypes per cluster
+				find biggest difference between clusters
+				[w,e,r,i,s,t]
+				[w,e,r,i,s,t]
+				[w,e,r,i,s,t]
+				[w,e,r,i,s,t]
+				...
+				maybe:
+				sort
+				
+				calculate distance first to last, while at it: also variance, means <--- feature description
+				
+				w=range:(x:y), mean: x, var: u, ... 
+				[can we somehow calculate the importance / weight of one feature to each cluster?
+				[in z scores???? normalized some kind of way
+				biggest distnace is the difference maker
+				
+		
+		4. homogeneity/tightness of cluster (distance btw poitns)
+				same thing for points in each cluster
+				maybe we do point product for each row
+				
+		
+		
+- general
+		5. distance btw clusters (centroids)
+		6. homgeneity of clusters (cf 4)
+		consistency of runs
+		consistency of labeling / grouping certain data points together (??)
+			consitstency btw clusters in one algo
+			consistency btw different runs of one method
+		
+- per category
+		7. how split up btw clusters: how many n, what percentage is in each cluster? (dict of category: clusters per item)
+		8. relate feature to category --> 3
+		
+- think
+		# label-independent quality
+# 		
+# 		
+# 		label-dependent quality:
+# 		silhouette
+		# V-measure: 0.917
+		# Adjusted Rand Index: 0.952
+		# Adjusted Mutual Information: 0.883
+		# Silhouette Coefficient: 0.626
+		
+			
 # 	
 
 # 		
