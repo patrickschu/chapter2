@@ -135,7 +135,6 @@ def matrixmachine(folderlist, featuredict, external_category):
 	return (wordmatrix_without_cat, wordmatrix_with_cat, catdicti)
 	
 	
-	
 	#
 	###CREATING CLUSTERS
 	#
@@ -150,6 +149,7 @@ def clustermachine(matrix, algorithm, clusters=4):
 	no_of_clusters=range(clusters)
 	
 	result=[]
+	
 	## # 1: kmeans
 	model=sklearn.cluster.KMeans(clusters)
 	clustering=model.fit(matrix)
@@ -158,45 +158,44 @@ def clustermachine(matrix, algorithm, clusters=4):
 	inertia=clustering.inertia_
 	kmeans=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
 	result.append(kmeans)
-
 	
-	# ## #2: MeanShift
- 	model=sklearn.cluster.MeanShift()
- 	clustering=model.fit(matrix)
-	centroids=clustering.cluster_centers_
- 	labels=clustering.labels_
- 	meanshift=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
-	result.append(meanshift)
+# 	## #2: MeanShift
+#  	model=sklearn.cluster.MeanShift()
+#  	clustering=model.fit(matrix)
+# 	centroids=clustering.cluster_centers_
+#  	labels=clustering.labels_
+#  	meanshift=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
+# 	result.append(meanshift)
+# 	
+# 	## #3: Affinity Propagation
+# 	model=sklearn.cluster.AffinityPropagation()
+# 	clustering=model.fit(similarity_matrix)
+# 	centroid_index=model.cluster_centers_indices_
+# 	centroids=clustering.cluster_centers_
+#  	labels=clustering.labels_
+#  	aff_matrix=clustering.affinity_matrix_
+#  	its= clustering.n_iter_
+#  	affinity=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
+#  	result.append(affinity)
 	
-	## #3: Affinity Propagation
-	model=sklearn.cluster.AffinityPropagation()
-	clustering=model.fit(similarity_matrix)
-	centroid_index=model.cluster_centers_indices_
-	centroids=clustering.cluster_centers_
- 	labels=clustering.labels_
- 	aff_matrix=clustering.affinity_matrix_
- 	its= clustering.n_iter_
- 	affinity=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
- 	result.append(affinity)
-	
-	## #4: Spectral clustering
-	model=sklearn.cluster.SpectralClustering()
-	clustering=model.fit(similarity_matrix)
-	labels=clustering.labels_
- 	aff_matrix=clustering.affinity_matrix_
- 	spectral= ct.Cluster(matrix, model, clustering.labels_)
-	result.append(spectral)
- 	
- 	 ##watch out --------- centroids are indices!!!!!	
-	## # 5: DBCASN
-	model=sklearn.cluster.DBSCAN()
-	clustering=model.fit(matrix)
-	core_samples=clustering.core_sample_indices_
-	components=clustering.components_
-	labels=clustering.labels_
-	dbscan= ct.Cluster(matrix, model, clustering.labels_, clustering.core_sample_indices_)
-	result.append(dbscan)
-	
+# 	## #4: Spectral clustering
+# 	model=sklearn.cluster.SpectralClustering()
+# 	clustering=model.fit(similarity_matrix)
+# 	labels=clustering.labels_
+#  	aff_matrix=clustering.affinity_matrix_
+#  	spectral= ct.Cluster(matrix, model, clustering.labels_)
+# 	result.append(spectral)
+#  	
+#  	 ##watch out --------- centroids are indices!!!!!	
+# 	## # 5: DBCASN
+# 	model=sklearn.cluster.DBSCAN()
+# 	clustering=model.fit(matrix)
+# 	core_samples=clustering.core_sample_indices_
+# 	components=clustering.components_
+# 	labels=clustering.labels_
+# 	dbscan= ct.Cluster(matrix, model, clustering.labels_, clustering.core_sample_indices_)
+# 	result.append(dbscan)
+# 	
 	##GUASSIN DOEs NOT FIT OUR SCHEMA AT THIS POINT
 	
 	
@@ -206,116 +205,163 @@ def clustermachine(matrix, algorithm, clusters=4):
 	weights=model.weights_
  	means=model.means_
  	covars=model.covars_
-	converged=clustering.converged_
-	#NOT IN
-	
+	converged=clustering.converged_	
 
 	#These are essentially trees; maybe need a different approach. 
 	#They are kinda predictive
+	
 	## #7: Agglomerative // Ward Hierarchical 
 	model=sklearn.cluster.AgglomerativeClustering()
-	clustering=model.fit(matrix)
-	labels=clustering.labels_
-	leaves=clustering.n_leaves_
-	components=clustering.n_components_
-	ward= ct.Cluster(matrix, model, clustering.labels_)
-	result.append(ward)
-
-
-	## #8: Birch Hierarchical 	
-	model=sklearn.cluster.Birch(threshold=0.025)
-	clustering=model.fit(matrix)
-	labels=clustering.labels_
-	root=clustering.root_
-	subcluster_labels=clustering.subcluster_labels_
-	birch= ct.Cluster(matrix, model, clustering.labels_)
-	result.append(birch)
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	leaves=clustering.n_leaves_
+# 	components=clustering.n_components_
+# 	ward= ct.Cluster(matrix, model, clustering.labels_)
+# 	result.append(ward)
+# 
+# 	## #8: Birch Hierarchical 	
+# 	model=sklearn.cluster.Birch(threshold=0.025)
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	root=clustering.root_
+# 	subcluster_labels=clustering.subcluster_labels_
+# 	birch= ct.Cluster(matrix, model, clustering.labels_)
+# 	result.append(birch)
 	
 	return(result)
 	
 	
 	
-	 #we can see if cluster is consistent re certain data points
-	# labellist=labels.tolist()
-# 	#enum gives us (index, cluster)
-# 	labellist_enum=list(enumerate(labellist))
-# 	#return (clusterlabel, index, datapoint, [cat x, cat y], 
-# 	result=[(y,x,matrix[x].tolist()) for (x,y) in labellist_enum]
-# 	return centroids, labels, result
+
 
 	#
 	###CALCULALTING CLUSTERSTATS
 	#
 #cat_threshold indicates how many times we need to see a category for it to be included in the stats
-def statsmachine(labellist, matrix_with_cat, catdict, cat_threshold=100):
-
-	#STATS PER CLUSTER FIRST
-	print "\n---------------\nThe makeup of clusters:\n"
-	# we connect labels to category of entry
-	# remember that labellist consists of tuples where i[0] is the 
-	# cluster label and i[1] the index, [2] the actual vector
-
-	#clustercounts collects a list with the items for each cluster
-	clustercounts=defaultdict(list)
-	#the lenght of the lists tells us the size of the cluster
-	# later on, we can use the items to determine the makeup of the cluster
-	# clustercounts looks like this {0:[1,1,1,1,2,1,1,2 ...], 1: [2,2,0,0,0,2...]}
-	for i in labellist:
-		clustercounts[i[0]].append(matrix_with_cat[i[1],0])
-	#clusterstats contains the statistics of each cluster
-	#is makes a sub dict for each cluster:
-	#CLUSTER: {cat1: {count:x, alias:x}, cat2: {ibid}...}
-	#e.g. 0 {u'w4w': {'count': 111, 'percentage': 32.080924855491325, 'code': 5}, u'm4w': {'count': 6 ...
-		clusterstats=defaultdict()
-	for i in clustercounts:
-		print "Cluster {} contains {} items".format(i, len(clustercounts[i]))
-		
-		clusterstats[i]={c: {
-		'code':catdict[c],
-		'count':clustercounts[i].count(catdict[c]),
-		'percentage':float(clustercounts[i].count(catdict[c]))/len(clustercounts[i])*100
-		} 
-		for c in catdict}
-
-	print "\n---------------\nThe stats of clusters:\n"
-	for i in clusterstats:
-		print "CLUSTER ",i, ":"
-		for c in clusterstats[i]:
-			if clusterstats[i][c]['count'] > cat_threshold:
-				print "category {:>5}, coded as {:>3}: {:>4} items, or {:>4} percent of the cluster".format(
-				c,
-				clusterstats[i][c]['code'],
-				clusterstats[i][c]['count'],
-				round(clusterstats[i][c]['percentage'])
-				)
-		print "\n---\n"
-	#	
-	#NOW STATS PER CATEGORY	
-	#
-	catstats=defaultdict()
-	#for each cat in the catdicti, we collect the total count
-	for i in catdict:
-		catstats[i]={str(c): clusterstats[c][i]['count'] for c in clusterstats}
-		catstats[i]['total']=sum(catstats[i].values())
-	print "\n---------------\nThe stats of categories:\n"
-	for i in catstats:	
-		if catstats[i]['total'] > cat_threshold:
-			print "CATEGORY ",i.upper(), ":"
-			for c in clusterstats:
-				c=str(c)
-				print "cluster {:>2} contains {:>5} out of {:>5} items in this category, or {:>4} percent of the total".format(
-				c,
-				catstats[i][c], 
-				catstats[i]['total'],
-				round(float(catstats[i][c])/catstats[i]['total']*100)
-				)
-			print "\n---\n"
+# def statsmachine(labellist, matrix_with_cat, catdict, cat_threshold=100):
+# 
+# 	#STATS PER CLUSTER FIRST
+# 	print "\n---------------\nThe makeup of clusters:\n"
+# 	# we connect labels to category of entry
+# 	# remember that labellist consists of tuples where i[0] is the 
+# 	# cluster label and i[1] the index, [2] the actual vector
+# 
+# 	#clustercounts collects a list with the items for each cluster
+# 	clustercounts=defaultdict(list)
+# 	#the lenght of the lists tells us the size of the cluster
+# 	# later on, we can use the items to determine the makeup of the cluster
+# 	# clustercounts looks like this {0:[1,1,1,1,2,1,1,2 ...], 1: [2,2,0,0,0,2...]}
+# 	for i in labellist:
+# 		clustercounts[i[0]].append(matrix_with_cat[i[1],0])
+# 	#clusterstats contains the statistics of each cluster
+# 	#is makes a sub dict for each cluster:
+# 	#CLUSTER: {cat1: {count:x, alias:x}, cat2: {ibid}...}
+# 	#e.g. 0 {u'w4w': {'count': 111, 'percentage': 32.080924855491325, 'code': 5}, u'm4w': {'count': 6 ...
+# 		clusterstats=defaultdict()
+# 	for i in clustercounts:
+# 		print "Cluster {} contains {} items".format(i, len(clustercounts[i]))
+# 		
+# 		clusterstats[i]={c: {
+# 		'code':catdict[c],
+# 		'count':clustercounts[i].count(catdict[c]),
+# 		'percentage':float(clustercounts[i].count(catdict[c]))/len(clustercounts[i])*100
+# 		} 
+# 		for c in catdict}
+# 
+# 	print "\n---------------\nThe stats of clusters:\n"
+# 	for i in clusterstats:
+# 		print "CLUSTER ",i, ":"
+# 		for c in clusterstats[i]:
+# 			if clusterstats[i][c]['count'] > cat_threshold:
+# 				print "category {:>5}, coded as {:>3}: {:>4} items, or {:>4} percent of the cluster".format(
+# 				c,
+# 				clusterstats[i][c]['code'],
+# 				clusterstats[i][c]['count'],
+# 				round(clusterstats[i][c]['percentage'])
+# 				)
+# 		print "\n---\n"
+# 	#	
+# 	#NOW STATS PER CATEGORY	
+# 	#
+# 	catstats=defaultdict()
+# 	#for each cat in the catdicti, we collect the total count
+# 	for i in catdict:
+# 		catstats[i]={str(c): clusterstats[c][i]['count'] for c in clusterstats}
+# 		catstats[i]['total']=sum(catstats[i].values())
+# 	print "\n---------------\nThe stats of categories:\n"
+# 	for i in catstats:	
+# 		if catstats[i]['total'] > cat_threshold:
+# 			print "CATEGORY ",i.upper(), ":"
+# 			for c in clusterstats:
+# 				c=str(c)
+# 				print "cluster {:>2} contains {:>5} out of {:>5} items in this category, or {:>4} percent of the total".format(
+# 				c,
+# 				catstats[i][c], 
+# 				catstats[i]['total'],
+# 				round(float(catstats[i][c])/catstats[i]['total']*100)
+# 				)
+# 			print "\n---\n"
 	
 	#######MAIN#########
+
+class Clusterstats(object):#, matrix_with_cats, catdictionary):
+	def __init__(self, model, matrix_with_cats): 
+		self.name=model.name
+		self.labels=model.labels
+		self.matrix_with_cats=matrix_with_cats
+		self.no_of_clusters=len(np.unique(model.labels))
+		#self.cluster_dict=_dictmaker(self)
+	#in this dicti, we collect for each cluster the indexes contained
+	def _clusterdictmaker(self):
+		iterator=range(self.no_of_clusters)
+		clusterdicti=defaultdict()
+		for cluster in iterator:
+			print "cluster: " ,cluster
+			#give me indexes of label array where cluster is true	
+			#note that where returns a cluster that i always len 1
+			# we are interested in l[0]
+			clusterdicti[cluster]=np.where(self.labels==cluster)[0]
+	
+	def _clustercatdictmaker(self):
+		iterator=range(self.no_of_clusters)
+		clustercatdicti=defaultdict()
+		for cluster in iterator:
+			print "cluster: " ,cluster
+			#structure: { cluster: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}
+			clustercatdicti[cluster]=defaultdict(list)
+			#give me indexes of label array where cluster is true	
+			#note that where returns a cluster that i always len 1
+			# we are interested in l[0]
+			# we look these indexes up in the wordmatrix to identify categories
+			wordmatrix=[self.matrix_with_cats[i] for i in np.where(self.labels==cluster)[0]]
+			for item in wordmatrix:
+				clustercatdicti[cluster][item[0]].append(item)
+		# for i in clustercatdicti:
+# 			print "\n-------\nfirst level, entry:", i, "length", len(clustercatdicti[i])
+# 			for t in clustercatdicti[i]:
+# 				print  "2nd level entry", t, "length: ", len(clustercatdicti[i][t])
+		return clustercatdicti
+		
+	def size_of_clusters(self):
+		dict=self._dictmaker()
+		return {k:len(dict[k]) for k in dict}
+		
+	def cats_per_cluster(self):
+		dict=self._clusterdictmaker()
+		#returning: how many of each cat in this cluster, percentage of this cluster
+		
+
+
+	
+	
+	
+
+
+
 	
 def main():
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
-	#folders=['files9_output_0102']
+	folders=['files9_output_0102']
 	print "We have {} folders".format(len(folders))
 	featuredict=dictmaker(folders)
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti = matrixmachine(folders, featuredict, "category1")
@@ -323,6 +369,8 @@ def main():
 	f=[(i.name, i.no_of_clusters) for i in x]
 	print f
 	g=[(i.name, i.centroids) for i in x]
+	h=[len(Clusterstats(i, wordmatrix_with_cat)._clustercatdictmaker()) for i in x]
+	print "clusterstats says",  h
 	# for i in x:
 # 		print x.getClusterNumber()
 	# #centroids, labels, labellist=clustermachine(wordmatrix_without_cat, scipy.cluster.vq.kmeans2)
@@ -335,61 +383,95 @@ def main():
 main()
 
 
+#statsmachine
+#clusterstats calculates stats by cluster
+# we feed it the labels from the Cluster objects
+
+	
+
+# 			
+# 		1. size (len per label)
+# 		range(no_of_clusters) 
+# 		for i in range(n_0_c) list.count(i)
+# 		dicti[i]=list.count(i)
+# 	def get_range(self):
+# 		print "get range!!"
+# 	
+# 	def get_percentages(self):
+# 		print "get percetnages!!"
+	
+
+# distancedict=defaultdict(list)
+# 
+# for item in labellist_enum:
+# 	#establish index numbers for each cluster
+# 	#items are (index, value). thus: item[0] - index, item[1]-cluster
+# 	distancedict[item[1]].append(item[0])
+# 
+# print "\n---------------\nThe dispersion of clusters:\n"
+
+##
+####NOTES
+##
+
+# def categorystats
+# def globalstats
+
 ## for each, give stats:
--per cluster:
-		1. size (len per label)
-		range(no_of_clusters) 
-		for i in range(n_0_c) list.count(i)
-		dicti[i]=list.count(i)
-		
-		2. split up btw categories how? (number, percentage) (dict of clusters, len per label)
-		for i in categories:
-			get relevant index from matrix with cats, i.e. col 1 is cat
-			find index in labels (might depend on algo how to do it)
-			dict[i] cluster 1:
-					cluster 2:
-					sum(values) is total
-				
-		3. feature distinctive of cluster
-				get centroids/prototypes per cluster
-				find biggest difference between clusters
-				[w,e,r,i,s,t]
-				[w,e,r,i,s,t]
-				[w,e,r,i,s,t]
-				[w,e,r,i,s,t]
-				...
-				maybe:
-				sort
-				
-				calculate distance first to last, while at it: also variance, means <--- feature description
-				
-				w=range:(x:y), mean: x, var: u, ... 
-				[can we somehow calculate the importance / weight of one feature to each cluster?
-				[in z scores???? normalized some kind of way
-				biggest distnace is the difference maker
-				
-		
-		4. homogeneity/tightness of cluster (distance btw poitns)
-				same thing for points in each cluster
-				maybe we do point product for each row
-				
-		
-		
-- general
-		5. distance btw clusters (centroids)
-		6. homgeneity of clusters (cf 4)
-		consistency of runs
-		consistency of labeling / grouping certain data points together (??)
-			consitstency btw clusters in one algo
-			consistency btw different runs of one method
-		
-- per category
-		7. how split up btw clusters: how many n, what percentage is in each cluster? (dict of category: clusters per item)
-		8. relate feature to category --> 3
-		
-- think
-		# label-independent quality
+# -per cluster:
+# 		1. size (len per label)
+# 		range(no_of_clusters) 
+# 		for i in range(n_0_c) list.count(i)
+# 		dicti[i]=list.count(i)
 # 		
+# 		2. split up btw categories how? (number, percentage) (dict of clusters, len per label)
+# 		for i in categories:
+# 			get relevant index from matrix with cats, i.e. col 1 is cat
+# 			find index in labels (might depend on algo how to do it)
+# 			dict[i] cluster 1:
+# 					cluster 2:
+# 					sum(values) is total
+# 				
+# 		3. feature distinctive of cluster
+# 				get centroids/prototypes per cluster
+# 				find biggest difference between clusters
+# 				[w,e,r,i,s,t]
+# 				[w,e,r,i,s,t]
+# 				[w,e,r,i,s,t]
+# 				[w,e,r,i,s,t]
+# 				...
+# 				maybe:
+# 				sort
+# 				
+# 				calculate distance first to last, while at it: also variance, means <--- feature description
+# 				
+# 				w=range:(x:y), mean: x, var: u, ... 
+# 				[can we somehow calculate the importance / weight of one feature to each cluster?
+# 				[in z scores???? normalized some kind of way
+# 				biggest distnace is the difference maker
+# 				
+# 		
+# 		4. homogeneity/tightness of cluster (distance btw poitns)
+# 				same thing for points in each cluster
+# 				maybe we do point product for each row
+# 				
+# 		
+# 		
+# - general
+# 		5. distance btw clusters (centroids)
+# 		6. homgeneity of clusters (cf 4)
+# 		consistency of runs
+# 		consistency of labeling / grouping certain data points together (??)
+# 			consitstency btw clusters in one algo
+# 			consistency btw different runs of one method
+# 		
+# - per category
+# 		7. how split up btw clusters: how many n, what percentage is in each cluster? (dict of category: clusters per item)
+# 		8. relate feature to category --> 3
+# 		
+# - think
+# 		# label-independent quality
+# # 		
 # 		
 # 		label-dependent quality:
 # 		silhouette
