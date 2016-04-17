@@ -64,11 +64,11 @@ def dictmaker(folderlist, threshold=1000):
 ##FINDING CATEGOIRES
 #this just extracts the categories from our files
 def categorymachine(folderlist):
-	print folderlist
+	print "starting category machine"
 	catdicti={}
 	catnumber=0
 	for folder in folderlist:
-		filis=os.listdir(os.path.join(pathi,folder))
+		filis=[i for i in os.listdir(os.path.join(pathi,folder)) if not i.startswith (".")]
 		for fili in filis:
 			inputfile=codecs.open(os.path.join(pathi, folder,fili), "r", "utf-8").read()
 			inputtext=ct.adtextextractor(inputfile, fili)
@@ -108,7 +108,7 @@ def matrixmachine(folderlist, featuredict, external_category):
 	for folder in folderlist:
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
 		print "Building matrices: we have {} files in folder {}".format(len(filis), folder)
-		for fili in filis: 
+		for fili in filis:
 			inputfile=codecs.open(os.path.join(pathi, folder, fili), "r", "utf-8").read()
 			#establish category
 			cat=catdicti[ct.tagextractor(inputfile, external_category, fili)]
@@ -139,7 +139,7 @@ def matrixmachine(folderlist, featuredict, external_category):
 	###CREATING CLUSTERS
 	#
 #this makes clusters; takes the dataset (matrix) and the algorithm
-def clustermachine(matrix, algorithm, clusters=4):
+def clustermachine(matrix, algorithm, clusters=3):
 	
 	#we need a similarity matrix
 	similarity_matrix=metrics.pairwise.euclidean_distances(matrix)	
@@ -304,26 +304,31 @@ def clustermachine(matrix, algorithm, clusters=4):
 	
 	#######MAIN#########
 
-class Clusterstats(object):#, matrix_with_cats, catdictionary):
+class Clusterstats(object):
 	def __init__(self, model, matrix_with_cats): 
 		self.name=model.name
 		self.labels=model.labels
 		self.matrix_with_cats=matrix_with_cats
+		self.matrix_without_cats=matrix_with_cats[:,1:]
 		self.no_of_clusters=len(np.unique(model.labels))
 		#self.cluster_dict=_dictmaker(self)
+		
 	#in this dicti, we collect for each cluster the indexes contained
-	def _clusterdictmaker(self):
+	def _clusterdictmaker(self, matrix):
 		iterator=range(self.no_of_clusters)
 		clusterdicti=defaultdict()
 		for cluster in iterator:
-			print "cluster: " ,cluster
+			#print "cluster: " ,cluster
 			#give me indexes of label array where cluster is true	
-			#note that where returns a cluster that i always len 1
+			#note that where returns a cluster that is always len 1
 			# we are interested in l[0]
-			clusterdicti[cluster]=np.where(self.labels==cluster)[0]
+			#clusterdicti[cluster]=np.where(self.labels==cluster)[0]
+			clusterdicti[cluster]=np.array([matrix[i] for i in np.where(self.labels==cluster)[0]])
+		return clusterdicti
 	
 	#in this dicti, we collect for each cluster the items per category
-	def _clustercatdictmaker(self):
+	#instead of indexes, we have actual vectors
+	def _clustercatdictmaker(self, matrix):
 		iterator=range(self.no_of_clusters)
 		clustercatdicti=defaultdict()
 		for cluster in iterator:
@@ -334,20 +339,20 @@ class Clusterstats(object):#, matrix_with_cats, catdictionary):
 			#note that where returns a cluster that i always len 1
 			# we are interested in l[0]
 			# we look these indexes up in the wordmatrix to identify categories
-			wordmatrix=[self.matrix_with_cats[i] for i in np.where(self.labels==cluster)[0]]
-			for item in wordmatrix:
+			wordmatrix=[matrix[i] for i in np.where(self.labels==cluster)[0]]
+			for item in matrix:
 				clustercatdicti[cluster][item[0]].append(item)
 		return clustercatdicti
 		
 	#how many items in each cluster?	
 	def size_of_clusters(self):
-		dict=self._clusterdictmaker()
+		dict=self._clusterdictmaker(self.matrix_without_cats)
 		return {k:len(dict[k]) for k in dict}
 
 	#how many categories in each cluster?	
 	def cats_per_cluster(self):
 		#input structure: { cluster: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}
-		dict=self._clustercatdictmaker()
+		dict=self._clustercatdictmaker(self.matrix_with_cats)
 		cluster_features=defaultdict()
 		# output structure: {cluster: { categ x: N, cat y: N, total: x=y, no_of_categories: len[x,y]}
 		for i in dict:
@@ -357,9 +362,30 @@ class Clusterstats(object):#, matrix_with_cats, catdictionary):
 		return cluster_features
 		
 	def cluster_dispersion(self):
-		dict=self._clusterdictmaker()
+		dispersiondicti=defaultdict()
+		dict=self._clusterdictmaker(self.matrix_without_cats)
+		zscoredict={k:scipy.stats.mstats.zscore(dict[k], axis=0) for k in dict.keys()}
 		for i in dict:
-			print i
+			dispersiondicti[i]={
+			'mean':np.mean(dict[i], axis=0),
+			'median':np.median(dict[i], axis=0),
+			# we change the setting so we get the same output as in R: add "ddof = 1"
+			'std':np.std(dict[i], axis=0 ),
+			'var':np.var(dict[i], axis=0),
+			'range':np.ptp(dict[i], axis=0),
+			'zscore_range':np.ptp(zscoredict[i], axis=0),
+			#this is still very under development
+			'feature_correlation':np.corrcoef(dict[i], rowvar=0)
+			} 
+
+		return dispersiondicti
+			
+		# dispersiondicti={k:dict[k].transpose() for k in dict}
+# 		for i in dispersiondicti:
+# 			print dispersiondicti[i].shape
+		
+		
+		
 
 
 	
@@ -377,9 +403,9 @@ def main():
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti = matrixmachine(folders, featuredict, "category1")
 	x=clustermachine(wordmatrix_without_cat, scipy.cluster.vq.kmeans2)
 	f=[(i.name, i.no_of_clusters) for i in x]
-	#print f
-	g=[(i.name, i.centroids) for i in x]
-	h=[len(Clusterstats(i, wordmatrix_with_cat)._clustercatdictmaker()) for i in x]
+	g=[Clusterstats(i, wordmatrix_with_cat).size_of_clusters() for i in x]
+	#print g
+	h=[len(Clusterstats(i, wordmatrix_with_cat)._clustercatdictmaker(wordmatrix_with_cat)) for i in x]
 	#print "no of clusters",  h
 	g=[Clusterstats(i, wordmatrix_with_cat).cats_per_cluster() for i in x]
 	#iterate over clusters
@@ -393,8 +419,8 @@ def main():
 # 					print "{} items ({} percent) are from category {}".format(
 # 					dict[entry][i], round(dict[entry][i]/dict[entry]['total']*100), i)
 # 					#print dict[entry][float(i)]
-	t=[Clusterstats(i, wordmatrix_with_cat).cluster_dispersion() for i in x]
-
+	t=[Clusterstats(i, wordmatrix_with_cat).cluster_dispersion()[1]['zscore_range'] for i in x]
+	print t
 		
 	# for i in x:
 # 		print x.getClusterNumber()
