@@ -322,11 +322,12 @@ class Clusterstats(object):#, matrix_with_cats, catdictionary):
 			# we are interested in l[0]
 			clusterdicti[cluster]=np.where(self.labels==cluster)[0]
 	
+	#in this dicti, we collect for each cluster the items per category
 	def _clustercatdictmaker(self):
 		iterator=range(self.no_of_clusters)
 		clustercatdicti=defaultdict()
 		for cluster in iterator:
-			print "cluster: " ,cluster
+			#print "cluster: " ,cluster
 			#structure: { cluster: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}
 			clustercatdicti[cluster]=defaultdict(list)
 			#give me indexes of label array where cluster is true	
@@ -336,20 +337,29 @@ class Clusterstats(object):#, matrix_with_cats, catdictionary):
 			wordmatrix=[self.matrix_with_cats[i] for i in np.where(self.labels==cluster)[0]]
 			for item in wordmatrix:
 				clustercatdicti[cluster][item[0]].append(item)
-		# for i in clustercatdicti:
-# 			print "\n-------\nfirst level, entry:", i, "length", len(clustercatdicti[i])
-# 			for t in clustercatdicti[i]:
-# 				print  "2nd level entry", t, "length: ", len(clustercatdicti[i][t])
 		return clustercatdicti
 		
+	#how many items in each cluster?	
 	def size_of_clusters(self):
-		dict=self._dictmaker()
-		return {k:len(dict[k]) for k in dict}
-		
-	def cats_per_cluster(self):
 		dict=self._clusterdictmaker()
-		#returning: how many of each cat in this cluster, percentage of this cluster
+		return {k:len(dict[k]) for k in dict}
+
+	#how many categories in each cluster?	
+	def cats_per_cluster(self):
+		#input structure: { cluster: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}
+		dict=self._clustercatdictmaker()
+		cluster_features=defaultdict()
+		# output structure: {cluster: { categ x: N, cat y: N, total: x=y, no_of_categories: len[x,y]}
+		for i in dict:
+			cluster_features[i]={k:float(len(v)) for k,v in dict[i].items()}
+			cluster_features[i]['total']=sum(cluster_features[i].values())
+			cluster_features[i]['no_of_categories']=len(dict[i])
+		return cluster_features
 		
+	def cluster_dispersion(self):
+		dict=self._clusterdictmaker()
+		for i in dict:
+			print i
 
 
 	
@@ -367,10 +377,25 @@ def main():
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti = matrixmachine(folders, featuredict, "category1")
 	x=clustermachine(wordmatrix_without_cat, scipy.cluster.vq.kmeans2)
 	f=[(i.name, i.no_of_clusters) for i in x]
-	print f
+	#print f
 	g=[(i.name, i.centroids) for i in x]
 	h=[len(Clusterstats(i, wordmatrix_with_cat)._clustercatdictmaker()) for i in x]
-	print "clusterstats says",  h
+	#print "no of clusters",  h
+	g=[Clusterstats(i, wordmatrix_with_cat).cats_per_cluster() for i in x]
+	#iterate over clusters
+	# for dict in g:
+# 		#iterate over dict
+# 		for entry in dict:
+# 			print "\n----------\nIn cluster {}, we have {} items in {} categories".format(
+# 			entry, dict[entry]['total'],dict[entry]['no_of_categories'])
+# 			for i in dict[entry]:
+# 				if type(i) ==numpy.float64:
+# 					print "{} items ({} percent) are from category {}".format(
+# 					dict[entry][i], round(dict[entry][i]/dict[entry]['total']*100), i)
+# 					#print dict[entry][float(i)]
+	t=[Clusterstats(i, wordmatrix_with_cat).cluster_dispersion() for i in x]
+
+		
 	# for i in x:
 # 		print x.getClusterNumber()
 	# #centroids, labels, labellist=clustermachine(wordmatrix_without_cat, scipy.cluster.vq.kmeans2)
@@ -417,21 +442,12 @@ main()
 # def categorystats
 # def globalstats
 
-## for each, give stats:
-# -per cluster:
+## for each, give stats :
+# -per cluster: (class Clusterstats)
 # 		1. size (len per label)
-# 		range(no_of_clusters) 
-# 		for i in range(n_0_c) list.count(i)
-# 		dicti[i]=list.count(i)
-# 		
-# 		2. split up btw categories how? (number, percentage) (dict of clusters, len per label)
-# 		for i in categories:
-# 			get relevant index from matrix with cats, i.e. col 1 is cat
-# 			find index in labels (might depend on algo how to do it)
-# 			dict[i] cluster 1:
-# 					cluster 2:
-# 					sum(values) is total
-# 				
+# 		# 		
+# 		2. split up btw categories how? (number, percentage)
+#  				
 # 		3. feature distinctive of cluster
 # 				get centroids/prototypes per cluster
 # 				find biggest difference between clusters
@@ -581,5 +597,3 @@ main()
 # 
 # #exclude too low categories
 # #express as: percentage of category, percentage of cluster, distance from centroid
-
-
