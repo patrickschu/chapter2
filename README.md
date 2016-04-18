@@ -1,4 +1,4 @@
 # chapter2
 
 
-The second chapter
+Scripts used for second chapter. 
