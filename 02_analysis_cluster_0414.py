@@ -1,6 +1,8 @@
-import clustertools as ct 
-import os, re, shutil,string,numpy,nltk,codecs, scipy, scipy.cluster, numpy as np, time, sklearn
+import clustertools as ct
+import os, re, shutil,string,numpy,nltk,codecs, scipy, scipy.cluster, scipy.spatial, time, sklearn, itertools 
+import numpy as np 
 from sklearn import cluster, mixture, metrics
+from scipy import cluster, spatial
 from collections import defaultdict
 from nltk.tokenize import word_tokenize
 # read the clustering documentation here: 
@@ -304,90 +306,72 @@ def clustermachine(matrix, algorithm, clusters=3):
 	
 	#######MAIN#########
 
-class Clusterstats(object):
-	def __init__(self, model, matrix_with_cats): 
-		self.name=model.name
-		self.labels=model.labels
-		self.matrix_with_cats=matrix_with_cats
-		self.matrix_without_cats=matrix_with_cats[:,1:]
-		self.no_of_clusters=len(np.unique(model.labels))
-		#self.cluster_dict=_dictmaker(self)
-		
-	#in this dicti, we collect for each cluster the indexes contained
-	def _clusterdictmaker(self, matrix):
-		iterator=range(self.no_of_clusters)
-		clusterdicti=defaultdict()
-		for cluster in iterator:
-			#print "cluster: " ,cluster
-			#give me indexes of label array where cluster is true	
-			#note that where returns a cluster that is always len 1
-			# we are interested in l[0]
-			#clusterdicti[cluster]=np.where(self.labels==cluster)[0]
-			clusterdicti[cluster]=np.array([matrix[i] for i in np.where(self.labels==cluster)[0]])
-		return clusterdicti
-	
-	#in this dicti, we collect for each cluster the items per category
-	#instead of indexes, we have actual vectors
-	def _clustercatdictmaker(self, matrix):
-		iterator=range(self.no_of_clusters)
-		clustercatdicti=defaultdict()
-		for cluster in iterator:
-			#print "cluster: " ,cluster
-			#structure: { cluster: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}
-			clustercatdicti[cluster]=defaultdict(list)
-			#give me indexes of label array where cluster is true	
-			#note that where returns a cluster that i always len 1
-			# we are interested in l[0]
-			# we look these indexes up in the wordmatrix to identify categories
-			wordmatrix=[matrix[i] for i in np.where(self.labels==cluster)[0]]
-			for item in matrix:
-				clustercatdicti[cluster][item[0]].append(item)
-		return clustercatdicti
-		
-	#how many items in each cluster?	
-	def size_of_clusters(self):
-		dict=self._clusterdictmaker(self.matrix_without_cats)
-		return {k:len(dict[k]) for k in dict}
+# class Clusterdispersion(ct.Clusterstats):
+# 	"""Measuring cluster dispersion to assess cluster quality"""
+# 	def __init__(self,model, matrix_with_cats): 
+# 		ct.Clusterstats.__init__(self,model, matrix_with_cats)
+# 	
+# #	def spread around centroids	
+# 		# self.name=model.name
+# # 		self.labels=model.labels
+# # 		self.matrix_with_cats=matrix_with_cats  #data frame including "gold labels"
+# # 		self.matrix_without_cats=matrix_with_cats[:,1:] #data frame without "gold labels"
+# # 		self.no_of_clusters=len(np.unique(model.labels)) #we can get this data from the object above, but for corroboration purposes
+# 			
+# 
+# 		
+class Centroidstats(ct.Cluster):
 
-	#how many categories in each cluster?	
-	def cats_per_cluster(self):
-		#input structure: { cluster: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}
-		dict=self._clustercatdictmaker(self.matrix_with_cats)
-		cluster_features=defaultdict()
-		# output structure: {cluster: { categ x: N, cat y: N, total: x=y, no_of_categories: len[x,y]}
-		for i in dict:
-			cluster_features[i]={k:float(len(v)) for k,v in dict[i].items()}
-			cluster_features[i]['total']=sum(cluster_features[i].values())
-			cluster_features[i]['no_of_categories']=len(dict[i])
-		return cluster_features
-		
-	def cluster_dispersion(self):
-		dispersiondicti=defaultdict()
-		dict=self._clusterdictmaker(self.matrix_without_cats)
-		zscoredict={k:scipy.stats.mstats.zscore(dict[k], axis=0) for k in dict.keys()}
-		for i in dict:
-			dispersiondicti[i]={
-			'mean':np.mean(dict[i], axis=0),
-			'median':np.median(dict[i], axis=0),
-			# we change the setting so we get the same output as in R: add "ddof = 1"
-			'std':np.std(dict[i], axis=0 ),
-			'var':np.var(dict[i], axis=0),
-			'range':np.ptp(dict[i], axis=0),
-			'zscore_range':np.ptp(zscoredict[i], axis=0),
-			#this is still very under development
-			'feature_correlation':np.corrcoef(dict[i], rowvar=0)
-			} 
-
-		return dispersiondicti
+	"""statistics and calculations with centroids"""
 			
-		# dispersiondicti={k:dict[k].transpose() for k in dict}
-# 		for i in dispersiondicti:
-# 			print dispersiondicti[i].shape
+	def __init__(self, dataframe, name, labels , centroids=None, actual_centroids=None):
+		ct.Cluster.__init__(self, dataframe, name, labels, centroids, actual_centroids)
+		#relevant here: centroids and actual centroids
+		#centroid will be a vector of len (x)
 		
+	def centroid_check(self):
+		if self.centroids == None:
+			print "Model {} has no centroids".format(self.name)
+			return False
+		else:
+			print "good stuff"
+			pass
+			
+	def _centroiddictmaker(self):
+		#returns a dictionary pairing clusters with centroids
+		# structure: {cluster:vector_of_centorids, cluster2: ....}
+		centroiddicti=defaultdict()
+		#lets not get tripped up by models without centroids
+		if self.centroid_check()==False:
+			return None
+		else:
+			for i in range(self.no_of_clusters):
+				centroiddicti[i]=self.centroids[i]
+			return centroiddicti
+			
+			
+	def distance_between_centroids(self):
+		#calculate distance btw centroids
+		#returns a dictionary pairing cluster pairs and distances
+		# structure: {cluster_to_cluster2:{hamming_dist:x, euclid_dist:y ....} (vector of dists??), cluster_to_cluster3: ....}	
+		centroiddicti=self._centroiddictmaker()
+		distdicti=defaultdict()
+		for combo in itertools.combinations(centroiddicti.keys(), 2):
+			distdicti[combo]={
+			
+			'manhattan':scipy.spatial.distance.cityblock(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+			'hamming':scipy.spatial.distance.hamming(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+			'euclid':scipy.spatial.distance.euclidean(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+			'cosine':scipy.spatial.distance.cosine(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+			
+			}
+		print distdicti		
+			
+			
+			
+			#determine distinguishing features
 		
-		
-
-
+			#no_of_clusters
 	
 	
 	
@@ -403,11 +387,16 @@ def main():
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti = matrixmachine(folders, featuredict, "category1")
 	x=clustermachine(wordmatrix_without_cat, scipy.cluster.vq.kmeans2)
 	f=[(i.name, i.no_of_clusters) for i in x]
-	g=[Clusterstats(i, wordmatrix_with_cat).size_of_clusters() for i in x]
+	g=[ct.Clusterstats(wordmatrix_with_cat, type(i), i.labels).size_of_clusters() for i in x]
 	#print g
-	h=[len(Clusterstats(i, wordmatrix_with_cat)._clustercatdictmaker(wordmatrix_with_cat)) for i in x]
+	h=[len(ct.Clusterstats(wordmatrix_with_cat, type(i), i.labels)._clustercatdictmaker(wordmatrix_with_cat)) for i in x]
 	#print "no of clusters",  h
-	g=[Clusterstats(i, wordmatrix_with_cat).cats_per_cluster() for i in x]
+	g=[Centroidstats(wordmatrix_with_cat, i.name, i.labels, i.centroids, i.centroids)._centroiddictmaker() for i in x]
+	test=x[0]
+	g=Centroidstats(wordmatrix_with_cat, test.name, test.labels,i.centroids )
+	print g.distance_between_centroids()
+	# j=[len(i.centroids) for i in x]
+# 	print j
 	#iterate over clusters
 	# for dict in g:
 # 		#iterate over dict
@@ -419,8 +408,8 @@ def main():
 # 					print "{} items ({} percent) are from category {}".format(
 # 					dict[entry][i], round(dict[entry][i]/dict[entry]['total']*100), i)
 # 					#print dict[entry][float(i)]
-	t=[Clusterstats(i, wordmatrix_with_cat).cluster_dispersion()[1]['zscore_range'] for i in x]
-	print t
+	t=[ct.Clusterstats(wordmatrix_with_cat, type(i), i.labels).cluster_features()[1]['zscore_range'] for i in x]
+# 	print t
 		
 	# for i in x:
 # 		print x.getClusterNumber()
