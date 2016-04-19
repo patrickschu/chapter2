@@ -319,12 +319,12 @@ def clustermachine(matrix, algorithm, clusters=3):
 # # 		self.no_of_clusters=len(np.unique(model.labels)) #we can get this data from the object above, but for corroboration purposes
 # 			
 # 
-# 		
+# remember that we could use z scores		
 class Centroidstats(ct.Cluster):
 
-	"""statistics and calculations with centroids"""
+	"""statistics and calculations with centroids within a clustering"""
 			
-	def __init__(self, dataframe, name, labels , centroids=None, actual_centroids=None):
+	def __init__(self, dataframe, name, labels,centroids=None, actual_centroids=None):
 		ct.Cluster.__init__(self, dataframe, name, labels, centroids, actual_centroids)
 		#relevant here: centroids and actual centroids
 		#centroid will be a vector of len (x)
@@ -358,18 +358,73 @@ class Centroidstats(ct.Cluster):
 		distdicti=defaultdict()
 		for combo in itertools.combinations(centroiddicti.keys(), 2):
 			distdicti[combo]={
-			
-			'manhattan':scipy.spatial.distance.cityblock(centroiddicti[combo[0]],centroiddicti[combo[1]]),
-			'hamming':scipy.spatial.distance.hamming(centroiddicti[combo[0]],centroiddicti[combo[1]]),
-			'euclid':scipy.spatial.distance.euclidean(centroiddicti[combo[0]],centroiddicti[combo[1]]),
-			'cosine':scipy.spatial.distance.cosine(centroiddicti[combo[0]],centroiddicti[combo[1]]),
-			
+			'raw_dist':sum(pow(centroiddicti[combo[0]]-centroiddicti[combo[1]], 2)),
+			'manhattan_dist':scipy.spatial.distance.cityblock(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+			'euclid_dist':scipy.spatial.distance.euclidean(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+			#"[Cosine] is thus a judgement of orientation and not magnitude"
+			'cosine_dist':scipy.spatial.distance.cosine(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+			'minkowski_dist':scipy.spatial.distance.minkowski(centroiddicti[combo[0]],centroiddicti[combo[1]], 3),
+			'correlation_dist':scipy.spatial.distance.cosine(centroiddicti[combo[0]],centroiddicti[combo[1]])
 			}
-		print distdicti		
+		return distdicti		
+	
+	def _differencemaker(self, dict_of_values):
+		# takes a dictionary, collects differences between all entries
+		# returns tuple (entries compared, index of sorted vector)
+		sorted=[]
+		for combo in itertools.combinations(dict_of_values.keys(), 2):
+			diff=dict_of_values[combo[0]]-dict_of_values[combo[1]]
+			absolute_diff=abs(diff)
+			#note that sorted is an index array
+			# we return (comparison pair, differences, array of sorted indexes)
+			sorted.append((combo,  diff, np.argsort(absolute_diff)))
+			# we can apply this to the original difference vector; then we turn that one around
+			# same then for vocab
+		#print sorted
+		return sorted
+	
+		
+	def cluster_predictors(self, vocab_used_for_feature_extraction):
+		centroiddicti=self._centroiddictmaker()
+		# we take the words out of the dictionary supplied & make it into an array
+		vocab=vocab_used_for_feature_extraction.keys()
+		arrayed_vocab=np.array(vocab)
+		
+		# wouldn't we need the whole dataset for z scores to make sense
+		zscoredicti={k:scipy.stats.mstats.zscore(centroiddicti[k], axis=0, ddof = 1) for k in centroiddicti.keys()} #setting  "ddof = 1" so we get the same output as in R
+		predictdicti=defaultdict()
+		# sorting our vectors of interest	
+		sorted_values=self._differencemaker(centroiddicti)
+		sorted_zscores=self._differencemaker(zscoredicti)
+		#building 
+		predictdicti={tup[0]:{
+		'raw_diff':[],
+		'zscores_diff':[]
+		} 
+		for tup in sorted_values}
+		
+		# In other words, a[index_array] yields a sorted a.
+		for tup in sorted_values:
+			index=tup[2]
+			sorted_diffs=tup[1][index][::-1]
+			sorted_vocab=arrayed_vocab[index][::-1]
+			raw_dist=zip(sorted_diffs, sorted_vocab)
+			predictdicti[tup[0]]['raw_diff'].append(raw_dist)
+		for tup in sorted_zscores:
+			index=tup[2]
+			sorted_diffs=tup[1][index][::-1]
+			sorted_vocab=arrayed_vocab[index][::-1]
+			raw_dist=zip(sorted_diffs, sorted_vocab)
+			predictdicti[tup[0]]['zscores_diff'].append(raw_dist)
+		for i in predictdicti:
+			print i, predictdicti[i]
+		return predictdicti
+
+			# In other words, a[index_array] yields a sorted a.
 			
 			
-			
-			#determine distinguishing features
+	
+		
 		
 			#no_of_clusters
 	
@@ -394,7 +449,7 @@ def main():
 	g=[Centroidstats(wordmatrix_with_cat, i.name, i.labels, i.centroids, i.centroids)._centroiddictmaker() for i in x]
 	test=x[0]
 	g=Centroidstats(wordmatrix_with_cat, test.name, test.labels,i.centroids )
-	print g.distance_between_centroids()
+	t=g.cluster_predictors(featuredict)
 	# j=[len(i.centroids) for i in x]
 # 	print j
 	#iterate over clusters
