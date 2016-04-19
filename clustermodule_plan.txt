@@ -1,0 +1,65 @@
+
+
+
+# def categorystats
+# def globalstats
+
+## for each, give stats :
+# -per cluster: (class Clusterstats)
+# 		1. size (len per label)
+# 		# 		
+# 		2. split up btw categories how? (number, percentage)
+#  				
+# 		3. feature distinctive of cluster
+# 				get centroids/prototypes per cluster
+# 				find biggest difference between clusters
+# 				[w,e,r,i,s,t]
+# 				[w,e,r,i,s,t]
+# 				[w,e,r,i,s,t]
+# 				[w,e,r,i,s,t]
+# 				...
+# 				maybe:
+# 				sort
+# 				
+# 				calculate distance first to last, while at it: also variance, means <--- feature description
+# 				
+# 				w=range:(x:y), mean: x, var: u, ... 
+# 				[can we somehow calculate the importance / weight of one feature to each cluster?
+# 				[in z scores???? normalized some kind of way
+# 				biggest distnace is the difference maker
+# 				
+# 		
+# 		4. homogeneity/tightness of cluster (distance btw poitns)
+# 				same thing for points in each cluster
+# 				maybe we do point product for each row
+# 				
+# 		
+# 		
+# - general
+# 		5. distance btw clusters (centroids)
+# 		6. homgeneity of clusters (cf 4)
+# 		consistency of runs
+# 		consistency of labeling / grouping certain data points together (??)
+# 			consitstency btw clusters in one algo
+# 			consistency btw different runs of one method
+# 		
+# - per category
+# 		7. how split up btw clusters: how many n, what percentage is in each cluster? (dict of category: clusters per item)
+# 		8. relate feature to category --> 3
+# 		
+# - think
+# 		# label-independent quality
+# # 		
+# 		
+# 		label-dependent quality:
+# 		silhouette
+		# V-measure: 0.917
+		# Adjusted Rand Index: 0.952
+		# Adjusted Mutual Information: 0.883
+		# Silhouette Coefficient: 0.626
+		
+			
+# make a confusion matrix
+# get original distance measurements for clusters
+# rank sum for cluster predictors
+#c luster stress test
