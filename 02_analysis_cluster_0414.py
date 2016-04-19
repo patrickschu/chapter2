@@ -329,7 +329,7 @@ class Centroidstats(ct.Cluster):
 		#relevant here: centroids and actual centroids
 		#centroid will be a vector of len (x)
 		
-	def centroid_check(self):
+	def _centroid_check(self):
 		if self.centroids == None:
 			print "Model {} has no centroids".format(self.name)
 			return False
@@ -342,8 +342,9 @@ class Centroidstats(ct.Cluster):
 		# structure: {cluster:vector_of_centorids, cluster2: ....}
 		centroiddicti=defaultdict()
 		#lets not get tripped up by models without centroids
-		if self.centroid_check()==False:
+		if self._centroid_check()==False:
 			return None
+			break
 		else:
 			for i in range(self.no_of_clusters):
 				centroiddicti[i]=self.centroids[i]
@@ -351,8 +352,10 @@ class Centroidstats(ct.Cluster):
 			
 			
 	def distance_between_centroids(self):
+		if self._centroid_check()==False:
+			return None
 		#calculate distance btw centroids
-		#returns a dictionary pairing cluster pairs and distances
+		#returns a dictionary pairing cluster pairs and distances in various measurement methods
 		# structure: {cluster_to_cluster2:{hamming_dist:x, euclid_dist:y ....} (vector of dists??), cluster_to_cluster3: ....}	
 		centroiddicti=self._centroiddictmaker()
 		distdicti=defaultdict()
@@ -385,6 +388,9 @@ class Centroidstats(ct.Cluster):
 	
 		
 	def cluster_predictors(self, vocab_used_for_feature_extraction):
+		# takes a dictionaty of centroids and a dictionary of vocab to compute
+		# the features most predictive of each cluster
+		# returns dictionary { cluster: {raw_diff:(word X,difference score), (word Y, difference score) ..., zscores_diff: ()()}, cluster2: {...}}
 		centroiddicti=self._centroiddictmaker()
 		# we take the words out of the dictionary supplied & make it into an array
 		vocab=vocab_used_for_feature_extraction.keys()
@@ -396,14 +402,15 @@ class Centroidstats(ct.Cluster):
 		# sorting our vectors of interest	
 		sorted_values=self._differencemaker(centroiddicti)
 		sorted_zscores=self._differencemaker(zscoredicti)
-		#building 
+		#building an empty dict
 		predictdicti={tup[0]:{
 		'raw_diff':[],
 		'zscores_diff':[]
 		} 
 		for tup in sorted_values}
 		
-		# In other words, a[index_array] yields a sorted a.
+		# "In other words, a[index_array] yields a sorted a."
+		# filling the dict
 		for tup in sorted_values:
 			index=tup[2]
 			sorted_diffs=tup[1][index][::-1]
@@ -420,14 +427,6 @@ class Centroidstats(ct.Cluster):
 			print i, predictdicti[i]
 		return predictdicti
 
-			# In other words, a[index_array] yields a sorted a.
-			
-			
-	
-		
-		
-			#no_of_clusters
-	
 	
 	
 
