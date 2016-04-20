@@ -162,12 +162,12 @@ def clustermachine(matrix, algorithm, clusters=3):
 	result.append(kmeans)
 	
 	## #2: MeanShift
- 	model=sklearn.cluster.MeanShift()
- 	clustering=model.fit(matrix)
-	centroids=clustering.cluster_centers_
- 	labels=clustering.labels_
- 	meanshift=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
-	result.append(meanshift)
+ 	# model=sklearn.cluster.MeanShift()
+#  	clustering=model.fit(matrix)
+# 	centroids=clustering.cluster_centers_
+#  	labels=clustering.labels_
+#  	meanshift=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
+# 	result.append(meanshift)
 # 	
 # 	## #3: Affinity Propagation
 # 	model=sklearn.cluster.AffinityPropagation()
@@ -320,20 +320,20 @@ def clustermachine(matrix, algorithm, clusters=3):
 # 			
 # 
 
-class Partitionsimilarity(ct.Cluster):
-	#this needs to be fed with Cluster objects for each partition
+class Partitionsimilarity(Cluster):
+	#this needs to be fed with ct.Cluster objects for each partition
 	def __init__(self, partition1, partition2): 
 			# we treat the part 1 labels as gold standard for now
 			self.part1_name=partition1.name
 			self.part2_name=partition1.name
 			self.part1_labels=partition1.labels
 			self.part2_labels=partition2.labels
-			self.part1_features=partition1._clusterdictmaker()
-			self.part1_features=partition2._clusterdictmaker()
+			self.part1_features=partition1.matrix_without_cats
+			self.part2_features=partition2.matrix_without_cats
 			self.part1_clusters=range(partition1.no_of_clusters)
 			self.part2_clusters= range(partition2.no_of_clusters)
 	
-	def compare_partitions(self):		
+	def partition_features(self):		
 	#takes the labels (and features, depending on metric) of two partitions and compares
 	#returns dict with different metrics for each combination
 	# note we need a different combo here cause comparing same numbers is a thing
@@ -347,50 +347,16 @@ class Partitionsimilarity(ct.Cluster):
 			'v_sim': sklearn.metrics.v_measure_score(self.part1_labels, self.part2_labels),
 			'completeness_sim': sklearn.metrics.completeness_score(self.part1_labels, self.part2_labels),
 			'homogeneity_sim':sklearn.metrics.homogeneity_score(self.part1_labels, self.part2_labels),
+			'silhouette_score_sim': (sklearn.metrics.silhouette_score(self.part1_features, self.part1_labels), sklearn.metrics.silhouette_score(self.part2_features, self.part2_labels)),
 			'variation_of_information':'is in R'
-			}
-		#this we need only for cluster by cluster
-		for combo in itertools.product(self.part1_clusters, self.part2_clusters):
-			print combo
-			
-			# similaritydict[combo]={
-# 			'adjustedrand_sim': sklearn.metrics.adjusted_rand_score(self.part1_labels, self.part2_labels),
-# 			'jaccard_sim': sklearn.metrics.jaccard_similarity_score(self.part1_labels, self.part2_labels),
-# 			'completeness_sim': sklearn.metrics.completeness_score(self.part1_labels, self.part2_labels)
-			
-			
-					
 
-# 			'silhouettescore_sim': sklearn.metrics.silhouette_score(X, labels, metric='euclidean', sample_size=None, random_state=None, **kwds)[source]
-# 			meila
-# 			'inertia_sim':
-# 			##under dev
-# 		
-# 			}
 		print similaritydict
-	
-	# def silhouettemaker
-# 	
-# 	def # V-measure: 0.917 
-# 	
-# 	def comparemachine(
-#  	
-# 
-# 	 	for combo in itertools.combinations(centroiddicti.keys(), 2):
-# 			similaritydict[combo]=
-# 			{
-# 	
-# 			sklearn.metrics.adjusted_rand_score(self.part1_labels, self.part2_labels)
-# 			'adjustedrand_sim': 
-# 			'silhouettescore_sim':
-# 			'adjustedmutual_sim':
-# 			'inertia_sim':
-# 			'jaccard_sim':
-# 			##under dev
-# 			'homogeneity_sim':
-# 			'completeness_sim':
-# 		
-# 			}
+		print len(sklearn.metrics.silhouette_samples(self.part1_features, self.part1_labels))
+		
+	def confusion_matrix_maker(self):
+	# this takes the results of partition features and presents them in a way that makes sense
+		
+
 		
 
 
@@ -407,7 +373,7 @@ def main():
 	f=[(i.name, i.no_of_clusters) for i in x]
 	g=[ct.Partitionstats(wordmatrix_with_cat, type(i), i.labels).size_of_clusters() for i in x]
 	#print g
-	h=[len(ct.Partitionstats(wordmatrix_with_cat, type(i), i.labels)._clustercatdictmaker(wordmatrix_with_cat)) for i in x]
+	h=[len(ct.Partitionstats(wordmatrix_with_cat, type(i), i.labels).cluster_features()) for i in x]
 	print "no of clusters",  h
 	g=[ct.Centroidstats(wordmatrix_with_cat, i.name, i.labels, i.centroids, i.centroids)._centroiddictmaker() for i in x]
 	test=x[0]
@@ -417,29 +383,7 @@ def main():
 	#t=g.cluster_predictors(featuredict)
 	t=Partitionsimilarity(x[0], x[0])
 	print t.compare_partitions()
-	#print t
-	# j=[len(i.centroids) for i in x]
-# 	print j
-	#iterate over clusters
-	# for dict in g:
-# 		#iterate over dict
-# 		for entry in dict:
-# 			print "\n----------\nIn cluster {}, we have {} items in {} categories".format(
-# 			entry, dict[entry]['total'],dict[entry]['no_of_categories'])
-# 			for i in dict[entry]:
-# 				if type(i) ==numpy.float64:
-# 					print "{} items ({} percent) are from category {}".format(
-# 					dict[entry][i], round(dict[entry][i]/dict[entry]['total']*100), i)
-# 					#print dict[entry][float(i)]
-#	t=[ct.Partitionstats(wordmatrix_with_cat, type(i), i.labels).cluster_features()[1]['zscore_range'] for i in x]
-# 	print t
-		
-	# for i in x:
-# 		print x.getClusterNumber()
-	# #centroids, labels, labellist=clustermachine(wordmatrix_without_cat, scipy.cluster.vq.kmeans2)
-# 	print "Centroids and labels established"
-# 	stats=statsmachine(labellist, wordmatrix_with_cat, catdicti, 200)
-# 	print "finito"
+
 
 
 

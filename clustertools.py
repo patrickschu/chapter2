@@ -1,4 +1,4 @@
-import re, os, numpy as np, scipy, itertools
+import re, os, numpy as np, scipy, itertools, sklearn
 from collections import defaultdict
 
 
@@ -15,6 +15,7 @@ class Cluster(object):
 		self.centroids=centroids #the centroids or prototypes if applicable. WATCH:: INDEXES OR ACTUAL????
 		self.actual_centroids=actual_centroids #what is this relevant for??
 		self.no_of_clusters=len(np.unique(labels)) #how many clusters this algorithm came up with
+		self.silhouette=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.labels)
 	
 	def getName(self):  
 		return self.name  #why do we need this??
@@ -37,7 +38,7 @@ class Cluster(object):
 
 class Partitionstats(Cluster):
 	"""basic statistics of a clustering"""
-	""" *** please rename partitionstats *** """
+	
 
 	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
 		Cluster.__init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None)
@@ -98,6 +99,8 @@ class Partitionstats(Cluster):
 		featuredicti=defaultdict()
 		dict=self._clusterdictmaker(self.matrix_without_cats)
 		zscoredict={k:scipy.stats.mstats.zscore(dict[k], axis=0, ddof = 1) for k in dict.keys()} #setting  "ddof = 1" so we get the same output as in R
+		silhouette=sklearn.metrics.silhouette_samples(self.matrix_without_cats, self.labels)
+		# iterate over clusters
 		for i in dict:
 			featuredicti[i]={
 			'mean':np.mean(dict[i], axis=0), #mean of column
@@ -106,6 +109,7 @@ class Partitionstats(Cluster):
 			'var':np.var(dict[i], axis=0), #variance of column
 			'range':np.ptp(dict[i], axis=0), #range of column, raw scores
 			'zscore_range':np.ptp(zscoredict[i], axis=0), #range of column, zscores
+			'silhouette_score': silhouette[np.where(self.labels==i)],
 			#this is still very under development
 			'feature_correlation':np.corrcoef(dict[i], rowvar=0) #feature correlation over rows
 			} 

@@ -1,4 +1,4 @@
-import sklearn.metrics, numpy as np, scipy, re, os, itertools
+import sklearn.metrics, numpy as np, scipy, re, os, itertools, tabulate
 
 # Array of pairwise distances between samples, or a feature array.
 # labels : array, shape = [n_samples]
@@ -7,7 +7,29 @@ import sklearn.metrics, numpy as np, scipy, re, os, itertools
 # print clusters
 # t=sklearn.metrics.jaccard_similarity_score(labels, labels)
 # print t
+# t=[0]
+# tt=[0,1,2,3]
+# for combo in itertools.product(tt, t):
+# 	print combo
+# 	
+# 	
+# labels=np.array([1,2,1,1,2])
+# value=np.array([0,100,0,0,100])
+# 
+# t=np.where(labels==2)
+# print t
+# print value[t]
 
-tt=[0,0,0,1,2,3]
-for combo in itertools.combinations_with_replacement(tt, 2):
-			print combo
+cors={(0,0): 10, (1,0):0.2, (1,1):0.0}
+
+k=cors.keys()
+v=cors.values()
+print k
+print v
+rowlabels=[i[0] for i in k]
+columnlabels=[i[1] for i in k]
+
+for k:v in cors:
+	print k
+
+

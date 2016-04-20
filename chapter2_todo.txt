@@ -1,0 +1,85 @@
+#####
+
+
+#
+add more cluster methods, eg. kmeans manhattan, euclidean, etc
+
+add tfidf scores for features
+add cluster eval mechanism
+
+make blobs lets us create random datasets
+inertia per cluster??
+
+http://stackoverflow.com/questions/9483498/print-table-in-python
+http://stackoverflow.com/questions/7136432/data-table-in-python
+
+use product instead of combinations
+
+
+l = [['Something', 'Something else', 'Another thing'],
+     ['Other things', 'More data', 'Element'],
+     ['Stuff', 'data', 'etc']]
+sub1 = [
+    [s.ljust(max(len(i) for i in column)) for s in column]
+    for column in zip(*l)]
+for p in [" ".join(row) for row in zip(*sub1)]: print p
+Here, first the list gets transformed with zip(*l): each of the sub lists gets passed as an own argument to zip(). The result is a list which combines the n-th entries of each old list, so you get [['Something', 'Other things', 'Stuff'], ['Something else', 'More data', 'data'], ...].
+
+Then the entries whose lengths are to be matched are in the same column. In each of these columns the strings are ljust()ed to the greatest length in the group.
+
+After that, the new list with the adjusted lengths is transformed again - in the same way as above - and the components joined with a " " in-between.
+
+The resulting 1D list is then printed entry by entry.
+
+# from itertools import product
+# 
+# caesar = """BOOK I
+# I.--All Gaul is divided into three parts, one of which the Belgae
+# inhabit, the Aquitani another, those who in their own language are
+# called Celts, in ours Gauls, the third. All these differ from each other
+# in language, customs and laws."""
+# 
+# hamlet = """Who's there?" 
+# "Nay, answer me. Stand and unfold yourself." 
+# "Long live the King!" 
+# "Barnardo!" 
+# "He." (I.i.1-5)"""
+# 
+# macbeth = """ACT I  SCENE I     A desert place. Thunder and lightning.   
+# [Thunder and lightning. Enter three Witches]
+# First Witch When shall we three meet again
+# In thunder, lightning, or in rain?
+# Second Witch    When the hurlyburly's done,
+# When the battle's lost and won."""
+# 
+# texts = [caesar, hamlet, macbeth]
+# 
+# def similarity(x, y):
+#     """similarity based on length of the text,
+#     substitute with similarity function from Natural Language Toolkit"""
+#     return float(len(x))/len(y)
+# 
+# 
+# for pair in product(texts, repeat=2):
+#     print "{}".format(similarity(*pair))
+# 
+# 
+# # 
+# # 	item=column_header
+# # 	fill column by looking up item + i in y
+# # 	append to list
+# # 
+# # 
+# # k=cors.keys()
+# # v=cors.values()
+# # print k
+# # print v
+# # 
+# # columnlabels=[i[0][1] for i in cors.items()]
+# # rowlabels=[[i[0][0], i[1]] for i in cors.items()]
+# # 
+# # print columnlabels
+# # print cors.values()
+# # print cors.items()
+# # print rowlabels
+# # 
