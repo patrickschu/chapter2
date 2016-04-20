@@ -1,5 +1,5 @@
 import clustertools as ct
-import os, re, shutil,string,numpy,nltk,codecs, scipy, scipy.cluster, scipy.spatial, time, sklearn, itertools 
+import os, re, shutil,string,numpy,nltk,codecs, scipy, scipy.cluster, scipy.spatial, time, sklearn, itertools
 import numpy as np 
 from sklearn import cluster, mixture, metrics
 from scipy import cluster, spatial
@@ -8,7 +8,7 @@ from nltk.tokenize import word_tokenize
 # read the clustering documentation here: 
 # http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.cluster.vq.kmeans2.html
 
-
+metriclist=[['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan'],['braycurtis', 'canberra', 'chebyshev', 'correlation', 'dice', 'hamming', 'jaccard', 'kulsinski', 'mahalanobis', 'matching', 'minkowski', 'rogerstanimoto', 'russellrao', 'seuclidean', 'sokalmichener', 'sokalsneath', 'sqeuclidean', 'yule']]
 
 
 print "start"
@@ -161,13 +161,13 @@ def clustermachine(matrix, algorithm, clusters=3):
 	kmeans=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
 	result.append(kmeans)
 	
-# 	## #2: MeanShift
-#  	model=sklearn.cluster.MeanShift()
-#  	clustering=model.fit(matrix)
-# 	centroids=clustering.cluster_centers_
-#  	labels=clustering.labels_
-#  	meanshift=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
-# 	result.append(meanshift)
+	## #2: MeanShift
+ 	model=sklearn.cluster.MeanShift()
+ 	clustering=model.fit(matrix)
+	centroids=clustering.cluster_centers_
+ 	labels=clustering.labels_
+ 	meanshift=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
+	result.append(meanshift)
 # 	
 # 	## #3: Affinity Propagation
 # 	model=sklearn.cluster.AffinityPropagation()
@@ -319,120 +319,83 @@ def clustermachine(matrix, algorithm, clusters=3):
 # # 		self.no_of_clusters=len(np.unique(model.labels)) #we can get this data from the object above, but for corroboration purposes
 # 			
 # 
-# remember that we could use z scores		
-class Centroidstats(ct.Cluster):
 
-	"""statistics and calculations with centroids within a clustering"""
-			
-	def __init__(self, dataframe, name, labels,centroids=None, actual_centroids=None):
-		ct.Cluster.__init__(self, dataframe, name, labels, centroids, actual_centroids)
-		#relevant here: centroids and actual centroids
-		#centroid will be a vector of len (x)
+class Partitionsimilarity(ct.Cluster):
+	#this needs to be fed with Cluster objects for each partition
+	def __init__(self, partition1, partition2): 
+			# we treat the part 1 labels as gold standard for now
+			self.part1_name=partition1.name
+			self.part2_name=partition1.name
+			self.part1_labels=partition1.labels
+			self.part2_labels=partition2.labels
+			self.part1_features=partition1._clusterdictmaker()
+			self.part1_features=partition2._clusterdictmaker()
+			self.part1_clusters=range(partition1.no_of_clusters)
+			self.part2_clusters= range(partition2.no_of_clusters)
+	
+	def compare_partitions(self):		
+	#takes the labels (and features, depending on metric) of two partitions and compares
+	#returns dict with different metrics for each combination
+	# note we need a different combo here cause comparing same numbers is a thing
+		similaritydict={}
+		similaritydict[(self.part1_name, self.part2_name)]={
 		
-	def _centroid_check(self):
-		if self.centroids == None:
-			print "Model {} has no centroids".format(self.name)
-			return False
-		else:
-			print "good stuff"
-			pass
-			
-	def _centroiddictmaker(self):
-		#returns a dictionary pairing clusters with centroids
-		# structure: {cluster:vector_of_centorids, cluster2: ....}
-		centroiddicti=defaultdict()
-		#lets not get tripped up by models without centroids
-		if self._centroid_check()==False:
-			return None
-			break
-		else:
-			for i in range(self.no_of_clusters):
-				centroiddicti[i]=self.centroids[i]
-			return centroiddicti
-			
-			
-	def distance_between_centroids(self):
-		if self._centroid_check()==False:
-			return None
-		#calculate distance btw centroids
-		#returns a dictionary pairing cluster pairs and distances in various measurement methods
-		# structure: {cluster_to_cluster2:{hamming_dist:x, euclid_dist:y ....} (vector of dists??), cluster_to_cluster3: ....}	
-		centroiddicti=self._centroiddictmaker()
-		distdicti=defaultdict()
-		for combo in itertools.combinations(centroiddicti.keys(), 2):
-			distdicti[combo]={
-			'raw_dist':sum(pow(centroiddicti[combo[0]]-centroiddicti[combo[1]], 2)),
-			'manhattan_dist':scipy.spatial.distance.cityblock(centroiddicti[combo[0]],centroiddicti[combo[1]]),
-			'euclid_dist':scipy.spatial.distance.euclidean(centroiddicti[combo[0]],centroiddicti[combo[1]]),
-			#"[Cosine] is thus a judgement of orientation and not magnitude"
-			'cosine_dist':scipy.spatial.distance.cosine(centroiddicti[combo[0]],centroiddicti[combo[1]]),
-			'minkowski_dist':scipy.spatial.distance.minkowski(centroiddicti[combo[0]],centroiddicti[combo[1]], 3),
-			'correlation_dist':scipy.spatial.distance.cosine(centroiddicti[combo[0]],centroiddicti[combo[1]])
+			'adjustedrand_sim': sklearn.metrics.adjusted_rand_score(self.part1_labels, self.part2_labels),
+			'adjustedmutualinfo_sim':sklearn.metrics.adjusted_mutual_info_score(self.part1_labels, self.part2_labels),
+			'jaccard_sim': sklearn.metrics.jaccard_similarity_score(self.part1_labels, self.part2_labels),
+			#This score is identical to normalized_mutual_info_score:
+			'v_sim': sklearn.metrics.v_measure_score(self.part1_labels, self.part2_labels),
+			'completeness_sim': sklearn.metrics.completeness_score(self.part1_labels, self.part2_labels),
+			'homogeneity_sim':sklearn.metrics.homogeneity_score(self.part1_labels, self.part2_labels),
+			'variation_of_information':'is in R'
 			}
-		return distdicti		
+		#this we need only for cluster by cluster
+		for combo in itertools.product(self.part1_clusters, self.part2_clusters):
+			print combo
+			
+			# similaritydict[combo]={
+# 			'adjustedrand_sim': sklearn.metrics.adjusted_rand_score(self.part1_labels, self.part2_labels),
+# 			'jaccard_sim': sklearn.metrics.jaccard_similarity_score(self.part1_labels, self.part2_labels),
+# 			'completeness_sim': sklearn.metrics.completeness_score(self.part1_labels, self.part2_labels)
+			
+			
+					
+
+# 			'silhouettescore_sim': sklearn.metrics.silhouette_score(X, labels, metric='euclidean', sample_size=None, random_state=None, **kwds)[source]
+# 			meila
+# 			'inertia_sim':
+# 			##under dev
+# 		
+# 			}
+		print similaritydict
 	
-	def _differencemaker(self, dict_of_values):
-		# takes a dictionary, collects differences between all entries
-		# returns tuple (entries compared, index of sorted vector)
-		sorted=[]
-		for combo in itertools.combinations(dict_of_values.keys(), 2):
-			diff=dict_of_values[combo[0]]-dict_of_values[combo[1]]
-			absolute_diff=abs(diff)
-			#note that sorted is an index array
-			# we return (comparison pair, differences, array of sorted indexes)
-			sorted.append((combo,  diff, np.argsort(absolute_diff)))
-			# we can apply this to the original difference vector; then we turn that one around
-			# same then for vocab
-		#print sorted
-		return sorted
-	
+	# def silhouettemaker
+# 	
+# 	def # V-measure: 0.917 
+# 	
+# 	def comparemachine(
+#  	
+# 
+# 	 	for combo in itertools.combinations(centroiddicti.keys(), 2):
+# 			similaritydict[combo]=
+# 			{
+# 	
+# 			sklearn.metrics.adjusted_rand_score(self.part1_labels, self.part2_labels)
+# 			'adjustedrand_sim': 
+# 			'silhouettescore_sim':
+# 			'adjustedmutual_sim':
+# 			'inertia_sim':
+# 			'jaccard_sim':
+# 			##under dev
+# 			'homogeneity_sim':
+# 			'completeness_sim':
+# 		
+# 			}
 		
-	def cluster_predictors(self, vocab_used_for_feature_extraction):
-		# takes a dictionaty of centroids and a dictionary of vocab to compute
-		# the features most predictive of each cluster
-		# returns dictionary { cluster: {raw_diff:(word X,difference score), (word Y, difference score) ..., zscores_diff: ()()}, cluster2: {...}}
-		centroiddicti=self._centroiddictmaker()
-		# we take the words out of the dictionary supplied & make it into an array
-		vocab=vocab_used_for_feature_extraction.keys()
-		arrayed_vocab=np.array(vocab)
-		
-		# wouldn't we need the whole dataset for z scores to make sense
-		zscoredicti={k:scipy.stats.mstats.zscore(centroiddicti[k], axis=0, ddof = 1) for k in centroiddicti.keys()} #setting  "ddof = 1" so we get the same output as in R
-		predictdicti=defaultdict()
-		# sorting our vectors of interest	
-		sorted_values=self._differencemaker(centroiddicti)
-		sorted_zscores=self._differencemaker(zscoredicti)
-		#building an empty dict
-		predictdicti={tup[0]:{
-		'raw_diff':[],
-		'zscores_diff':[]
-		} 
-		for tup in sorted_values}
-		
-		# "In other words, a[index_array] yields a sorted a."
-		# filling the dict
-		for tup in sorted_values:
-			index=tup[2]
-			sorted_diffs=tup[1][index][::-1]
-			sorted_vocab=arrayed_vocab[index][::-1]
-			raw_dist=zip(sorted_diffs, sorted_vocab)
-			predictdicti[tup[0]]['raw_diff'].append(raw_dist)
-		for tup in sorted_zscores:
-			index=tup[2]
-			sorted_diffs=tup[1][index][::-1]
-			sorted_vocab=arrayed_vocab[index][::-1]
-			raw_dist=zip(sorted_diffs, sorted_vocab)
-			predictdicti[tup[0]]['zscores_diff'].append(raw_dist)
-		for i in predictdicti:
-			print i, predictdicti[i]
-		return predictdicti
-
-	
-	
 
 
 
-	
+	 
 def main():
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
 	folders=['files9_output_0102']
@@ -440,15 +403,21 @@ def main():
 	featuredict=dictmaker(folders)
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti = matrixmachine(folders, featuredict, "category1")
 	x=clustermachine(wordmatrix_without_cat, scipy.cluster.vq.kmeans2)
+	print x
 	f=[(i.name, i.no_of_clusters) for i in x]
-	g=[ct.Clusterstats(wordmatrix_with_cat, type(i), i.labels).size_of_clusters() for i in x]
+	g=[ct.Partitionstats(wordmatrix_with_cat, type(i), i.labels).size_of_clusters() for i in x]
 	#print g
-	h=[len(ct.Clusterstats(wordmatrix_with_cat, type(i), i.labels)._clustercatdictmaker(wordmatrix_with_cat)) for i in x]
-	#print "no of clusters",  h
-	g=[Centroidstats(wordmatrix_with_cat, i.name, i.labels, i.centroids, i.centroids)._centroiddictmaker() for i in x]
+	h=[len(ct.Partitionstats(wordmatrix_with_cat, type(i), i.labels)._clustercatdictmaker(wordmatrix_with_cat)) for i in x]
+	print "no of clusters",  h
+	g=[ct.Centroidstats(wordmatrix_with_cat, i.name, i.labels, i.centroids, i.centroids)._centroiddictmaker() for i in x]
 	test=x[0]
-	g=Centroidstats(wordmatrix_with_cat, test.name, test.labels,i.centroids )
-	t=g.cluster_predictors(featuredict)
+	#print test
+	#g=ct.Centroidstats(wordmatrix_with_cat, test.name, test.labels,i.centroids )
+	#print g
+	#t=g.cluster_predictors(featuredict)
+	t=Partitionsimilarity(x[0], x[0])
+	print t.compare_partitions()
+	#print t
 	# j=[len(i.centroids) for i in x]
 # 	print j
 	#iterate over clusters
@@ -462,7 +431,7 @@ def main():
 # 					print "{} items ({} percent) are from category {}".format(
 # 					dict[entry][i], round(dict[entry][i]/dict[entry]['total']*100), i)
 # 					#print dict[entry][float(i)]
-	t=[ct.Clusterstats(wordmatrix_with_cat, type(i), i.labels).cluster_features()[1]['zscore_range'] for i in x]
+#	t=[ct.Partitionstats(wordmatrix_with_cat, type(i), i.labels).cluster_features()[1]['zscore_range'] for i in x]
 # 	print t
 		
 	# for i in x:

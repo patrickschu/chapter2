@@ -1,3 +1,83 @@
+WHAT DO WE HAVE
+
+In Centroidstats:
+I. distance btw centroids in various metrics
+II. predictors for centroids
+
+
+In Partitionstats
+III. Size of each cluster in items
+IV. Makeup of each cluster expressed in gold labels
+V. Basic clusterstats
+	V.i mean
+	V.ii. median
+	V.iii. std
+	V.iv var
+	V.v  range
+	V.vi zscore_range
+	V. vii feature_correlation':np.corrcoef
+		
+In Cluster
+VI number of clusters
+	
+STATS TO DETERMINE
+
+CROSS PARTITION -- COMPARE CLUSTERINGS
+1. Information variation
+2. Classification "error" for our gold labels
+3. Metrics:
+		from sklearn import metrics
+		# V-measure: 0.917 
+		# Adjusted Rand Index: 0.952 
+		# Adjusted Mutual Information: 0.883
+		
+		#note that we can use all of those to compare to gold labels as well
+		model internal
+		#inertia
+		# sihouette: works on a cluster basis, not partition; average score is reported for partition
+		# include silhouette in our cluster stats???
+		
+
+
+
+INTRA-PARTITION: FEATURES OF EACH PARTITION, INTER-CLUSTER SO To SPEAK
+
+1.
+2.
+3. 
+4. inherited from below & compared
+5. distance between clusters. How do they pattern within the partition? --> centroid calculations
+
+
+
+INTRA-CLUSTER: FEATURES OF THE INDIVIDUAL CLUSTER WITHIN A PARTITION
+
+1. size (len per label)
+
+2. split up btw categories how? (number, percentage)
+
+3. feature distinctive of cluster cf Grimm
+get centroids/prototypes per cluster
+find biggest difference between clusters
+[w,e,r,i,s,t]
+[w,e,r,i,s,t]
+[w,e,r,i,s,t]
+[w,e,r,i,s,t]
+...
+maybe:
+sort
+
+4. homogeneity/tightness of cluster (distance btw poitns)
+5. metrics: 
+	# silhouette
+	
+	
+TBD
+1. consistency of clustering btw runs
+2. perturbation
+
+
+
 
 
 
@@ -6,32 +86,7 @@
 
 ## for each, give stats :
 # -per cluster: (class Clusterstats)
-# 		1. size (len per label)
-# 		# 		
-# 		2. split up btw categories how? (number, percentage)
-#  				
-# 		3. feature distinctive of cluster
-# 				get centroids/prototypes per cluster
-# 				find biggest difference between clusters
-# 				[w,e,r,i,s,t]
-# 				[w,e,r,i,s,t]
-# 				[w,e,r,i,s,t]
-# 				[w,e,r,i,s,t]
-# 				...
-# 				maybe:
-# 				sort
-# 				
-# 				calculate distance first to last, while at it: also variance, means <--- feature description
-# 				
-# 				w=range:(x:y), mean: x, var: u, ... 
-# 				[can we somehow calculate the importance / weight of one feature to each cluster?
-# 				[in z scores???? normalized some kind of way
-# 				biggest distnace is the difference maker
-# 				
-# 		
-# 		4. homogeneity/tightness of cluster (distance btw poitns)
-# 				same thing for points in each cluster
-# 				maybe we do point product for each row
+
 # 				
 # 		
 # 		
@@ -52,14 +107,29 @@
 # # 		
 # 		
 # 		label-dependent quality:
-# 		silhouette
-		# V-measure: 0.917
-		# Adjusted Rand Index: 0.952
-		# Adjusted Mutual Information: 0.883
-		# Silhouette Coefficient: 0.626
+# 		
 		
 			
 # make a confusion matrix
 # get original distance measurements for clusters
 # rank sum for cluster predictors
 #c luster stress test
+
+
+# summary as outlined in king and grimm, 6:
+
+-proportion of documents in each cluster
+-exemplar document (sklearn.silhouette.samples?)
+-summary of substance:
+	10 most informative stems / words
+	
+	
+mutual information: quantifies the "amount of information" (in units such as bits) 
+obtained about one random variable, through the other random variable.
+
+
+In this context, entropy (more specifically, Shannon entropy) is the expected value 
+(average) of the information contained in each message. The entropy 
+rate of a data source means the average number of bits per symbol needed to encode it
+
+vi: http://igraph.org/python/doc/igraph.clustering-module.html
