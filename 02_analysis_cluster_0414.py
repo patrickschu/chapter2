@@ -158,7 +158,7 @@ def clustermachine(matrix, algorithm, clusters=3):
 	centroids=clustering.cluster_centers_
 	labels=clustering.labels_
 	inertia=clustering.inertia_
-	kmeans=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
+	kmeans=ct.Clustering(matrix, model, clustering.labels_, clustering.cluster_centers_)
 	result.append(kmeans)
 	
 	## #2: MeanShift
@@ -166,7 +166,7 @@ def clustermachine(matrix, algorithm, clusters=3):
 #  	clustering=model.fit(matrix)
 # 	centroids=clustering.cluster_centers_
 #  	labels=clustering.labels_
-#  	meanshift=ct.Cluster(matrix, model, clustering.labels_, clustering.cluster_centers_)
+#  	meanshift=ct.Clustering(matrix, model, clustering.labels_, clustering.cluster_centers_)
 # 	result.append(meanshift)
 # 	
 # 	## #3: Affinity Propagation
@@ -185,7 +185,7 @@ def clustermachine(matrix, algorithm, clusters=3):
 # 	clustering=model.fit(similarity_matrix)
 # 	labels=clustering.labels_
 #  	aff_matrix=clustering.affinity_matrix_
-#  	spectral= ct.Cluster(matrix, model, clustering.labels_)
+#  	spectral= ct.Clustering(matrix, model, clustering.labels_)
 # 	result.append(spectral)
 #  	
 #  	 ##watch out --------- centroids are indices!!!!!	
@@ -195,7 +195,7 @@ def clustermachine(matrix, algorithm, clusters=3):
 # 	core_samples=clustering.core_sample_indices_
 # 	components=clustering.components_
 # 	labels=clustering.labels_
-# 	dbscan= ct.Cluster(matrix, model, clustering.labels_, clustering.core_sample_indices_)
+# 	dbscan= ct.Clustering(matrix, model, clustering.labels_, clustering.core_sample_indices_)
 # 	result.append(dbscan)
 # 	
 	##GUASSIN DOEs NOT FIT OUR SCHEMA AT THIS POINT
@@ -218,7 +218,7 @@ def clustermachine(matrix, algorithm, clusters=3):
 # 	labels=clustering.labels_
 # 	leaves=clustering.n_leaves_
 # 	components=clustering.n_components_
-# 	ward= ct.Cluster(matrix, model, clustering.labels_)
+# 	ward= ct.Clustering(matrix, model, clustering.labels_)
 # 	result.append(ward)
 # 
 # 	## #8: Birch Hierarchical 	
@@ -227,7 +227,7 @@ def clustermachine(matrix, algorithm, clusters=3):
 # 	labels=clustering.labels_
 # 	root=clustering.root_
 # 	subcluster_labels=clustering.subcluster_labels_
-# 	birch= ct.Cluster(matrix, model, clustering.labels_)
+# 	birch= ct.Clustering(matrix, model, clustering.labels_)
 # 	result.append(birch)
 	
 	return(result)
@@ -320,44 +320,90 @@ def clustermachine(matrix, algorithm, clusters=3):
 # 			
 # 
 
-class Partitionsimilarity(Cluster):
-	#this needs to be fed with ct.Cluster objects for each partition
-	def __init__(self, partition1, partition2): 
-			# we treat the part 1 labels as gold standard for now
-			self.part1_name=partition1.name
-			self.part2_name=partition1.name
-			self.part1_labels=partition1.labels
-			self.part2_labels=partition2.labels
-			self.part1_features=partition1.matrix_without_cats
-			self.part2_features=partition2.matrix_without_cats
-			self.part1_clusters=range(partition1.no_of_clusters)
-			self.part2_clusters= range(partition2.no_of_clusters)
+class Categorystats(ct.Clustering):
+	"""basic statistics of categories within a clustering"""
 	
-	def partition_features(self):		
-	#takes the labels (and features, depending on metric) of two partitions and compares
-	#returns dict with different metrics for each combination
-	# note we need a different combo here cause comparing same numbers is a thing
-		similaritydict={}
-		similaritydict[(self.part1_name, self.part2_name)]={
+	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
+		ct.Clustering.__init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None)
+			
+	
+	#get item per category and how spread out over clusters
+	
+	def size_of_categories(self):
+		#returns the number of categories, and how they are spread out over clusters
+		dict=self._clustercatdictmaker(self.matrix_with_cats)
+		for item in dict:
+			print "\n=-----=\n", "item: ", item, dict[item].keys()
+			for key in dict[item].keys():
+				print "key: ", key, len(dict[item][key])
+		cats=[dict[cluster].keys() for cluster in dict]
+		#flattening a list a la http://stackoverflow.com/questions/406121/flattening-a-shallow-list-in-python
+		cats=set(list(itertools.chain.from_iterable(cats)))
+		for i in cats:
+			print i
+		cat_features={
+			'no_of_cats': len(cats),
+			'no_of_clusters': len(dict.keys())
+			}
+			# total returns the number of item in each category}
+		for item in cats:
+			cat_features[item]= {
+			'total': sum([len(dict[i][item]) for i in dict.keys() if item in dict[i].keys()]),
+			# is a dictionary {cluster1: n, cluster2:n,...}
+			'cat_per_cluster': {i: len(dict[i][item]) for i in dict.keys() if item in dict[i].keys()}
+			}
 		
-			'adjustedrand_sim': sklearn.metrics.adjusted_rand_score(self.part1_labels, self.part2_labels),
-			'adjustedmutualinfo_sim':sklearn.metrics.adjusted_mutual_info_score(self.part1_labels, self.part2_labels),
-			'jaccard_sim': sklearn.metrics.jaccard_similarity_score(self.part1_labels, self.part2_labels),
-			#This score is identical to normalized_mutual_info_score:
-			'v_sim': sklearn.metrics.v_measure_score(self.part1_labels, self.part2_labels),
-			'completeness_sim': sklearn.metrics.completeness_score(self.part1_labels, self.part2_labels),
-			'homogeneity_sim':sklearn.metrics.homogeneity_score(self.part1_labels, self.part2_labels),
-			'silhouette_score_sim': (sklearn.metrics.silhouette_score(self.part1_features, self.part1_labels), sklearn.metrics.silhouette_score(self.part2_features, self.part2_labels)),
-			'variation_of_information':'is in R'
+		print cat_features
+		return cat_features
+	
+	
+	
+	
 
-		print similaritydict
-		print len(sklearn.metrics.silhouette_samples(self.part1_features, self.part1_labels))
-		
-	def confusion_matrix_maker(self):
-	# this takes the results of partition features and presents them in a way that makes sense
-		
+	
+	
+# 	def size_of_clusters(self):
+# 		#how many items in each cluster?
+# 		# returns dictionary {cluster:size, cluster:size ...}	
+# 		dict=self._clusterdictmaker(self.matrix_without_cats)
+# 		return {k:len(dict[k]) for k in dict}
+# 
+# 	def cats_per_cluster(self):
+# 		#how many categories in each cluster?
+# 		# output structure: {cluster: { categ x: N, cat y: N, total: x=y, no_of_categories: len[x,y]}	
+# 		dict=self._clustercatdictmaker(self.matrix_with_cats)
+# 		cluster_features=defaultdict()
+# 		for i in dict:
+# 			cluster_features[i]={k:float(len(v)) for k,v in dict[i].items()}
+# 			cluster_features[i]['total']=sum(cluster_features[i].values())
+# 			cluster_features[i]['no_of_categories']=len(dict[i])
+# 		return cluster_features
+# 		
+# 	def cluster_features(self):
+# 		#how spread out is the cluster? ## cluster or clustering???
+# 		# returns dictionary of basic stats
+# 		featuredicti=defaultdict()
+# 		dict=self._clusterdictmaker(self.matrix_without_cats)
+# 		zscoredict={k:scipy.stats.mstats.zscore(dict[k], axis=0, ddof = 1) for k in dict.keys()} #setting  "ddof = 1" so we get the same output as in R
+# 		silhouette=sklearn.metrics.silhouette_samples(self.matrix_without_cats, self.labels)
+# 		# iterate over clusters
+# 		for i in dict:
+# 			featuredicti[i]={
+# 			'mean':np.mean(dict[i], axis=0), #mean of column
+# 			'median':np.median(dict[i], axis=0), #median of column
+# 			'std':np.std(dict[i], axis=0,ddof = 1 ), #setting  "ddof = 1" so we get the same output as in R
+# 			'var':np.var(dict[i], axis=0), #variance of column
+# 			'range':np.ptp(dict[i], axis=0), #range of column, raw scores
+# 			'zscore_range':np.ptp(zscoredict[i], axis=0), #range of column, zscores
+# 			'silhouette_score': silhouette[np.where(self.labels==i)],
+# 			#this is still very under development
+# 			'feature_correlation':np.corrcoef(dict[i], rowvar=0) #feature correlation over rows
+# 			} 
+# 		return featuredicti
 
-		
+
+
+
 
 
 
@@ -371,9 +417,9 @@ def main():
 	x=clustermachine(wordmatrix_without_cat, scipy.cluster.vq.kmeans2)
 	print x
 	f=[(i.name, i.no_of_clusters) for i in x]
-	g=[ct.Partitionstats(wordmatrix_with_cat, type(i), i.labels).size_of_clusters() for i in x]
+	g=[ct.Clusteringstats(wordmatrix_with_cat, type(i), i.labels).size_of_clusters() for i in x]
 	#print g
-	h=[len(ct.Partitionstats(wordmatrix_with_cat, type(i), i.labels).cluster_features()) for i in x]
+	h=[len(ct.Clusteringstats(wordmatrix_with_cat, type(i), i.labels).cluster_features()) for i in x]
 	print "no of clusters",  h
 	g=[ct.Centroidstats(wordmatrix_with_cat, i.name, i.labels, i.centroids, i.centroids)._centroiddictmaker() for i in x]
 	test=x[0]
@@ -381,9 +427,9 @@ def main():
 	#g=ct.Centroidstats(wordmatrix_with_cat, test.name, test.labels,i.centroids )
 	#print g
 	#t=g.cluster_predictors(featuredict)
-	t=Partitionsimilarity(x[0], x[0])
-	print t.compare_partitions()
-
+	# t=Partitionsimilarity(x[0], x[0])
+# 	print t.compare_partitions()
+	t=[Categorystats(wordmatrix_with_cat, type(i), i.labels).size_of_categories() for i in x]
 
 
 

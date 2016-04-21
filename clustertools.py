@@ -4,7 +4,7 @@ from collections import defaultdict
 
 
 
-class Cluster(object):
+class Clustering(object):
 	"""collect basic features of a clustering"""
 
 	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None):
@@ -20,7 +20,7 @@ class Cluster(object):
 	def getName(self):  
 		return self.name  #why do we need this??
 		
-	def _clusterdictmaker(self):
+	def _clusterdictmaker(self, matrix_without_cats):
 		#in the clusterdicti, we collect for each cluster the data points contained
 		# output is a dictionary with ACTUAL vectors
 		# why don't we feed it the self.matrix?
@@ -34,31 +34,7 @@ class Cluster(object):
 			clusterdicti[cluster]=np.array([self.matrix_without_cats[i] for i in np.where(self.labels==cluster)[0]])
 		return clusterdicti
 
-
-
-class Partitionstats(Cluster):
-	"""basic statistics of a clustering"""
-	
-
-	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
-		Cluster.__init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None)
-		
-		
-	def _clusterdictmaker(self, matrix):
-		#in the clusterdicti, we collect for each cluster the data points contained
-		# output is a dictionary with ACTUAL vectors
-		# why don't we feed it the self.matrix?
-		iterator=range(self.no_of_clusters)
-		clusterdicti=defaultdict()
-		for cluster in iterator:
-			#give me indexes of label array where cluster is true	
-			#note that where returns a cluster that is always len 1
-			# we are interested in l[0]
-			#clusterdicti[cluster]=np.where(self.labels==cluster)[0]
-			clusterdicti[cluster]=np.array([matrix[i] for i in np.where(self.labels==cluster)[0]])
-		return clusterdicti
-	
-	def _clustercatdictmaker(self, matrix):
+	def _clustercatdictmaker(self, matrix_with_cats):
 		#in this dicti, we collect for each cluster the items per category
 		# output is a dictionary of ACTUAL vectors
 		#structure: { cluster: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}
@@ -67,21 +43,27 @@ class Partitionstats(Cluster):
 		clustercatdicti=defaultdict()
 		for cluster in iterator:
 			clustercatdicti[cluster]=defaultdict(list)
-			#note that where returns a cluster that i always len 1
+			#note that where returns a cluster that is always len 1 --> two?
 			# we are interested in l[0]
-			wordmatrix=[matrix[i] for i in np.where(self.labels==cluster)[0]]
-			for item in matrix:
+			wordmatrix=[self.matrix_with_cats[i] for i in np.where(self.labels==cluster)[0]]
+			for item in wordmatrix:
 				clustercatdicti[cluster][item[0]].append(item)
 		return clustercatdicti
-		
+
+
+
+class Clusteringstats(Clustering):
+	"""basic statistics of a clustering"""
 	
+	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
+		Clustering.__init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None)
+			
 	def size_of_clusters(self):
 		#how many items in each cluster?
 		# returns dictionary {cluster:size, cluster:size ...}	
 		dict=self._clusterdictmaker(self.matrix_without_cats)
 		return {k:len(dict[k]) for k in dict}
 
-	
 	def cats_per_cluster(self):
 		#how many categories in each cluster?
 		# output structure: {cluster: { categ x: N, cat y: N, total: x=y, no_of_categories: len[x,y]}	
@@ -116,13 +98,15 @@ class Partitionstats(Cluster):
 		return featuredicti
 
 
+
+
 # remember that we could use z scores		
-class Centroidstats(Cluster):
+class Centroidstats(Clustering):
 
 	"""statistics and calculations with centroids within a clustering"""
 			
 	def __init__(self, dataframe, name, labels,centroids=None, actual_centroids=None):
-		Cluster.__init__(self, dataframe, name, labels, centroids, actual_centroids)
+		Clustering.__init__(self, dataframe, name, labels, centroids, actual_centroids)
 		#relevant here: centroids and actual centroids
 		#centroid will be a vector of len (x)
 		
@@ -222,6 +206,45 @@ class Centroidstats(Cluster):
 		return predictdicti
 		
 
+
+class Partitionsimilarity(Clustering):
+
+	""" Calculates similarity measures between clusterings for cluster comparison. """
+
+	def __init__(self, partition1, partition2): 
+			# we treat the part 1 labels as gold standard for now
+			self.part1_name=partition1.name
+			self.part2_name=partition1.name
+			self.part1_labels=partition1.labels
+			self.part2_labels=partition2.labels
+			self.part1_features=partition1.matrix_without_cats
+			self.part2_features=partition2.matrix_without_cats
+			self.part1_clusters=range(partition1.no_of_clusters)
+			self.part2_clusters= range(partition2.no_of_clusters)
+	
+	def partition_features(self):		
+	#takes the labels (and features, depending on metric) of two partitions and compares
+	#returns dict with different metrics for each combination
+	# note we need a different combo here cause comparing same numbers is a thing
+		similaritydict={}
+		similaritydict[(self.part1_name, self.part2_name)]={
+		
+			'adjustedrand_sim': sklearn.metrics.adjusted_rand_score(self.part1_labels, self.part2_labels),
+			'adjustedmutualinfo_sim':sklearn.metrics.adjusted_mutual_info_score(self.part1_labels, self.part2_labels),
+			'jaccard_sim': sklearn.metrics.jaccard_similarity_score(self.part1_labels, self.part2_labels),
+			#This score is identical to normalized_mutual_info_score:
+			'v_sim': sklearn.metrics.v_measure_score(self.part1_labels, self.part2_labels),
+			'completeness_sim': sklearn.metrics.completeness_score(self.part1_labels, self.part2_labels),
+			'homogeneity_sim':sklearn.metrics.homogeneity_score(self.part1_labels, self.part2_labels),
+			'silhouette_score_sim': (sklearn.metrics.silhouette_score(self.part1_features, self.part1_labels), sklearn.metrics.silhouette_score(self.part2_features, self.part2_labels)),
+			'variation_of_information':'is in R'
+		}
+		print similaritydict
+		print len(sklearn.metrics.silhouette_samples(self.part1_features, self.part1_labels))
+		
+	def confusion_matrix_maker(self):
+		return "assi"
+	# this takes the results of partition features and presents them in a way that makes sense
 
 
 #
