@@ -320,41 +320,7 @@ def clustermachine(matrix, algorithm, clusters=3):
 # 			
 # 
 
-class Categorystats(ct.Clustering):
-	"""basic statistics of categories within a clustering"""
-	
-	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
-		ct.Clustering.__init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None)
-			
-	
-	#get item per category and how spread out over clusters
-	
-	def size_of_categories(self):
-		#returns the number of categories, and how they are spread out over clusters
-		dict=self._clustercatdictmaker(self.matrix_with_cats)
-		for item in dict:
-			print "\n=-----=\n", "item: ", item, dict[item].keys()
-			for key in dict[item].keys():
-				print "key: ", key, len(dict[item][key])
-		cats=[dict[cluster].keys() for cluster in dict]
-		#flattening a list a la http://stackoverflow.com/questions/406121/flattening-a-shallow-list-in-python
-		cats=set(list(itertools.chain.from_iterable(cats)))
-		for i in cats:
-			print i
-		cat_features={
-			'no_of_cats': len(cats),
-			'no_of_clusters': len(dict.keys())
-			}
-			# total returns the number of item in each category}
-		for item in cats:
-			cat_features[item]= {
-			'total': sum([len(dict[i][item]) for i in dict.keys() if item in dict[i].keys()]),
-			# is a dictionary {cluster1: n, cluster2:n,...}
-			'cat_per_cluster': {i: len(dict[i][item]) for i in dict.keys() if item in dict[i].keys()}
-			}
-		
-		print cat_features
-		return cat_features
+
 	
 	
 	
@@ -403,8 +369,72 @@ class Categorystats(ct.Clustering):
 
 
 
+class Partitionsimilarity(ct.Clustering):
 
+	""" Calculates similarity measures between clusterings for cluster comparison. """
 
+	def __init__(self, **kwargs): 
+			self.partitionings=kwargs
+			
+	def get_variables(self, key):
+		return self.partitionings.get(key, None)
+	
+	def set_variables(self, key, value):
+		self.partitionings[key]=value
+		
+	def _partitionsimilarity_dictmaker(self):		
+		for item in self.partitionings:
+			print self.partitionings[item].name
+		similaritydict={}
+		# all possible combinations between models
+		for combo in itertools.combinations(self.partitionings.keys(),2):
+			similaritydict[(combo[0], combo[1])]={
+		
+			'adjustedrand_sim': sklearn.metrics.adjusted_rand_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
+			'adjustedmutualinfo_sim':sklearn.metrics.adjusted_mutual_info_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
+			'jaccard_sim': sklearn.metrics.jaccard_similarity_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
+			#This score is identical to normalized_mutual_info_score:
+			'v_sim': sklearn.metrics.v_measure_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
+			'completeness_sim': sklearn.metrics.completeness_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
+			'homogeneity_sim':sklearn.metrics.homogeneity_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
+			'silhouette_score_sim': (sklearn.metrics.silhouette_score(self.partitionings[combo[0]].matrix_without_cats, self.partitionings[combo[0]].labels), sklearn.metrics.silhouette_score(self.partitionings[combo[1]].matrix_without_cats, self.partitionings[combo[1]].labels)),
+			'variation_of_information':'is in R'
+		}	
+ 		return similaritydict
+
+	def similarity_matrix(self, metric):
+		# this prints out a correlation matrix-style comparison of clusterings. 
+		# metric is the metric to use, e.g. one of the entries in the dictionary
+		# returned by self._partitionsimilarity_dictmaker
+		dict=self._partitionsimilarity_dictmaker()
+		entries=dict.items()
+		column_names=[i[0][0] for i in entries]		
+		column_names = list(set(column_names))
+		# http://stackoverflow.com/questions/36773329/creating-correlation-matrix-style-table-in-python
+		header = '\t' + str('\t'.join(column_names)) 
+ 		print header
+		for columns in column_names:
+			print columns, "\t",
+			# row name
+			for row in column_names:
+				try: 
+					key = (columns,row) # creating the key to feed into dict
+					if key in dict:
+						value = dict[key][metric]
+					else:
+						value = dict[key[::-1]][metric] #reversing the tuple 
+				except:
+					print "***"
+					break
+				print value, '\t',
+     		print('')
+
+	def clustering_quality(self):
+		# returns Jaccardi score for each clustering
+		qualitydict={}
+		for key in self.partitionings.keys():
+			qualitydict[key]=sklearn.metrics.silhouette_score(self.partitionings[key].matrix_without_cats, self.partitionings[key].labels)
+		return qualitydict
 
 
 	 
@@ -429,7 +459,10 @@ def main():
 	#t=g.cluster_predictors(featuredict)
 	# t=Partitionsimilarity(x[0], x[0])
 # 	print t.compare_partitions()
-	t=[Categorystats(wordmatrix_with_cat, type(i), i.labels).size_of_categories() for i in x]
+	t=[ct.Categorystats(wordmatrix_with_cat, type(i), i.labels).size_of_categories() for i in x]
+	t=[Partitionsimilarity(model1=i, model2=i, model3=i, model4=i).similarity_matrix("v_sim") for i in x]
+
+	t=[Partitionsimilarity(model1=i, model2=i, model3=i, model4=i).clustering_quality() for i in x]
 	print t
 
 

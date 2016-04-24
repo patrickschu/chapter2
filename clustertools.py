@@ -10,7 +10,7 @@ class Clustering(object):
 	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None):
 		self.matrix_with_cats=matrix_with_cats  #data frame including "gold labels"
 		self.matrix_without_cats=matrix_with_cats[:,1:] #data frame without "gold labels"
-		self.name=type(name) #the clustering algorithm we are dealing with
+		self.name=name #the clustering algorithm we are dealing with
 		self.labels=labels #the array of labels: label for each data point
 		self.centroids=centroids #the centroids or prototypes if applicable. WATCH:: INDEXES OR ACTUAL????
 		self.actual_centroids=actual_centroids #what is this relevant for??
@@ -207,44 +207,110 @@ class Centroidstats(Clustering):
 		
 
 
-class Partitionsimilarity(Clustering):
+class Partitionsimilarity(ct.Clustering):
 
 	""" Calculates similarity measures between clusterings for cluster comparison. """
 
-	def __init__(self, partition1, partition2): 
-			# we treat the part 1 labels as gold standard for now
-			self.part1_name=partition1.name
-			self.part2_name=partition1.name
-			self.part1_labels=partition1.labels
-			self.part2_labels=partition2.labels
-			self.part1_features=partition1.matrix_without_cats
-			self.part2_features=partition2.matrix_without_cats
-			self.part1_clusters=range(partition1.no_of_clusters)
-			self.part2_clusters= range(partition2.no_of_clusters)
+	def __init__(self, **kwargs): 
+			self.partitionings=kwargs
+			
+	def get_variables(self, key):
+		return self.partitionings.get(key, None)
 	
-	def partition_features(self):		
-	#takes the labels (and features, depending on metric) of two partitions and compares
-	#returns dict with different metrics for each combination
-	# note we need a different combo here cause comparing same numbers is a thing
+	def set_variables(self, key, value):
+		self.partitionings[key]=value
+		
+	def _partitionsimilarity_dictmaker(self):		
+		for item in self.partitionings:
+			print self.partitionings[item].name
 		similaritydict={}
-		similaritydict[(self.part1_name, self.part2_name)]={
+		# all possible combinations between models
+		for combo in itertools.combinations(self.partitionings.keys(),2):
+			similaritydict[(combo[0], combo[1])]={
 		
-			'adjustedrand_sim': sklearn.metrics.adjusted_rand_score(self.part1_labels, self.part2_labels),
-			'adjustedmutualinfo_sim':sklearn.metrics.adjusted_mutual_info_score(self.part1_labels, self.part2_labels),
-			'jaccard_sim': sklearn.metrics.jaccard_similarity_score(self.part1_labels, self.part2_labels),
+			'adjustedrand_sim': sklearn.metrics.adjusted_rand_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
+			'adjustedmutualinfo_sim':sklearn.metrics.adjusted_mutual_info_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
+			'jaccard_sim': sklearn.metrics.jaccard_similarity_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
 			#This score is identical to normalized_mutual_info_score:
-			'v_sim': sklearn.metrics.v_measure_score(self.part1_labels, self.part2_labels),
-			'completeness_sim': sklearn.metrics.completeness_score(self.part1_labels, self.part2_labels),
-			'homogeneity_sim':sklearn.metrics.homogeneity_score(self.part1_labels, self.part2_labels),
-			'silhouette_score_sim': (sklearn.metrics.silhouette_score(self.part1_features, self.part1_labels), sklearn.metrics.silhouette_score(self.part2_features, self.part2_labels)),
+			'v_sim': sklearn.metrics.v_measure_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
+			'completeness_sim': sklearn.metrics.completeness_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
+			'homogeneity_sim':sklearn.metrics.homogeneity_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
+			'silhouette_score_sim': (sklearn.metrics.silhouette_score(self.partitionings[combo[0]].matrix_without_cats, self.partitionings[combo[0]].labels), sklearn.metrics.silhouette_score(self.partitionings[combo[1]].matrix_without_cats, self.partitionings[combo[1]].labels)),
 			'variation_of_information':'is in R'
-		}
-		print similaritydict
-		print len(sklearn.metrics.silhouette_samples(self.part1_features, self.part1_labels))
+		}	
+ 		return similaritydict
+
+	def similarity_matrix(self, metric):
+		# this prints out a correlation matrix-style comparison of clusterings. 
+		# metric is the metric to use, e.g. one of the entries in the dictionary
+		# returned by self._partitionsimilarity_dictmaker
+		dict=self._partitionsimilarity_dictmaker()
+		entries=dict.items()
+		column_names=[i[0][0] for i in entries]		
+		column_names = list(set(column_names))
+		# http://stackoverflow.com/questions/36773329/creating-correlation-matrix-style-table-in-python
+		header = '\t' + str('\t'.join(column_names)) 
+ 		print header
+		for columns in column_names:
+			print columns, "\t",
+			# row name
+			for row in column_names:
+				try: 
+					key = (columns,row) # creating the key to feed into dict
+					if key in dict:
+						value = dict[key][metric]
+					else:
+						value = dict[key[::-1]][metric] #reversing the tuple 
+				except:
+					print "***"
+					break
+				print value, '\t',
+     		print('')
+
+	def clustering_quality(self):
+		# returns Jaccardi score for each clustering
+		qualitydict={}
+		for key in self.partitionings.keys():
+			qualitydict[key]=sklearn.metrics.silhouette_score(self.partitionings[key].matrix_without_cats, self.partitionings[key].labels)
+		return qualitydict
 		
-	def confusion_matrix_maker(self):
-		return "assi"
-	# this takes the results of partition features and presents them in a way that makes sense
+		
+
+
+class Categorystats(Clustering):
+	"""basic statistics of categories within a clustering"""
+	
+	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
+		Clustering.__init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None)
+			
+	
+	#get item per category and how spread out over clusters
+	
+	def size_of_categories(self):
+		#returns the number of categories, and how they are spread out over clusters
+		dict=self._clustercatdictmaker(self.matrix_with_cats)
+		for item in dict:
+			print "\n=-----=\n", "item: ", item, dict[item].keys()
+			for key in dict[item].keys():
+				print "key: ", key, len(dict[item][key])
+		cats=[dict[cluster].keys() for cluster in dict]
+		#flattening a list a la http://stackoverflow.com/questions/406121/flattening-a-shallow-list-in-python
+		cats=set(list(itertools.chain.from_iterable(cats)))
+		for i in cats:
+			print i
+		cat_features={
+			'no_of_cats': len(cats),
+			'no_of_clusters': len(dict.keys())
+			}
+			# total returns the number of item in each category}
+		for item in cats:
+			cat_features[item]= {
+			'total': sum([len(dict[i][item]) for i in dict.keys() if item in dict[i].keys()]),
+			# is a dictionary {cluster1: n, cluster2:n,...}
+			'cat_per_cluster': {i: len(dict[i][item]) for i in dict.keys() if item in dict[i].keys()}
+			}		
+		return cat_features
+		
 
 
 #
