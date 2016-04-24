@@ -17,8 +17,8 @@ class Clustering(object):
 		self.no_of_clusters=len(np.unique(labels)) #how many clusters this algorithm came up with
 		self.silhouette=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.labels)
 	
-	def getName(self):  
-		return self.name  #why do we need this??
+	def getname(self):  
+		return type(self.name), self.name  
 		
 	def _clusterdictmaker(self, matrix_without_cats):
 		#in the clusterdicti, we collect for each cluster the data points contained
@@ -207,7 +207,7 @@ class Centroidstats(Clustering):
 		
 
 
-class Partitionsimilarity(ct.Clustering):
+class Partitionsimilarity(Clustering):
 
 	""" Calculates similarity measures between clusterings for cluster comparison. """
 
@@ -289,15 +289,13 @@ class Categorystats(Clustering):
 	def size_of_categories(self):
 		#returns the number of categories, and how they are spread out over clusters
 		dict=self._clustercatdictmaker(self.matrix_with_cats)
-		for item in dict:
-			print "\n=-----=\n", "item: ", item, dict[item].keys()
-			for key in dict[item].keys():
-				print "key: ", key, len(dict[item][key])
+		# for item in dict:
+# 			print "\n=-----=\n", "item: ", item, dict[item].keys()
+# 			for key in dict[item].keys():
+# 				print "key: ", key, len(dict[item][key])
 		cats=[dict[cluster].keys() for cluster in dict]
 		#flattening a list a la http://stackoverflow.com/questions/406121/flattening-a-shallow-list-in-python
 		cats=set(list(itertools.chain.from_iterable(cats)))
-		for i in cats:
-			print i
 		cat_features={
 			'no_of_cats': len(cats),
 			'no_of_clusters': len(dict.keys())
