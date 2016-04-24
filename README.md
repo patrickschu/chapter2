@@ -1,4 +1,4 @@
 # chapter2
 
 
-Scripts used for second chapter. 
+Code used for second chapter. 
