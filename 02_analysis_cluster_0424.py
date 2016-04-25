@@ -242,8 +242,12 @@ def main():
 			print "Category {} has {} items".format("".join([i[0] for i in catdicti.items() if i[1] == int(cat)]), cats[cat]['total'])
 			for entry in [i for i in cats[cat]['cat_per_cluster'] if not i in excludelist]:
 				print "{} items or {} percent in cluster {}".format(cats[cat]['cat_per_cluster'][entry], round(float(cats[cat]['cat_per_cluster'][entry])/float(cats[cat]['total'])*100), entry)
-
-
+		print "\n\n-----------\n\nComparing clusterings"
+		
+		input=[(str(type(i.name)).split(".")[3].rstrip("'>"), i) for i in x]
+		simi=ct.Clusteringsimilarity(input)
+		ct.Clusteringsimilarity.similarity_matrix(simi, "jaccard_sim")
+		#t=str(type(i.name)).split("."))[3].rstrip("'>")
 main()
 
 

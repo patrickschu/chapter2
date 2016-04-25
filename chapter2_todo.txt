@@ -1,9 +1,26 @@
 #####
-
-
+print('{:>8} {:>8} {:>8}'.format(*words))
+# print '{:10s} {:3d}  {:7.2f}'.format('xxx', 123, 98)
+# print '{:10s} {:3d}  {:7.2f}'.format('yyyy', 3, 1.0)
+# print '{:10s} {:3d}  {:7.2f}'.format('zz', 42, 123.34)
+# will print
+# 
+# xxx        123    98.00
+# yyyy         3     1.00
+# zz          42   123.34
+# You can adjust the field sizes as desired. Note that .format works independently of print to format a string. I just used print to display the strings. Brief explanation:
+# 
+# 10s format a string with 10 spaces, left justified by default
+# 
+# 3d format an integer reserving 3 spaces, right justified by default
+# 
+# 7.2f format a float, reserving 7 spaces, 2 after the decimal point, right justfied by default.
 #
 add more cluster methods, eg. kmeans manhattan, euclidean, etc
 
+evaluate correctness of cluster similairy matrix
+
+something about the name. so inconvenient
 add tfidf scores for features
 add cluster eval mechanism
 

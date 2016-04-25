@@ -207,12 +207,12 @@ class Centroidstats(Clustering):
 		
 
 
-class Partitionsimilarity(Clustering):
+class Clusteringsimilarity(Clustering):
 
 	""" Calculates similarity measures between clusterings for cluster comparison. """
 
-	def __init__(self, **kwargs): 
-			self.partitionings=kwargs
+	def __init__(self, args): 
+		self.partitionings=dict((k, v) for k, v in args)
 			
 	def get_variables(self, key):
 		return self.partitionings.get(key, None)
@@ -221,8 +221,8 @@ class Partitionsimilarity(Clustering):
 		self.partitionings[key]=value
 		
 	def _partitionsimilarity_dictmaker(self):		
-		for item in self.partitionings:
-			print self.partitionings[item].name
+		# for item in self.partitionings:
+# 			print self.partitionings[item].name
 		similaritydict={}
 		# all possible combinations between models
 		for combo in itertools.combinations(self.partitionings.keys(),2):
@@ -237,7 +237,8 @@ class Partitionsimilarity(Clustering):
 			'homogeneity_sim':sklearn.metrics.homogeneity_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
 			'silhouette_score_sim': (sklearn.metrics.silhouette_score(self.partitionings[combo[0]].matrix_without_cats, self.partitionings[combo[0]].labels), sklearn.metrics.silhouette_score(self.partitionings[combo[1]].matrix_without_cats, self.partitionings[combo[1]].labels)),
 			'variation_of_information':'is in R'
-		}	
+		}
+		print similaritydict	
  		return similaritydict
 
 	def similarity_matrix(self, metric):
@@ -248,24 +249,30 @@ class Partitionsimilarity(Clustering):
 		entries=dict.items()
 		column_names=[i[0][0] for i in entries]		
 		column_names = list(set(column_names))
+		row_names=column_names.reverse()
 		# http://stackoverflow.com/questions/36773329/creating-correlation-matrix-style-table-in-python
-		header = '\t' + str('\t'.join(column_names)) 
- 		print header
-		for columns in column_names:
-			print columns, "\t",
-			# row name
-			for row in column_names:
-				try: 
-					key = (columns,row) # creating the key to feed into dict
-					if key in dict:
-						value = dict[key][metric]
-					else:
-						value = dict[key[::-1]][metric] #reversing the tuple 
+		header= '{:25}\t'*len(column_names)
+		print header.format(*column_names)
+ 		for row in row_names:
+ 			value=[]
+ 			for columns in column_names:
+ 				try:
+ 					key = (columns,row) # creating the key to feed into dict
+ 					if key in dict:
+ 						value.append(round(dict[key][metric]))
+ 					else:
+ 						value.append = round(dict[key[::-1]][metric]) #reversing the tuple 
 				except:
-					print "***"
-					break
-				print value, '\t',
-     		print('')
+					pass
+			output='{:25}\t'*len(value)
+			print row, output.format(*value)
+ 			
+ 					# print "{:25}\t".format(row),
+#  					row="{10}\t"*len(value)
+#  					row.format(*value)
+		# 		except:
+# 					pass
+#       		print('')
 
 	def clustering_quality(self):
 		# returns Jaccardi score for each clustering
