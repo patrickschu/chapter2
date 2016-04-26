@@ -220,7 +220,7 @@ def clustermachine(matrix, clusters=4):
 	 
 def main():
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
-	folders=['files9_output_0102']
+	#folders=['files9_output_0102']
 	print "We have {} folders".format(len(folders))
 	featuredict=dictmaker(folders)
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti = matrixmachine(folders, featuredict, "category1")
@@ -242,12 +242,18 @@ def main():
 			print "Category {} has {} items".format("".join([i[0] for i in catdicti.items() if i[1] == int(cat)]), cats[cat]['total'])
 			for entry in [i for i in cats[cat]['cat_per_cluster'] if not i in excludelist]:
 				print "{} items or {} percent in cluster {}".format(cats[cat]['cat_per_cluster'][entry], round(float(cats[cat]['cat_per_cluster'][entry])/float(cats[cat]['total'])*100), entry)
-		print "\n\n-----------\n\nComparing clusterings"
+	print "\n\n-----------\n\nComparing clusterings"
 		
-		input=[(str(type(i.name)).split(".")[3].rstrip("'>"), i) for i in x]
-		simi=ct.Clusteringsimilarity(input)
-		ct.Clusteringsimilarity.similarity_matrix(simi, "jaccard_sim")
-		#t=str(type(i.name)).split("."))[3].rstrip("'>")
+	input=[(str(type(i.name)).split(".")[3].rstrip("'>"), i) for i in x]
+	simi=ct.Clusteringsimilarity(input)
+	options=['adjustedrand_sim', 'adjustedmutualinfo_sim', 'jaccard_sim', 'v_sim', 'completeness_sim', 'homogeneity_sim', 'silhouette_score_sim']
+	for o in options:
+		ct.Clusteringsimilarity.similarity_matrix(simi, o)
+	
+	#t=str(type(i.name)).split("."))[3].rstrip("'>")
+	
+	
+	
 main()
 
 

@@ -238,8 +238,7 @@ class Clusteringsimilarity(Clustering):
 			'silhouette_score_sim': (sklearn.metrics.silhouette_score(self.partitionings[combo[0]].matrix_without_cats, self.partitionings[combo[0]].labels), sklearn.metrics.silhouette_score(self.partitionings[combo[1]].matrix_without_cats, self.partitionings[combo[1]].labels)),
 			'variation_of_information':'is in R'
 		}
-		print similaritydict	
- 		return similaritydict
+		return similaritydict
 
 	def similarity_matrix(self, metric):
 		# this prints out a correlation matrix-style comparison of clusterings. 
@@ -251,28 +250,24 @@ class Clusteringsimilarity(Clustering):
 		column_names = list(set(column_names))
 		row_names=column_names.reverse()
 		# http://stackoverflow.com/questions/36773329/creating-correlation-matrix-style-table-in-python
-		header= '{:25}\t'*len(column_names)
-		print header.format(*column_names)
- 		for row in row_names:
- 			value=[]
- 			for columns in column_names:
- 				try:
- 					key = (columns,row) # creating the key to feed into dict
- 					if key in dict:
- 						value.append(round(dict[key][metric]))
- 					else:
- 						value.append = round(dict[key[::-1]][metric]) #reversing the tuple 
-				except:
-					pass
-			output='{:25}\t'*len(value)
-			print row, output.format(*value)
- 			
- 					# print "{:25}\t".format(row),
-#  					row="{10}\t"*len(value)
-#  					row.format(*value)
-		# 		except:
-# 					pass
-#       		print('')
+		column_names=list(set([i[0][0] for i in entries]))
+		row_names=list(set([i[0][1] for i in entries]))
+		coltemplate="\t{:<25}"*len(column_names)
+		print "Metric: ", metric
+		print "{:25}".format(" "), coltemplate.format(*column_names)
+		for r in row_names:
+			result=[]
+			for c in column_names:
+				if c == r:
+					result.append("***")
+				elif dict.get((c,r), None) == None:
+					result.append(dict[(r,c)].get(metric, "***"))
+				else:
+					result.append(dict[(c,r)].get(metric, "SERIOUS ERROR"))
+			result=[str(i) for i in result]
+			rowtemplate="\t{:25}"*len(result)
+			print "{:>25}".format(r), rowtemplate.format(*result)
+
 
 	def clustering_quality(self):
 		# returns Jaccardi score for each clustering
