@@ -24,6 +24,9 @@ something about the name. so inconvenient
 add tfidf scores for features
 add cluster eval mechanism
 
+entropy van be calcilated for every custering
+
+
 make blobs lets us create random datasets
 inertia per cluster??
 

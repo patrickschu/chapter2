@@ -7,15 +7,13 @@ from collections import defaultdict
 class Clustering(object):
 	"""collect basic features of a clustering"""
 
-	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None):
-		#self.matrix_with_cats=matrix_with_cats  #data frame including "gold labels"
-		#self.matrix_without_cats=matrix_with_cats[:,1:] #data frame without "gold labels"
+	def __init__(self, name, labels , centroids=None, actual_centroids=None):
 		self.name=name #the clustering algorithm we are dealing with
 		self.labels=labels #the array of labels: label for each data point
 		self.centroids=centroids #the centroids or prototypes if applicable. WATCH:: INDEXES OR ACTUAL????
 		self.actual_centroids=actual_centroids #what is this relevant for??
 		self.no_of_clusters=len(np.unique(labels)) #how many clusters this algorithm came up with
-		#self.silhouette=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.labels)
+
 	
 	def getname(self):  
 		return type(self.name), self.name  
@@ -31,7 +29,7 @@ class Clustering(object):
 			#note that where returns a cluster that is always len 1
 			# we are interested in l[0]
 			#clusterdicti[cluster]=np.where(self.labels==cluster)[0]
-			clusterdicti[cluster]=np.array([self.matrix_without_cats[i] for i in np.where(self.labels==cluster)[0]])
+			clusterdicti[cluster]=np.array([matrix_without_cats[i] for i in np.where(self.labels==cluster)[0]])
 		return clusterdicti
 
 	def _clustercatdictmaker(self, matrix_with_cats):
@@ -45,7 +43,7 @@ class Clustering(object):
 			clustercatdicti[cluster]=defaultdict(list)
 			#note that where returns a cluster that is always len 1 --> two?
 			# we are interested in l[0]
-			wordmatrix=[self.matrix_with_cats[i] for i in np.where(self.labels==cluster)[0]]
+			wordmatrix=[matrix_with_cats[i] for i in np.where(self.labels==cluster)[0]]
 			for item in wordmatrix:
 				clustercatdicti[cluster][item[0]].append(item)
 		return clustercatdicti
@@ -57,6 +55,7 @@ class Clusteringstats(Clustering):
 	
 	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
 		Clustering.__init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None)
+		self.matrix_without_cats=matrix_with_cats[:,1:]
 			
 	def size_of_clusters(self):
 		#how many items in each cluster?
@@ -67,7 +66,7 @@ class Clusteringstats(Clustering):
 	def cats_per_cluster(self):
 		#how many categories in each cluster?
 		# output structure: {cluster: { categ x: N, cat y: N, total: x=y, no_of_categories: len[x,y]}	
-		dict=self._clustercatdictmaker(self.matrix_with_cats)
+		dict=self._clustercatdictmaker(matrix_with_cats)
 		cluster_features=defaultdict()
 		for i in dict:
 			cluster_features[i]={k:float(len(v)) for k,v in dict[i].items()}
@@ -290,7 +289,7 @@ class Categorystats(Clustering):
 	
 	def size_of_categories(self):
 		#returns the number of categories, and how they are spread out over clusters
-		dict=self._clustercatdictmaker(self.matrix_with_cats)
+		dict=self._clustercatdictmaker(matrix_with_cats)
 		# for item in dict:
 # 			print "\n=-----=\n", "item: ", item, dict[item].keys()
 # 			for key in dict[item].keys():

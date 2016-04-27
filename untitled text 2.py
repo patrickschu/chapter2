@@ -163,12 +163,21 @@ x=1
 # 					break
 # 				print value, '\t',
 #      		print('')
-import time
-s=time.time()
-print s
-time.sleep(15)
-g=time.time()
-r=g-s
+# import time
+# s=time.time()
+# print s
+# time.sleep(15)
+# g=time.time()
+# r=g-s
+# print r
+# r=(g-s)*60
+# print r
+
+t=['a','b','c','d']
+print len(t)
+
+r=range(1, len(t))
 print r
-r=(g-s)*60
-print r
+
+for item in r:
+	print t[item]
