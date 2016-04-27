@@ -8,14 +8,14 @@ class Clustering(object):
 	"""collect basic features of a clustering"""
 
 	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None):
-		self.matrix_with_cats=matrix_with_cats  #data frame including "gold labels"
-		self.matrix_without_cats=matrix_with_cats[:,1:] #data frame without "gold labels"
+		#self.matrix_with_cats=matrix_with_cats  #data frame including "gold labels"
+		#self.matrix_without_cats=matrix_with_cats[:,1:] #data frame without "gold labels"
 		self.name=name #the clustering algorithm we are dealing with
 		self.labels=labels #the array of labels: label for each data point
 		self.centroids=centroids #the centroids or prototypes if applicable. WATCH:: INDEXES OR ACTUAL????
 		self.actual_centroids=actual_centroids #what is this relevant for??
 		self.no_of_clusters=len(np.unique(labels)) #how many clusters this algorithm came up with
-		self.silhouette=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.labels)
+		#self.silhouette=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.labels)
 	
 	def getname(self):  
 		return type(self.name), self.name  

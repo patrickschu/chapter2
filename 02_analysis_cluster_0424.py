@@ -2,7 +2,7 @@ import clustertools as ct
 import os, re, shutil,string,numpy,nltk,codecs, scipy, scipy.cluster, scipy.spatial, time, sklearn, itertools
 import numpy as np 
 from sklearn import cluster, mixture, metrics
-from scipy import cluster, spatial
+from scipy import spatial, sparse
 from collections import defaultdict
 from nltk.tokenize import word_tokenize
 # read the clustering documentation here: 
@@ -12,7 +12,6 @@ metriclist=[['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan'],['bray
 
 
 print "start"
-starttime=time.time()
 print "\n---------------\nSome public service announcements"
 #moving parts
 pathi=os.path.join("/Users/ps22344/Downloads","craig_0208")
@@ -135,6 +134,7 @@ def clustermachine(matrix, clusters=4):
 	#meanshift and kmeans take features, others need distance matrixes
 	no_of_clusters=range(clusters)	
 	result=[]
+	t=time.time()
 	
 	## # 1: kmeans
 	model=sklearn.cluster.KMeans(clusters)
@@ -144,25 +144,31 @@ def clustermachine(matrix, clusters=4):
 	inertia=clustering.inertia_
 	kmeans=ct.Clustering(matrix, model, clustering.labels_, clustering.cluster_centers_)
 	result.append(kmeans)
+	print [i.name for i in result]
+	u=time.time()
+	print (u-t)/60
 	
-	## #2: MeanShift
-	model=sklearn.cluster.MeanShift()
- 	clustering=model.fit(matrix)
- 	centroids=clustering.cluster_centers_
- 	labels=clustering.labels_
- 	#meanshift=ct.Clustering(matrix, model, clustering.labels_, clustering.cluster_centers_)
- 	#result.append(meanshift)
+# 	## #2: MeanShift, takes forever @  12600, 42
+# 	model=sklearn.cluster.MeanShift()
+#  	clustering=model.fit(matrix)
+#  	centroids=clustering.cluster_centers_
+#  	labels=clustering.labels_
+#  	meanshift=ct.Clustering(matrix, model, clustering.labels_, clustering.cluster_centers_)
+#  	result.append(meanshift)
+#  	u=time.time()
+# 	print (u-t)/60
  	
- 	# 3: Affinity Propagation
- 	model=sklearn.cluster.AffinityPropagation()
-	clustering=model.fit(similarity_matrix)
-	centroid_index=model.cluster_centers_indices_
-	centroids=clustering.cluster_centers_
- 	labels=clustering.labels_
- 	aff_matrix=clustering.affinity_matrix_
- 	its= clustering.n_iter_
- 	affinity=ct.Clustering(matrix, model, clustering.labels_, clustering.cluster_centers_)
- 	result.append(affinity)
+ 	# 3: Affinity Propagation, breaks @ 12600, 42
+#  	model=sklearn.cluster.AffinityPropagation()
+# 	clustering=model.fit(similarity_matrix)
+# 	centroid_index=model.cluster_centers_indices_
+# 	centroids=clustering.cluster_centers_
+#  	labels=clustering.labels_
+#  	aff_matrix=clustering.affinity_matrix_
+#  	its= clustering.n_iter_
+#  	affinity=ct.Clustering(matrix, model, clustering.labels_, clustering.cluster_centers_)
+#  	result.append(affinity)
+# 	print [i.name for i in result]
 	
 	## #4: Spectral clustering
 	model=sklearn.cluster.SpectralClustering()
@@ -171,9 +177,9 @@ def clustermachine(matrix, clusters=4):
  	aff_matrix=clustering.affinity_matrix_
  	spectral= ct.Clustering(matrix, model, clustering.labels_)
 	result.append(spectral)
- 	
+ 	print [i.name for i in result]
  	##watch out --------- centroids are indices!!!!!	
-	## # 5: DBCASN
+	## # 5: DBCASN, eanShift, takes forever @  12600, 42
 	model=sklearn.cluster.DBSCAN()
 	clustering=model.fit(matrix)
 	core_samples=clustering.core_sample_indices_
@@ -181,19 +187,21 @@ def clustermachine(matrix, clusters=4):
 	labels=clustering.labels_
 	#dbscan= ct.Clustering(matrix, model, clustering.labels_, clustering.core_sample_indices_)
 	#result.append(dbscan)
+	u=time.time()
+	print (u-t)/60
 	
 	##GUASSIN DOEs NOT FIT OUR SCHEMA AT THIS POINT
 	## 6: GAUSSIAN MIXTURE. eh this does not really fit in here
-	model=sklearn.mixture.GMM()
-	clustering=model.fit(matrix)
-	weights=model.weights_
- 	means=model.means_
- 	covars=model.covars_
- 	converged=clustering.converged_	
+# 	model=sklearn.mixture.GMM()
+# 	clustering=model.fit(matrix)
+# 	weights=model.weights_
+#  	means=model.means_
+#  	covars=model.covars_
+#  	converged=clustering.converged_	
 
 	#These are essentially trees; maybe need a different approach. They are kinda predictive
 	
-	## #7: Agglomerative // Ward Hierarchical 
+# 	## #7: Agglomerative // Ward Hierarchical 
 	model=sklearn.cluster.AgglomerativeClustering()
 	clustering=model.fit(matrix)
 	labels=clustering.labels_
@@ -201,6 +209,9 @@ def clustermachine(matrix, clusters=4):
 	components=clustering.n_components_
 	ward= ct.Clustering(matrix, model, clustering.labels_)
 	result.append(ward)
+	print [i.name for i in result]
+	u=time.time()
+	print (u-t)/60
 
 	## #8: Birch Hierarchical 	
 	model=sklearn.cluster.Birch(threshold=0.025)
@@ -210,6 +221,9 @@ def clustermachine(matrix, clusters=4):
 	subcluster_labels=clustering.subcluster_labels_
 	birch= ct.Clustering(matrix, model, clustering.labels_)
 	result.append(birch)
+	print [i.name for i in result]
+	u=time.time()
+	print (u-t)/60
 	
 	return(result)
 	
@@ -219,10 +233,13 @@ def clustermachine(matrix, clusters=4):
 
 	 
 def main():
+	starttime=time.time()
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
-	#folders=['files9_output_0102']
+	print ", ".join(folders)
+	print ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
+	folders=['files9_output_0102', 'files_output_0101']
 	print "We have {} folders".format(len(folders))
-	featuredict=dictmaker(folders)
+	featuredict=dictmaker(folders, 6000)
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti = matrixmachine(folders, featuredict, "category1")
 	x=clustermachine(wordmatrix_without_cat)
 	#print [i.name for i in x]
@@ -248,8 +265,10 @@ def main():
 	simi=ct.Clusteringsimilarity(input)
 	options=['adjustedrand_sim', 'adjustedmutualinfo_sim', 'jaccard_sim', 'v_sim', 'completeness_sim', 'homogeneity_sim', 'silhouette_score_sim']
 	for o in options:
+		print "\n---\n"
 		ct.Clusteringsimilarity.similarity_matrix(simi, o)
-	
+	endtime=time.time()
+	print "This took us {} minutes".format((endtime-starttime)/60)
 	#t=str(type(i.name)).split("."))[3].rstrip("'>")
 	
 	
