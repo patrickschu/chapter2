@@ -21,21 +21,19 @@ class Clustering(object):
 	def _clusterdictmaker(self, matrix_without_cats):
 		#in the clusterdicti, we collect for each cluster the data points contained
 		# output is a dictionary with ACTUAL vectors
-		# why don't we feed it the self.matrix?
 		iterator=range(self.no_of_clusters)
 		clusterdicti=defaultdict()
 		for cluster in iterator:
 			#give me indexes of label array where cluster is true	
 			#note that where returns a cluster that is always len 1
 			# we are interested in l[0]
-			#clusterdicti[cluster]=np.where(self.labels==cluster)[0]
 			clusterdicti[cluster]=np.array([matrix_without_cats[i] for i in np.where(self.labels==cluster)[0]])
 		return clusterdicti
 
 	def _clustercatdictmaker(self, matrix_with_cats):
 		#in this dicti, we collect for each cluster the items per category
 		# output is a dictionary of ACTUAL vectors
-		#structure: { cluster: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}
+		#structure: { clustercatdicti: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}
 		# why don't we feed it the self.matrix?
 		iterator=range(self.no_of_clusters)
 		clustercatdicti=defaultdict()
@@ -54,7 +52,7 @@ class Clusteringstats(Clustering):
 	"""basic statistics of a clustering"""
 	
 	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
-		Clustering.__init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None)
+		Clustering.__init__(self, name, labels , centroids=None, actual_centroids=None)
 		self.matrix_without_cats=matrix_with_cats[:,1:]
 			
 	def size_of_clusters(self):
@@ -75,7 +73,7 @@ class Clusteringstats(Clustering):
 		return cluster_features
 		
 	def cluster_features(self):
-		#how spread out is the cluster? ## cluster or clustering???
+		#how spread out is each cluster? 
 		# returns dictionary of basic stats
 		featuredicti=defaultdict()
 		dict=self._clusterdictmaker(self.matrix_without_cats)
@@ -104,8 +102,8 @@ class Centroidstats(Clustering):
 
 	"""statistics and calculations with centroids within a clustering"""
 			
-	def __init__(self, dataframe, name, labels,centroids=None, actual_centroids=None):
-		Clustering.__init__(self, dataframe, name, labels, centroids, actual_centroids)
+	def __init__(self, name, labels,centroids=None, actual_centroids=None):
+		Clustering.__init__(self, name, labels, centroids, actual_centroids)
 		#relevant here: centroids and actual centroids
 		#centroid will be a vector of len (x)
 		
@@ -206,12 +204,13 @@ class Centroidstats(Clustering):
 		
 
 
-class Clusteringsimilarity(Clustering):
+class Clusteringsimilarity(Clustering, matrix_with_cats):
 
 	""" Calculates similarity measures between clusterings for cluster comparison. """
 
 	def __init__(self, args): 
 		self.partitionings=dict((k, v) for k, v in args)
+		self.matrix_without_cats=matrix_with_cats[:,1:]
 			
 	def get_variables(self, key):
 		return self.partitionings.get(key, None)

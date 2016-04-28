@@ -1,3 +1,6 @@
+We usually examine the means for each cluster on each dimension using ANOVA to assess how distinct our clusters are. Ideally, we would obtain significantly different means for most, if not all dimensions, used in the analysis. The magnitude of the F values performed on each dimension is an indication of how well the respective dimension discriminates between clusters.
+
+
 #####
 print('{:>8} {:>8} {:>8}'.format(*words))
 # print '{:10s} {:3d}  {:7.2f}'.format('xxx', 123, 98)

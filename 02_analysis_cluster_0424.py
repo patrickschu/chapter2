@@ -142,7 +142,7 @@ def clustermachine(matrix, clusters=4):
 	centroids=clustering.cluster_centers_
 	labels=clustering.labels_
 	inertia=clustering.inertia_
-	kmeans=ct.Clustering(matrix, model, clustering.labels_, clustering.cluster_centers_)
+	kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
 	result.append(kmeans)
 	print [i.name for i in result][len(result)-1]
 	u=time.time()
@@ -153,7 +153,7 @@ def clustermachine(matrix, clusters=4):
  	clustering=model.fit(matrix)
  	centroids=clustering.cluster_centers_
  	labels=clustering.labels_
- 	meanshift=ct.Clustering(matrix, model, clustering.labels_, clustering.cluster_centers_)
+ 	meanshift=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
  	result.append(meanshift)
  	u=time.time()
  	print [i.name for i in result][len(result)-1]
@@ -167,7 +167,7 @@ def clustermachine(matrix, clusters=4):
  	labels=clustering.labels_
  	aff_matrix=clustering.affinity_matrix_
  	its= clustering.n_iter_
- 	affinity=ct.Clustering(matrix, model, clustering.labels_, clustering.cluster_centers_)
+ 	affinity=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
  	result.append(affinity)
 	u=time.time()
  	print [i.name for i in result][len(result)-1]
@@ -178,7 +178,7 @@ def clustermachine(matrix, clusters=4):
 	clustering=model.fit(matrix)
 	labels=clustering.labels_
  	aff_matrix=clustering.affinity_matrix_
- 	spectral= ct.Clustering(matrix, model, clustering.labels_)
+ 	spectral= ct.Clustering(model, clustering.labels_)
 	result.append(spectral)
  	u=time.time()
  	print [i.name for i in result][len(result)-1]
@@ -193,7 +193,7 @@ def clustermachine(matrix, clusters=4):
 	core_samples=clustering.core_sample_indices_
 	components=clustering.components_
 	labels=clustering.labels_
-	dbscan= ct.Clustering(matrix, model, clustering.labels_, clustering.core_sample_indices_)
+	dbscan= ct.Clustering(model, clustering.labels_, clustering.core_sample_indices_)
 	result.append(dbscan)
 	u=time.time()
  	print [i.name for i in result][len(result)-1]
@@ -221,7 +221,7 @@ def clustermachine(matrix, clusters=4):
 	labels=clustering.labels_
 	leaves=clustering.n_leaves_
 	components=clustering.n_components_
-	ward= ct.Clustering(matrix, model, clustering.labels_)
+	ward= ct.Clustering(model, clustering.labels_)
 	result.append(ward)
 	u=time.time()
  	print [i.name for i in result][len(result)-1]
@@ -233,7 +233,7 @@ def clustermachine(matrix, clusters=4):
 	labels=clustering.labels_
 	root=clustering.root_
 	subcluster_labels=clustering.subcluster_labels_
-	birch= ct.Clustering(matrix, model, clustering.labels_)
+	birch= ct.Clustering(model, clustering.labels_)
 	result.append(birch)
 	u=time.time()
  	print [i.name for i in result][len(result)-1]
@@ -251,9 +251,9 @@ def main():
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
 	print ", ".join(folders)
 	print ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
-	folders=['files9_output_0102', 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
+	folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
-	featuredict=dictmaker(folders, 9000)
+	featuredict=dictmaker(folders, 5000)
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti = matrixmachine(folders, featuredict, "category1")
 	#self.matrix_with_cats=matrix_with_cats  #data frame including "gold labels"
 	#self.matrix_without_cats=matrix_with_cats[:,1:] #data frame without "gold labels"
@@ -263,7 +263,7 @@ def main():
 	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
 	for clustering in x:
 		print "\n\n-----------\n\nClustering called {} has {} clusters". format(clustering.getname()[0], clustering.no_of_clusters)
-		print "Its silhouette score is {}".format(clustering.silhouette)
+		print "Its silhouette score is {}".format(ct.Clusteringsimilarity.clustering_quality(wordmatrix_with_cat))
 		stats=ct.Clusteringstats(wordmatrix_with_cat, clustering.name, clustering.labels).size_of_clusters()
 		catstats=ct.Clusteringstats(wordmatrix_with_cat, clustering.name, clustering.labels).cats_per_cluster()
 		for cluster in stats:
