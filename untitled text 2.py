@@ -173,11 +173,6 @@ x=1
 # r=(g-s)*60
 # print r
 
-t=['a','b','c','d']
-print len(t)
-
-r=range(1, len(t))
-print r
-
-for item in r:
-	print t[item]
+s=[(0.056592609066769092, u','), (-0.0063945529455037668, u'i'), (-0.0051574474241341088, u'.')] 
+t=["::::".join(map(str, i)) for i in s]
+print t

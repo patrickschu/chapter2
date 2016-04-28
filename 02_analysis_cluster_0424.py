@@ -57,7 +57,7 @@ def dictmaker(folderlist, threshold=1000):
 	return featuredict
 	
 	##
-	###FINDING CATEGOIRES
+	###FINDING CATEGORIES
 	#this just extracts the categories from our files
 def categorymachine(folderlist):
 	print "starting category machine"
@@ -137,7 +137,7 @@ def clustermachine(matrix, clusters=4):
 	t=time.time()
 	
 	## # 1: kmeans
-	model=sklearn.cluster.KMeans(clusters)
+	model=sklearn.cluster.KMeans(clusters,tol=0)
 	clustering=model.fit(matrix)
 	centroids=clustering.cluster_centers_
 	labels=clustering.labels_
@@ -149,95 +149,95 @@ def clustermachine(matrix, clusters=4):
 	print (u-t)/60
 	
 # 	## #2: MeanShift, takes forever @  12600, 42
-	model=sklearn.cluster.MeanShift()
- 	clustering=model.fit(matrix)
- 	centroids=clustering.cluster_centers_
- 	labels=clustering.labels_
- 	meanshift=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
- 	result.append(meanshift)
- 	u=time.time()
- 	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
- 	
- 	# 3: Affinity Propagation, breaks @ 12600, 42
- 	model=sklearn.cluster.AffinityPropagation()
-	clustering=model.fit(similarity_matrix)
-	centroid_index=model.cluster_centers_indices_
-	centroids=clustering.cluster_centers_
- 	labels=clustering.labels_
- 	aff_matrix=clustering.affinity_matrix_
- 	its= clustering.n_iter_
- 	affinity=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
- 	result.append(affinity)
-	u=time.time()
- 	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
-	
-	## #4: Spectral clustering
-	model=sklearn.cluster.SpectralClustering()
-	clustering=model.fit(matrix)
-	labels=clustering.labels_
- 	aff_matrix=clustering.affinity_matrix_
- 	spectral= ct.Clustering(model, clustering.labels_)
-	result.append(spectral)
- 	u=time.time()
- 	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
- 	
- 	
- 	
-#  	##watch out --------- centroids are indices!!!!!	
-# 	## # 5: DBCASN, eanShift, takes forever @  12600, 42
-	model=sklearn.cluster.DBSCAN()
-	clustering=model.fit(matrix)
-	core_samples=clustering.core_sample_indices_
-	components=clustering.components_
-	labels=clustering.labels_
-	dbscan= ct.Clustering(model, clustering.labels_, clustering.core_sample_indices_)
-	result.append(dbscan)
-	u=time.time()
- 	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
-	
-	##GUASSIN DOEs NOT FIT OUR SCHEMA AT THIS POINT
-	## 6: GAUSSIAN MIXTURE. eh this does not really fit in here
-	model=sklearn.mixture.GMM()
-	clustering=model.fit(matrix)
-	weights=model.weights_
- 	means=model.means_
- 	covars=model.covars_
- 	converged=clustering.converged_	
- 	u=time.time()
- 	result.append(dbscan)
- 	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
-	
-
-	#These are essentially trees; maybe need a different approach. They are kinda predictive
-	
-# 	## #7: Agglomerative // Ward Hierarchical 
-	model=sklearn.cluster.AgglomerativeClustering()
-	clustering=model.fit(matrix)
-	labels=clustering.labels_
-	leaves=clustering.n_leaves_
-	components=clustering.n_components_
-	ward= ct.Clustering(model, clustering.labels_)
-	result.append(ward)
-	u=time.time()
- 	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
-
-	## #8: Birch Hierarchical 	
-	model=sklearn.cluster.Birch(threshold=0.025)
-	clustering=model.fit(matrix)
-	labels=clustering.labels_
-	root=clustering.root_
-	subcluster_labels=clustering.subcluster_labels_
-	birch= ct.Clustering(model, clustering.labels_)
-	result.append(birch)
-	u=time.time()
- 	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
+# 	model=sklearn.cluster.MeanShift()
+#  	clustering=model.fit(matrix)
+#  	centroids=clustering.cluster_centers_
+#  	labels=clustering.labels_
+#  	meanshift=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+#  	result.append(meanshift)
+#  	u=time.time()
+#  	print [i.name for i in result][len(result)-1]
+# 	print (u-t)/60
+#  	
+#  	# 3: Affinity Propagation, breaks @ 12600, 42
+#  	model=sklearn.cluster.AffinityPropagation()
+# 	clustering=model.fit(similarity_matrix)
+# 	centroid_index=model.cluster_centers_indices_
+# 	centroids=clustering.cluster_centers_
+#  	labels=clustering.labels_
+#  	aff_matrix=clustering.affinity_matrix_
+#  	its= clustering.n_iter_
+#  	affinity=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+#  	result.append(affinity)
+# 	u=time.time()
+#  	print [i.name for i in result][len(result)-1]
+# 	print (u-t)/60
+# 	
+# 	## #4: Spectral clustering
+# 	model=sklearn.cluster.SpectralClustering()
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+#  	aff_matrix=clustering.affinity_matrix_
+#  	spectral= ct.Clustering(model, clustering.labels_)
+# 	result.append(spectral)
+#  	u=time.time()
+#  	print [i.name for i in result][len(result)-1]
+# 	print (u-t)/60
+#  	
+#  	
+#  	
+# #  	##watch out --------- centroids are indices!!!!!	
+# # 	## # 5: DBCASN, eanShift, takes forever @  12600, 42
+# 	model=sklearn.cluster.DBSCAN()
+# 	clustering=model.fit(matrix)
+# 	core_samples=clustering.core_sample_indices_
+# 	components=clustering.components_
+# 	labels=clustering.labels_
+# 	dbscan= ct.Clustering(model, clustering.labels_, clustering.core_sample_indices_)
+# 	result.append(dbscan)
+# 	u=time.time()
+#  	print [i.name for i in result][len(result)-1]
+# 	print (u-t)/60
+# 	
+# 	##GUASSIN DOEs NOT FIT OUR SCHEMA AT THIS POINT
+# 	## 6: GAUSSIAN MIXTURE. eh this does not really fit in here
+# 	model=sklearn.mixture.GMM()
+# 	clustering=model.fit(matrix)
+# 	weights=model.weights_
+#  	means=model.means_
+#  	covars=model.covars_
+#  	converged=clustering.converged_	
+#  	u=time.time()
+#  	result.append(dbscan)
+#  	print [i.name for i in result][len(result)-1]
+# 	print (u-t)/60
+# 	
+# 
+# 	#These are essentially trees; maybe need a different approach. They are kinda predictive
+# 	
+# # 	## #7: Agglomerative // Ward Hierarchical 
+# 	model=sklearn.cluster.AgglomerativeClustering()
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	leaves=clustering.n_leaves_
+# 	components=clustering.n_components_
+# 	ward= ct.Clustering(model, clustering.labels_)
+# 	result.append(ward)
+# 	u=time.time()
+#  	print [i.name for i in result][len(result)-1]
+# 	print (u-t)/60
+# 
+# 	## #8: Birch Hierarchical 	
+# 	model=sklearn.cluster.Birch(threshold=0.025)
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	root=clustering.root_
+# 	subcluster_labels=clustering.subcluster_labels_
+# 	birch= ct.Clustering(model, clustering.labels_)
+# 	result.append(birch)
+# 	u=time.time()
+#  	print [i.name for i in result][len(result)-1]
+# 	print (u-t)/60
 	
 	return(result)
 	
@@ -257,13 +257,28 @@ def main():
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti = matrixmachine(folders, featuredict, "category1")
 	#self.matrix_with_cats=matrix_with_cats  #data frame including "gold labels"
 	#self.matrix_without_cats=matrix_with_cats[:,1:] #data frame without "gold labels"
-	x=clustermachine(wordmatrix_without_cat)
+	x=clustermachine(wordmatrix_without_cat,2)
 	print [(i.name, i.no_of_clusters) for i in x]
 	#print [i.name for i in x]
 	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
 	for clustering in x:
-		print "\n\n-----------\n\nClustering called {} has {} clusters". format(clustering.getname()[0], clustering.no_of_clusters)
-		print "Its silhouette score is {}".format(ct.Clusteringsimilarity.clustering_quality(wordmatrix_with_cat))
+		#stats=ct.Clusteringstats(wordmatrix_with_cat, clustering.name, clustering.labels)
+		# print stats.size_of_clusters()
+# 		print stats.cats_per_cluster()
+		# print [np.mean(stats.cluster_features()[e]['silhouette_score']) for e in stats.cluster_features()]
+		
+		# print cents.distance_between_centroids()
+# 		print cents.cluster_predictors(featuredict)
+# 		print [("kmeans", x[0]), ("kmeans_2", x[0])]
+		# simi=ct.Clusteringsimilarity(wordmatrix_with_cat, [("kmeans", x[0]), ("kmeans_2", x[0])])
+# 		simi.similarity_matrix("jaccard_sim")
+# 		print simi.clustering_quality()
+		cati=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels)
+	# 	print cati.size_of_categories()
+		
+	
+	 	print "\n\n-----------\n\nClustering called {} has {} clusters". format(clustering.getname()[0], clustering.no_of_clusters)
+ 		print "Its silhouette score is {}".format("TO BE ADDED TO CLUSTERSTATS")
 		stats=ct.Clusteringstats(wordmatrix_with_cat, clustering.name, clustering.labels).size_of_clusters()
 		catstats=ct.Clusteringstats(wordmatrix_with_cat, clustering.name, clustering.labels).cats_per_cluster()
 		for cluster in stats:
@@ -273,21 +288,40 @@ def main():
 		cats=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels).size_of_categories()
 		print "\n\n-----------\n\nStatistics per category"
 		for cat in [i for i in cats if not i in excludelist]:
-			print "Category {} has {} items".format("".join([i[0] for i in catdicti.items() if i[1] == int(cat)]), cats[cat]['total'])
+			print "\nCategory {} has {} items".format("".join([i[0] for i in catdicti.items() if i[1] == int(cat)]), cats[cat]['total'])
 			for entry in [i for i in cats[cat]['cat_per_cluster'] if not i in excludelist]:
 				print "{} items or {} percent in cluster {}".format(cats[cat]['cat_per_cluster'][entry], round(float(cats[cat]['cat_per_cluster'][entry])/float(cats[cat]['total'])*100), entry)
-	print "\n\n-----------\n\nComparing clusterings"
+
+		print "\n\n-----------\n\nStronly predictive features are"
+		cents=ct.Centroidstats(clustering.name, clustering.labels, clustering.centroids).cluster_predictors(featuredict)
+		for diff in cents:
+			print diff[1]
+			print [type(i) for i in cents[diff]['raw_diff']]
+			print "\n Raw Scores"
+			print "{} differentiate {} and {}".format(", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['raw_diff']]), diff[0], diff[1]) 
+			print "Zscores"
+			print "{} differentiate {} and {}".format(", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['zscores_diff']]), diff[0], diff[1])
+		"We can also add equivalent features if we want"
+		"And stems and whatnot"
 		
-	input=[(str(type(i.name)).split(".")[3].rstrip("'>"), i) for i in x]
-	simi=ct.Clusteringsimilarity(input)
-	options=['adjustedrand_sim', 'adjustedmutualinfo_sim', 'jaccard_sim', 'v_sim', 'completeness_sim', 'homogeneity_sim', 'silhouette_score_sim']
-	for o in options:
-		print "\n---\n"
-		ct.Clusteringsimilarity.similarity_matrix(simi, o)
-	endtime=time.time()
-	print "This took us {} minutes".format((endtime-starttime)/60)
-	#t=str(type(i.name)).split("."))[3].rstrip("'>")
-	
+		
+		print "\n\n-----------\n\nHere is a typical document for each cluster"
+		
+		#or do we want to do predictive features and typical document per cluster as well????
+		
+		
+#	print "\n\n-----------\n\nComparing clusterings"
+# 		
+# 	input=[(str(type(i.name)).split(".")[3].rstrip("'>"), i) for i in x]
+# 	simi=ct.Clusteringsimilarity(wordmatrix_with_cat, input)
+# 	options=['adjustedrand_sim', 'adjustedmutualinfo_sim', 'jaccard_sim', 'v_sim', 'completeness_sim', 'homogeneity_sim', 'silhouette_score_sim']
+# 	for o in options:
+# 		print "\n---\n"
+# 		ct.Clusteringsimilarity(wordmatrix_with_cat, input).similarity_matrix(o)
+# 	endtime=time.time()
+# 	print "This took us {} minutes".format((endtime-starttime)/60)
+# 	#t=str(type(i.name)).split("."))[3].rstrip("'>")
+# 	
 	
 	
 main()

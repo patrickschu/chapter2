@@ -53,6 +53,7 @@ class Clusteringstats(Clustering):
 	
 	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
 		Clustering.__init__(self, name, labels , centroids=None, actual_centroids=None)
+		self.matrix_with_cats=matrix_with_cats
 		self.matrix_without_cats=matrix_with_cats[:,1:]
 			
 	def size_of_clusters(self):
@@ -64,7 +65,7 @@ class Clusteringstats(Clustering):
 	def cats_per_cluster(self):
 		#how many categories in each cluster?
 		# output structure: {cluster: { categ x: N, cat y: N, total: x=y, no_of_categories: len[x,y]}	
-		dict=self._clustercatdictmaker(matrix_with_cats)
+		dict=self._clustercatdictmaker(self.matrix_with_cats)
 		cluster_features=defaultdict()
 		for i in dict:
 			cluster_features[i]={k:float(len(v)) for k,v in dict[i].items()}
@@ -125,7 +126,24 @@ class Centroidstats(Clustering):
 			for i in range(self.no_of_clusters):
 				centroiddicti[i]=self.centroids[i]
 			return centroiddicti
-			
+	
+	#do we want it here or its own thing
+	def central_documents (self):
+		#for actual vectors: find doc closest to the centroid
+		
+		# for indexes: just look it up in matrix, get row line
+		# do we write the filename into the matrix with cats??
+		# we should add a setting where we can set the length of external factors
+		# external=3 --> 	self.matrix_without_cats=matrix_with_cats[:,external:]	
+		# we should coordinate that with the catdicti maker
+		for centroid in centroids:
+			centroid - item = abs(difference)
+				#apply to whole matrix_without_cats, should work in numpy
+				#sum and smallest row wins
+			# get the matching row in matrix_with_cats
+# 			open the file, print out 
+				
+				
 			
 	def distance_between_centroids(self):
 		if self._centroid_check()==False:
@@ -180,8 +198,8 @@ class Centroidstats(Clustering):
 		sorted_zscores=self._differencemaker(zscoredicti)
 		#building an empty dict
 		predictdicti={tup[0]:{
-		'raw_diff':[],
-		'zscores_diff':[]
+		'raw_diff':None,
+		'zscores_diff':None
 		} 
 		for tup in sorted_values}
 		
@@ -193,23 +211,24 @@ class Centroidstats(Clustering):
 			sorted_diffs=tup[1][index][::-1]
 			sorted_vocab=arrayed_vocab[index][::-1]
 			raw_dist=zip(sorted_diffs, sorted_vocab)
-			predictdicti[tup[0]]['raw_diff'].append(raw_dist)
+			predictdicti[tup[0]]['raw_diff']=raw_dist
 		for tup in sorted_zscores:
 			index=tup[2]
 			sorted_diffs=tup[1][index][::-1]
 			sorted_vocab=arrayed_vocab[index][::-1]
-			raw_dist=zip(sorted_diffs, sorted_vocab)
-			predictdicti[tup[0]]['zscores_diff'].append(raw_dist)
+			zscore_dist=zip(sorted_diffs, sorted_vocab)
+			predictdicti[tup[0]]['zscores_diff']=zscore_dist
 		return predictdicti
 		
 
 
-class Clusteringsimilarity(Clustering, matrix_with_cats):
+class Clusteringsimilarity(Clustering):
 
 	""" Calculates similarity measures between clusterings for cluster comparison. """
 
-	def __init__(self, args): 
-		self.partitionings=dict((k, v) for k, v in args)
+	def __init__(self, matrix_with_cats, models): 
+		#partitionings consists of model name and model out of the list of tuples input into models
+		self.partitionings=dict((k, v) for k, v in models)
 		self.matrix_without_cats=matrix_with_cats[:,1:]
 			
 	def get_variables(self, key):
@@ -220,7 +239,8 @@ class Clusteringsimilarity(Clustering, matrix_with_cats):
 		
 	def _partitionsimilarity_dictmaker(self):		
 		# for item in self.partitionings:
-# 			print self.partitionings[item].name
+		print self.partitionings[item].name
+		matrix_without_cats=self.matrix_without_cats
 		similaritydict={}
 		# all possible combinations between models
 		for combo in itertools.combinations(self.partitionings.keys(),2):
@@ -233,7 +253,8 @@ class Clusteringsimilarity(Clustering, matrix_with_cats):
 			'v_sim': sklearn.metrics.v_measure_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
 			'completeness_sim': sklearn.metrics.completeness_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
 			'homogeneity_sim':sklearn.metrics.homogeneity_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
-			'silhouette_score_sim': (sklearn.metrics.silhouette_score(self.partitionings[combo[0]].matrix_without_cats, self.partitionings[combo[0]].labels), sklearn.metrics.silhouette_score(self.partitionings[combo[1]].matrix_without_cats, self.partitionings[combo[1]].labels)),
+			#double check this silhouette score. how do we get the matrix without in here???
+			'silhouette_score_sim': (sklearn.metrics.silhouette_score(self.matrix_without_cats, self.partitionings[combo[0]].labels), sklearn.metrics.silhouette_score(self.matrix_without_cats, self.partitionings[combo[1]].labels)),
 			'variation_of_information':'is in R'
 		}
 		return similaritydict
@@ -268,10 +289,10 @@ class Clusteringsimilarity(Clustering, matrix_with_cats):
 
 
 	def clustering_quality(self):
-		# returns Jaccardi score for each clustering
+		# returns Silhouette score for each clustering
 		qualitydict={}
 		for key in self.partitionings.keys():
-			qualitydict[key]=sklearn.metrics.silhouette_score(self.partitionings[key].matrix_without_cats, self.partitionings[key].labels)
+			qualitydict[key]=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.partitionings[key].labels)
 		return qualitydict
 		
 		
@@ -281,18 +302,18 @@ class Categorystats(Clustering):
 	"""basic statistics of categories within a clustering"""
 	
 	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
-		Clustering.__init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None)
+		Clustering.__init__(self, name, labels , centroids=None, actual_centroids=None)
+		self.matrix_without_cats=matrix_with_cats[:,1:]
+		self.matrix_with_cats=matrix_with_cats
+			
 			
 	
 	#get item per category and how spread out over clusters
 	
 	def size_of_categories(self):
 		#returns the number of categories, and how they are spread out over clusters
-		dict=self._clustercatdictmaker(matrix_with_cats)
-		# for item in dict:
-# 			print "\n=-----=\n", "item: ", item, dict[item].keys()
-# 			for key in dict[item].keys():
-# 				print "key: ", key, len(dict[item][key])
+		# format dict{cat 1: {cluster 0: x, cluster 1: y, ...}, cat 2: {}
+		dict=self._clustercatdictmaker(self.matrix_with_cats)
 		cats=[dict[cluster].keys() for cluster in dict]
 		#flattening a list a la http://stackoverflow.com/questions/406121/flattening-a-shallow-list-in-python
 		cats=set(list(itertools.chain.from_iterable(cats)))

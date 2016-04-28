@@ -1,108 +1,19 @@
 We usually examine the means for each cluster on each dimension using ANOVA to assess how distinct our clusters are. Ideally, we would obtain significantly different means for most, if not all dimensions, used in the analysis. The magnitude of the F values performed on each dimension is an indication of how well the respective dimension discriminates between clusters.
 
+figure out real vs index centroids
+what to use, how to keep them apart
 
-#####
-print('{:>8} {:>8} {:>8}'.format(*words))
-# print '{:10s} {:3d}  {:7.2f}'.format('xxx', 123, 98)
-# print '{:10s} {:3d}  {:7.2f}'.format('yyyy', 3, 1.0)
-# print '{:10s} {:3d}  {:7.2f}'.format('zz', 42, 123.34)
-# will print
-# 
-# xxx        123    98.00
-# yyyy         3     1.00
-# zz          42   123.34
-# You can adjust the field sizes as desired. Note that .format works independently of print to format a string. I just used print to display the strings. Brief explanation:
-# 
-# 10s format a string with 10 spaces, left justified by default
-# 
-# 3d format an integer reserving 3 spaces, right justified by default
-# 
-# 7.2f format a float, reserving 7 spaces, 2 after the decimal point, right justfied by default.
-#
-add more cluster methods, eg. kmeans manhattan, euclidean, etc
 
 evaluate correctness of cluster similairy matrix
 
-something about the name. so inconvenient
 add tfidf scores for features
-add cluster eval mechanism
 
 entropy van be calcilated for every custering
-
-
-make blobs lets us create random datasets
 inertia per cluster??
 
-http://stackoverflow.com/questions/9483498/print-table-in-python
-http://stackoverflow.com/questions/7136432/data-table-in-python
+make blobs lets us create random datasets
+
 
 use product instead of combinations
 
 
-l = [['Something', 'Something else', 'Another thing'],
-     ['Other things', 'More data', 'Element'],
-     ['Stuff', 'data', 'etc']]
-sub1 = [
-    [s.ljust(max(len(i) for i in column)) for s in column]
-    for column in zip(*l)]
-for p in [" ".join(row) for row in zip(*sub1)]: print p
-Here, first the list gets transformed with zip(*l): each of the sub lists gets passed as an own argument to zip(). The result is a list which combines the n-th entries of each old list, so you get [['Something', 'Other things', 'Stuff'], ['Something else', 'More data', 'data'], ...].
-
-Then the entries whose lengths are to be matched are in the same column. In each of these columns the strings are ljust()ed to the greatest length in the group.
-
-After that, the new list with the adjusted lengths is transformed again - in the same way as above - and the components joined with a " " in-between.
-
-The resulting 1D list is then printed entry by entry.
-
-# from itertools import product
-# 
-# caesar = """BOOK I
-# I.--All Gaul is divided into three parts, one of which the Belgae
-# inhabit, the Aquitani another, those who in their own language are
-# called Celts, in ours Gauls, the third. All these differ from each other
-# in language, customs and laws."""
-# 
-# hamlet = """Who's there?" 
-# "Nay, answer me. Stand and unfold yourself." 
-# "Long live the King!" 
-# "Barnardo!" 
-# "He." (I.i.1-5)"""
-# 
-# macbeth = """ACT I  SCENE I     A desert place. Thunder and lightning.   
-# [Thunder and lightning. Enter three Witches]
-# First Witch When shall we three meet again
-# In thunder, lightning, or in rain?
-# Second Witch    When the hurlyburly's done,
-# When the battle's lost and won."""
-# 
-# texts = [caesar, hamlet, macbeth]
-# 
-# def similarity(x, y):
-#     """similarity based on length of the text,
-#     substitute with similarity function from Natural Language Toolkit"""
-#     return float(len(x))/len(y)
-# 
-# 
-# for pair in product(texts, repeat=2):
-#     print "{}".format(similarity(*pair))
-# 
-# 
-# # 
-# # 	item=column_header
-# # 	fill column by looking up item + i in y
-# # 	append to list
-# # 
-# # 
-# # k=cors.keys()
-# # v=cors.values()
-# # print k
-# # print v
-# # 
-# # columnlabels=[i[0][1] for i in cors.items()]
-# # rowlabels=[[i[0][0], i[1]] for i in cors.items()]
-# # 
-# # print columnlabels
-# # print cors.values()
-# # print cors.items()
-# # print rowlabels
-# # 

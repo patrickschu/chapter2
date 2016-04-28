@@ -1,13 +1,13 @@
 WHAT DO WE HAVE
 
 In Centroidstats:
-I. distance btw centroids in various metrics
-II. predictors for centroids
+I. distance btw centroids in various metrics YES
+II. predictors for centroids YES
 
 
 In Partitionstats
-III. Size of each cluster in items
-IV. Makeup of each cluster expressed in gold labels
+III. Size of each cluster in items YES
+IV. Makeup of each cluster expressed in gold labels YES
 V. Basic clusterstats
 	V.i mean
 	V.ii. median
@@ -15,27 +15,32 @@ V. Basic clusterstats
 	V.iv var
 	V.v  range
 	V.vi zscore_range
-	V. vii feature_correlation':np.corrcoef
+	V. vii feature_correlation':np.corrcoef --> NOT uSED YET
+	
 		
 In Cluster
-VI number of clusters
+VI number of clusters YES
 	
 STATS TO DETERMINE
 
 CROSS PARTITION -- COMPARE CLUSTERINGS
-1. Information variation
-2. Classification "error" for our gold labels
+1. Information variation --> IN PYTHON??
+2. Classification "error" for our gold labels ---> if gold labels == groups, we kinda have it. Except if
+we want to make majority cluster == positive classification and then how much error. 
+
+
+
 3. Metrics:
-		from sklearn import metrics
-		# V-measure: 0.917 
-		# Adjusted Rand Index: 0.952 
-		# Adjusted Mutual Information: 0.883
+		from sklearn import metrics -YES
+		# V-measure: 0.917 -YES
+		# Adjusted Rand Index: 0.952 -YES 
+		# Adjusted Mutual Information: 0.883 -YES
 		
 		#note that we can use all of those to compare to gold labels as well
 		model internal
 		#inertia
 		# sihouette: works on a cluster basis, not partition; average score is reported for partition
-		# include silhouette in our cluster stats???
+		#
 		
 
 
