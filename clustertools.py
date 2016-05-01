@@ -95,7 +95,9 @@ class Clusteringstats(Clustering):
 			} 
 		return featuredicti
 
-
+	def cluster_silhouette(self):
+		silhouette=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.labels)
+		return silhouette
 
 
 # remember that we could use z scores		
@@ -128,20 +130,20 @@ class Centroidstats(Clustering):
 			return centroiddicti
 	
 	#do we want it here or its own thing
-	def central_documents (self):
-		#for actual vectors: find doc closest to the centroid
-		
-		# for indexes: just look it up in matrix, get row line
-		# do we write the filename into the matrix with cats??
-		# we should add a setting where we can set the length of external factors
-		# external=3 --> 	self.matrix_without_cats=matrix_with_cats[:,external:]	
-		# we should coordinate that with the catdicti maker
-		for centroid in centroids:
-			centroid - item = abs(difference)
-				#apply to whole matrix_without_cats, should work in numpy
-				#sum and smallest row wins
-			# get the matching row in matrix_with_cats
-# 			open the file, print out 
+# 	def central_documents (self):
+# 		#for actual vectors: find doc closest to the centroid
+# 		
+# 		# for indexes: just look it up in matrix, get row line
+# 		# do we write the filename into the matrix with cats??
+# 		# we should add a setting where we can set the length of external factors
+# 		# external=3 --> 	self.matrix_without_cats=matrix_with_cats[:,external:]	
+# 		# we should coordinate that with the catdicti maker
+# 		for centroid in centroids:
+# 			centroid - item = abs(difference)
+# 				#apply to whole matrix_without_cats, should work in numpy
+# 				#sum and smallest row wins
+# 			# get the matching row in matrix_with_cats
+# # 			open the file, print out 
 				
 				
 			

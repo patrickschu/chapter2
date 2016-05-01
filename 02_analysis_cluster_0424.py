@@ -161,7 +161,7 @@ def clustermachine(matrix, clusters=4):
 #  	
 #  	# 3: Affinity Propagation, breaks @ 12600, 42
 #  	model=sklearn.cluster.AffinityPropagation()
-# 	clustering=model.fit(similarity_matrix)
+# 	clustering=model.fit(matrix)
 # 	centroid_index=model.cluster_centers_indices_
 # 	centroids=clustering.cluster_centers_
 #  	labels=clustering.labels_
@@ -262,23 +262,13 @@ def main():
 	#print [i.name for i in x]
 	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
 	for clustering in x:
-		#stats=ct.Clusteringstats(wordmatrix_with_cat, clustering.name, clustering.labels)
-		# print stats.size_of_clusters()
-# 		print stats.cats_per_cluster()
-		# print [np.mean(stats.cluster_features()[e]['silhouette_score']) for e in stats.cluster_features()]
-		
-		# print cents.distance_between_centroids()
-# 		print cents.cluster_predictors(featuredict)
-# 		print [("kmeans", x[0]), ("kmeans_2", x[0])]
-		# simi=ct.Clusteringsimilarity(wordmatrix_with_cat, [("kmeans", x[0]), ("kmeans_2", x[0])])
-# 		simi.similarity_matrix("jaccard_sim")
-# 		print simi.clustering_quality()
 		cati=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels)
+		sili=ct.Clusteringstats(wordmatrix_with_cat, clustering.name, clustering.labels).cluster_silhouette()
 	# 	print cati.size_of_categories()
 		
 	
 	 	print "\n\n-----------\n\nClustering called {} has {} clusters". format(clustering.getname()[0], clustering.no_of_clusters)
- 		print "Its silhouette score is {}".format("TO BE ADDED TO CLUSTERSTATS")
+ 		print "Its silhouette score is {}".format(str(sili))
 		stats=ct.Clusteringstats(wordmatrix_with_cat, clustering.name, clustering.labels).size_of_clusters()
 		catstats=ct.Clusteringstats(wordmatrix_with_cat, clustering.name, clustering.labels).cats_per_cluster()
 		for cluster in stats:
@@ -295,10 +285,8 @@ def main():
 		print "\n\n-----------\n\nStronly predictive features are"
 		cents=ct.Centroidstats(clustering.name, clustering.labels, clustering.centroids).cluster_predictors(featuredict)
 		for diff in cents:
-			print diff[1]
-			print [type(i) for i in cents[diff]['raw_diff']]
 			print "\n Raw Scores"
-			print "{} differentiate {} and {}".format(", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['raw_diff']]), diff[0], diff[1]) 
+			print "{} differentiate {} and {}\n".format(", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['raw_diff']]), diff[0], diff[1]) 
 			print "Zscores"
 			print "{} differentiate {} and {}".format(", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['zscores_diff']]), diff[0], diff[1])
 		"We can also add equivalent features if we want"
@@ -306,7 +294,9 @@ def main():
 		
 		
 		print "\n\n-----------\n\nHere is a typical document for each cluster"
-		
+	endtime=time.time()
+	process=endtime-starttime
+	print "This took us {} minutes".format(process/60)
 		#or do we want to do predictive features and typical document per cluster as well????
 		
 		
