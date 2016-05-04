@@ -1,11 +1,18 @@
-import re, os, numpy as np, scipy, itertools, sklearn
+import re
+import os
+import numpy as np
+import scipy
+import itertools
+import sklearn
 from collections import defaultdict
 
 
 
 
 class Clustering(object):
-	"""collect basic features of a clustering"""
+	"""
+	Collect features of a clustering, compute basic counts.
+	"""
 
 	def __init__(self, name, labels , centroids=None, actual_centroids=None):
 		self.name=name #the clustering algorithm we are dealing with
@@ -49,12 +56,14 @@ class Clustering(object):
 
 
 class Clusteringstats(Clustering):
-	"""basic statistics of a clustering"""
+	"""
+	Compute basic statistics of a clustering
+	"""
 	
-	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
+	def __init__(self, matrix_with_cats, matrix_without_cats, name, labels , centroids=None, actual_centroids=None): 
 		Clustering.__init__(self, name, labels , centroids=None, actual_centroids=None)
 		self.matrix_with_cats=matrix_with_cats
-		self.matrix_without_cats=matrix_with_cats[:,1:]
+		self.matrix_without_cats=matrix_without_cats		
 			
 	def size_of_clusters(self):
 		#how many items in each cluster?
@@ -79,7 +88,7 @@ class Clusteringstats(Clustering):
 		featuredicti=defaultdict()
 		dict=self._clusterdictmaker(self.matrix_without_cats)
 		zscoredict={k:scipy.stats.mstats.zscore(dict[k], axis=0, ddof = 1) for k in dict.keys()} #setting  "ddof = 1" so we get the same output as in R
-		silhouette=sklearn.metrics.silhouette_samples(self.matrix_without_cats, self.labels)
+		silhouette=sklearn.metrics.silhouette_samples(matrix_without_cats, self.labels)
 		# iterate over clusters
 		for i in dict:
 			featuredicti[i]={
@@ -103,7 +112,9 @@ class Clusteringstats(Clustering):
 # remember that we could use z scores		
 class Centroidstats(Clustering):
 
-	"""statistics and calculations with centroids within a clustering"""
+	"""
+	Statistics and calculations with centroids within a clustering.
+	"""
 			
 	def __init__(self, name, labels,centroids=None, actual_centroids=None):
 		Clustering.__init__(self, name, labels, centroids, actual_centroids)
@@ -128,23 +139,6 @@ class Centroidstats(Clustering):
 			for i in range(self.no_of_clusters):
 				centroiddicti[i]=self.centroids[i]
 			return centroiddicti
-	
-	#do we want it here or its own thing
-# 	def central_documents (self):
-# 		#for actual vectors: find doc closest to the centroid
-# 		
-# 		# for indexes: just look it up in matrix, get row line
-# 		# do we write the filename into the matrix with cats??
-# 		# we should add a setting where we can set the length of external factors
-# 		# external=3 --> 	self.matrix_without_cats=matrix_with_cats[:,external:]	
-# 		# we should coordinate that with the catdicti maker
-# 		for centroid in centroids:
-# 			centroid - item = abs(difference)
-# 				#apply to whole matrix_without_cats, should work in numpy
-# 				#sum and smallest row wins
-# 			# get the matching row in matrix_with_cats
-# # 			open the file, print out 
-				
 				
 			
 	def distance_between_centroids(self):
@@ -179,7 +173,6 @@ class Centroidstats(Clustering):
 			sorted.append((combo,  diff, np.argsort(absolute_diff)))
 			# we can apply this to the original difference vector; then we turn that one around
 			# same then for vocab
-		#print sorted
 		return sorted
 	
 		
@@ -191,6 +184,7 @@ class Centroidstats(Clustering):
 		# we take the words out of the dictionary supplied & make it into an array
 		vocab=vocab_used_for_feature_extraction.keys()
 		arrayed_vocab=np.array(vocab)
+		print len(arrayed_vocab)
 		
 		# wouldn't we need the whole dataset for z scores to make sense
 		zscoredicti={k:scipy.stats.mstats.zscore(centroiddicti[k], axis=0, ddof = 1) for k in centroiddicti.keys()} #setting  "ddof = 1" so we get the same output as in R
@@ -209,6 +203,7 @@ class Centroidstats(Clustering):
 		# filling the dict
 		for tup in sorted_values:
 			index=tup[2]
+			print len(tup[1]), len(tup[2])
 			#sort by index, then reverse so largest values first
 			sorted_diffs=tup[1][index][::-1]
 			sorted_vocab=arrayed_vocab[index][::-1]
@@ -221,17 +216,65 @@ class Centroidstats(Clustering):
 			zscore_dist=zip(sorted_diffs, sorted_vocab)
 			predictdicti[tup[0]]['zscores_diff']=zscore_dist
 		return predictdicti
-		
+	
+	def central_documents(self, wordmatrix_with_cats):
+		centroids=self._centroiddictmaker()
+		for entry in centroids:
+			centroid=np.array([centroids[entry]])
+			print centroid.shape
+			#look at length of centroid
+			#from the back of wordmatrix with cats
+			print len(centroid)
+			print wordmatrix_with_cats.shape[1]-centroid.shape[1], "external categories"
+			print wordmatrix_with_cats.shape
+			matrix_without_cats=wordmatrix_with_cats[:wordmatrix_with_cats.shape[0], wordmatrix_with_cats.shape[1]-centroid.shape[1]:wordmatrix_with_cats.shape[1]]
+			# calculate distance from each row
+			# but what kind of distance?
+			# needs to be euclidean, manhattan or similar
+			# import numpy as np
+# import scipy
+# 
+# a = np.random.normal(size=(10,3))
+# b = np.random.normal(size=(1,3))
+# 
+# dist = scipy.spatial.distance.cdist(a,b) # pick the appropriate distance metric 
+# dist for the default distant metric is equivalent to:
+# 
+# np.sqrt(np.sum((a-b)**2,axis=1))  
+# although cdist is much more efficient for large arrays (on my machine for your size problem, cdist is faster by a factor of ~35x).
+			# distdicti[combo]={
+# 			'raw_dist': 
+# 			sum(pow(centroiddicti[combo[0]]-centroiddicti[combo[1]], 2)),
+# 			'manhattan_dist':scipy.spatial.distance.cityblock(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+# 			'euclid_dist':scipy.spatial.distance.euclidean(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+# 			#"[Cosine] is thus a judgement of orientation and not magnitude"
+# 			'cosine_dist':scipy.spatial.distance.cosine(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+# 			'minkowski_dist':scipy.spatial.distance.minkowski(centroiddicti[combo[0]],centroiddicti[combo[1]], 3),
+# 			'correlation_dist':scipy.spatial.distance.cosine(centroiddicti[combo[0]],centroiddicti[combo[1]])
+			dist=scipy.spatial.distance.cdist(matrix_without_cats,centroid)
+			dist=scipy.spatial.distance.cdist(matrix_without_cats,centroid, 'euclidean')
+			print dist
+			x=np.argsort(dist, axis=0)
+			print x
+			wordmatrix_with_cats.shape
+			#t= np.take(wordmatrix_with_cats,x,axis=0)
+			t= np.wordmatrix_with_cats.take(x, 0)
+			print t.shape
+			print t
+			#print t[::,1]
+			
+			break
+		print "Centroids", centroids		
 
 
 class Clusteringsimilarity(Clustering):
 
 	""" Calculates similarity measures between clusterings for cluster comparison. """
 
-	def __init__(self, matrix_with_cats, models): 
+	def __init__(self, matrix_with_cats, matrix_without_cats, models): 
 		#partitionings consists of model name and model out of the list of tuples input into models
 		self.partitionings=dict((k, v) for k, v in models)
-		self.matrix_without_cats=matrix_with_cats[:,1:]
+		
 			
 	def get_variables(self, key):
 		return self.partitionings.get(key, None)
@@ -242,7 +285,7 @@ class Clusteringsimilarity(Clustering):
 	def _partitionsimilarity_dictmaker(self):		
 		# for item in self.partitionings:
 		print self.partitionings[item].name
-		matrix_without_cats=self.matrix_without_cats
+		matrix_without_cats=matrix_without_cats
 		similaritydict={}
 		# all possible combinations between models
 		for combo in itertools.combinations(self.partitionings.keys(),2):
@@ -305,7 +348,6 @@ class Categorystats(Clustering):
 	
 	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
 		Clustering.__init__(self, name, labels , centroids=None, actual_centroids=None)
-		self.matrix_without_cats=matrix_with_cats[:,1:]
 		self.matrix_with_cats=matrix_with_cats
 			
 			
