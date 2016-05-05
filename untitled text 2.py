@@ -1,6 +1,7 @@
 import sklearn.metrics, numpy as np, scipy, re, os, itertools, urllib, json
 from bs4 import BeautifulSoup 
 
+
 # Array of pairwise distances between samples, or a feature array.
 # labels : array, shape = [n_samples]
 # clusters=np.array([[1.0,2,1,0,2], [1.0,2,1,0,2],[.0,0,0,1,2], [1.,1,1,1,1], [1.0,2,1,0,20], [1.0,2,1,0,10]])
@@ -41,7 +42,7 @@ from bs4 import BeautifulSoup
 #  			result.append(overlap.get((c,r)))
 # 	print "{:30}".format(r), template.format(*result)
  		
-temp="{} {}"
+temp="{:30} {:30}"
 print "{}".format("aa"), temp.format("ff","all")
 
 # print column_names

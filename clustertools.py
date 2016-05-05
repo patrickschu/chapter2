@@ -6,10 +6,10 @@ import itertools
 import sklearn
 from collections import defaultdict
 
-scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath', 'wminkowski']
+#scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath', 'wminkowski']
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']
 
-#feed them matrices
+
 class Clustering(object):
 	"""
 	Collect features of a clustering, compute basic counts.
@@ -27,28 +27,24 @@ class Clustering(object):
 		return type(self.name), self.name  
 		
 	def _clusterdictmaker(self, matrix_without_cats):
+		# takes a matrix without labels, returns a dictionary with the vectors / cluster
+		# structure: clusterdicti {cluster 0: [[0,1,2], [1,2,2], ...] cluster 1: [], }
 		#in the clusterdicti, we collect for each cluster the data points contained
 		# output is a dictionary with ACTUAL vectors
 		iterator=range(self.no_of_clusters)
 		clusterdicti=defaultdict()
 		for cluster in iterator:
-			#give me indexes of label array where cluster is true	
-			#note that where returns a cluster that is always len 1
-			# we are interested in l[0]
+			# note that "where" returns a cluster that is always len = 2, we are interested in l[0]
 			clusterdicti[cluster]=np.array([matrix_without_cats[i] for i in np.where(self.labels==cluster)[0]])
 		return clusterdicti
 
 	def _clustercatdictmaker(self, matrix_with_cats):
-		#in this dicti, we collect for each cluster the items per category
-		# output is a dictionary of ACTUAL vectors
-		#structure: { clustercatdicti: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}
-		# why don't we feed it the self.matrix?
+		# takes a matrix with labels, collects the vectors for each label per cluster
+		# structure: { clustercatdicti: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}
 		iterator=range(self.no_of_clusters)
 		clustercatdicti=defaultdict()
 		for cluster in iterator:
 			clustercatdicti[cluster]=defaultdict(list)
-			#note that where returns a cluster that is always len 1 --> two?
-			# we are interested in l[0]
 			wordmatrix=[matrix_with_cats[i] for i in np.where(self.labels==cluster)[0]]
 			for item in wordmatrix:
 				clustercatdicti[cluster][item[0]].append(item)
@@ -67,14 +63,12 @@ class Clusteringstats(Clustering):
 		self.matrix_without_cats=matrix_without_cats		
 			
 	def size_of_clusters(self):
-		#how many items in each cluster?
-		# returns dictionary {cluster:size, cluster:size ...}	
+		#how many items in each cluster? returns dictionary {cluster:size, cluster:size ...}	
 		dict=self._clusterdictmaker(self.matrix_without_cats)
 		return {k:len(dict[k]) for k in dict}
 
 	def cats_per_cluster(self):
-		#how many categories in each cluster?
-		# output structure: {cluster: { categ x: N, cat y: N, total: x=y, no_of_categories: len[x,y]}	
+		#how many categories in each cluster? returns dictionary: {cluster: { categ x: N, cat y: N, total: x=y, no_of_categories: len[x,y]}	
 		dict=self._clustercatdictmaker(self.matrix_with_cats)
 		cluster_features=defaultdict()
 		for i in dict:
@@ -84,13 +78,11 @@ class Clusteringstats(Clustering):
 		return cluster_features
 		
 	def cluster_features(self):
-		#how spread out is each cluster? 
-		# returns dictionary of basic stats
+		#how spread out is each cluster? , returns dictionary of basic stats such as mean, std, per cluster
 		featuredicti=defaultdict()
 		dict=self._clusterdictmaker(self.matrix_without_cats)
 		zscoredict={k:scipy.stats.mstats.zscore(dict[k], axis=0, ddof = 1) for k in dict.keys()} #setting  "ddof = 1" so we get the same output as in R
 		silhouette=sklearn.metrics.silhouette_samples(matrix_without_cats, self.labels)
-		# iterate over clusters
 		for i in dict:
 			featuredicti[i]={
 			'mean':np.mean(dict[i], axis=0), #mean of column
@@ -112,7 +104,6 @@ class Clusteringstats(Clustering):
 
 # remember that we could use z scores		
 class Centroidstats(Clustering):
-
 	"""
 	Statistics and calculations with centroids within a clustering.
 	"""
@@ -130,11 +121,9 @@ class Centroidstats(Clustering):
 			pass
 			
 	def _centroiddictmaker(self):
-		#returns a dictionary pairing clusters with centroids
+		# returns a dictionary of centroid per cluster
 		# structure: {cluster:vector_of_centorids, cluster2: ....}
-		# but are they really matched like this
 		centroiddicti=defaultdict()
-		#lets not get tripped up by models without centroids
 		if self._centroid_check()==False:
 			return None
 		else:
@@ -144,11 +133,10 @@ class Centroidstats(Clustering):
 				
 			
 	def distance_between_centroids(self):
+		#returns dictionary of distance between centroids of clustering
+		# structure: {cluster_to_cluster2:{hamming_dist:x, euclid_dist:y ....} , cluster_to_cluster3: ....}	
 		if self._centroid_check()==False:
 			return None
-		#calculate distance btw centroids
-		#returns a dictionary pairing cluster pairs and distances in various measurement methods
-		# structure: {cluster_to_cluster2:{hamming_dist:x, euclid_dist:y ....} (vector of dists??), cluster_to_cluster3: ....}	
 		centroiddicti=self._centroiddictmaker()
 		distdicti=defaultdict()
 		for combo in itertools.combinations(centroiddicti.keys(), 2):
@@ -164,48 +152,35 @@ class Centroidstats(Clustering):
 		return distdicti		
 	
 	def _differencemaker(self, dict_of_values):
-		# takes a dictionary of what??, collects differences between all entries
-		# returns tuple (entries compared, index of sorted vector)
+		# takes a dictionary, computes differences between each pair of entries 
+		# returns (comparison pair, differences, array of sorted indexes)
 		sorted=[]
 		for combo in itertools.combinations(dict_of_values.keys(), 2):
 			diff=dict_of_values[combo[0]]-dict_of_values[combo[1]]
 			absolute_diff=abs(diff)
-			#note that sorted is an index array
-			# we return (comparison pair, differences, array of sorted indexes)
 			sorted.append((combo,  diff, np.argsort(absolute_diff)))
-			# we can apply this to the original difference vector; then we turn that one around
-			# same then for vocab
 		return sorted
 	
 		
 	def cluster_predictors(self, vocab_used_for_feature_extraction):
-		# takes a dictionaty of centroids and a dictionary of vocab to compute
-		# the features most predictive of each cluster
+		# takes a dictionary of centroids and a dictionary of vocab to compute features most predictive of each cluster
 		# returns dictionary { cluster: {raw_diff:(word X,difference score), (word Y, difference score) ..., zscores_diff: ()()}, cluster2: {...}}
 		centroiddicti=self._centroiddictmaker()
-		# we take the words out of the dictionary supplied & make it into an array
 		vocab=vocab_used_for_feature_extraction.keys()
 		arrayed_vocab=np.array(vocab)
-		print len(arrayed_vocab)
-		
-		# wouldn't we need the whole dataset for z scores to make sense
 		zscoredicti={k:scipy.stats.mstats.zscore(centroiddicti[k], axis=0, ddof = 1) for k in centroiddicti.keys()} #setting  "ddof = 1" so we get the same output as in R
 		predictdicti=defaultdict()
-		# sorting our vectors of interest	
 		sorted_values=self._differencemaker(centroiddicti)
 		sorted_zscores=self._differencemaker(zscoredicti)
-		#building an empty dict
 		predictdicti={tup[0]:{
 		'raw_diff':None,
 		'zscores_diff':None
 		} 
 		for tup in sorted_values}
-		
 		# "In other words, a[index_array] yields a sorted a."
-		# filling the dict
 		for tup in sorted_values:
 			index=tup[2]
-			#sort by index, then reverse so largest values first
+			#sort by index, reverse so largest values are first
 			sorted_diffs=tup[1][index][::-1]
 			sorted_vocab=arrayed_vocab[index][::-1]
 			raw_dist=zip(sorted_diffs, sorted_vocab)
@@ -219,46 +194,36 @@ class Centroidstats(Clustering):
 		return predictdicti
 	
 	def central_documents(self, wordmatrix_with_cats, filedict):
+		# takes a matrix with labels and the dictionary of files ({number: file_location})
+		# returns a sorted list of file_locations with first file closest to centroid
 		centroids=self._centroiddictmaker()
 		docs={}
 		# note that we can use the distance metric above as well
 		for entry in centroids:
-			#print "centroid", entry
 			centroid=np.array([centroids[entry]])
-			#print centroid.shape
 			docs[entry]=defaultdict(list)
-			#look at length of centroid
-			#from the back of wordmatrix with cats
-			#print len(centroid)
-			#print wordmatrix_with_cats.shape[1]-centroid.shape[1], "external categories"
-			#print wordmatrix_with_cats.shape
 			matrix_without_cats=wordmatrix_with_cats[:wordmatrix_with_cats.shape[0], wordmatrix_with_cats.shape[1]-centroid.shape[1]:wordmatrix_with_cats.shape[1]]
 			for d in scipy_distances:
-				#print d
 				dist=scipy.spatial.distance.cdist(matrix_without_cats,centroid, d)
-				#print dist
 				sorted_index=np.argsort(dist, axis=0)
-				#print sorted_index
 				wordmatrix_with_cats.shape
 				result = wordmatrix_with_cats.take(sorted_index.reshape(-1), 0)
 				# row 1 contains the file number
 				for item in result[:,1]:
 					docs[entry][d].append(filedict[item])
 		return docs
-		#print "Centroids", centroids		
+	
 
 
 class Clusteringsimilarity(Clustering):
-
 	""" 
-	Calculates similarity measures between clusterings for cluster comparison. 
+	Calculates similarity measures between clusterings for clustering comparison. 
 	"""
-
+###FIX MATRIX ISSUE 
 	def __init__(self, matrix_with_cats, matrix_without_cats, models): 
 		#partitionings consists of model name and model out of the list of tuples input into models
 		self.partitionings=dict((k, v) for k, v in models)
-		
-			
+				
 	def get_variables(self, key):
 		return self.partitionings.get(key, None)
 	
@@ -268,6 +233,7 @@ class Clusteringsimilarity(Clustering):
 	def _partitionsimilarity_dictmaker(self):		
 		# for item in self.partitionings:
 		print self.partitionings[item].name
+		# what is this?
 		matrix_without_cats=matrix_without_cats
 		similaritydict={}
 		# all possible combinations between models
@@ -277,7 +243,7 @@ class Clusteringsimilarity(Clustering):
 			'adjustedrand_sim': sklearn.metrics.adjusted_rand_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
 			'adjustedmutualinfo_sim':sklearn.metrics.adjusted_mutual_info_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
 			'jaccard_sim': sklearn.metrics.jaccard_similarity_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
-			#This score is identical to normalized_mutual_info_score:
+			#"This score is identical to normalized_mutual_info_score":
 			'v_sim': sklearn.metrics.v_measure_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
 			'completeness_sim': sklearn.metrics.completeness_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
 			'homogeneity_sim':sklearn.metrics.homogeneity_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
