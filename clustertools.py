@@ -8,7 +8,7 @@ from collections import defaultdict
 
 
 
-
+#feed them matrices
 class Clustering(object):
 	"""
 	Collect features of a clustering, compute basic counts.
