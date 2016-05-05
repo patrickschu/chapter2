@@ -9,7 +9,7 @@ from nltk.tokenize import word_tokenize
 # http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.cluster.vq.kmeans2.html
 
 metriclist=[['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan'],['braycurtis', 'canberra', 'chebyshev', 'correlation', 'dice', 'hamming', 'jaccard', 'kulsinski', 'mahalanobis', 'matching', 'minkowski', 'rogerstanimoto', 'russellrao', 'seuclidean', 'sokalmichener', 'sokalsneath', 'sqeuclidean', 'yule']]
-
+scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath', 'wminkowski']
 
 print "start"
 print "\n---------------\nSome public service announcements"
@@ -98,6 +98,7 @@ def matrixmachine(folderlist, featuredict, *args):
 	# we need the zero cause the machine returns 2 items
 	count=0
 	catdicti=categorymachine(folderlist)[0]
+	filedict={}
 	for folder in folderlist:
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
 		print "Building matrices: we have {} files in folder {}".format(len(filis), folder)
@@ -107,6 +108,7 @@ def matrixmachine(folderlist, featuredict, *args):
 			for external_cat in args:
 				cat=catdicti[ct.tagextractor(inputfile, external_cat, fili)]
 			count=count+1
+			filedict[count]=os.path.join(pathi, folder, fili)
 			#note that punctuation is still in here
 			splittext=nltk.word_tokenize(inputfile)
 			splittextlo=[i.lower() for i in splittext]
@@ -125,7 +127,8 @@ def matrixmachine(folderlist, featuredict, *args):
 	print "without", np.shape(wordmatrix_without_cat)
 	wordmatrix_with_cat=wordmatrix[1:wordmatrix.shape[0],]
 	print "with", np.shape(wordmatrix_with_cat)
-	return (wordmatrix_without_cat, wordmatrix_with_cat, catdicti)
+	print filedict
+	return (wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedict)
 	
 	
 	#
@@ -164,19 +167,19 @@ def clustermachine(matrix, clusters=4):
 #  	print [i.name for i in result][len(result)-1]
 # 	print (u-t)/60
 #  	
-#  	# 3: Affinity Propagation, breaks @ 12600, 42
-#  	model=sklearn.cluster.AffinityPropagation()
-# 	clustering=model.fit(matrix)
-# 	centroid_index=model.cluster_centers_indices_
-# 	centroids=clustering.cluster_centers_
-#  	labels=clustering.labels_
-#  	aff_matrix=clustering.affinity_matrix_
-#  	its= clustering.n_iter_
-#  	affinity=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
-#  	result.append(affinity)
-# 	u=time.time()
-#  	print [i.name for i in result][len(result)-1]
-# 	print (u-t)/60
+ 	# 3: Affinity Propagation, breaks @ 12600, 42
+ 	model=sklearn.cluster.AffinityPropagation()
+	clustering=model.fit(matrix)
+	centroid_index=model.cluster_centers_indices_
+	centroids=clustering.cluster_centers_
+ 	labels=clustering.labels_
+ 	aff_matrix=clustering.affinity_matrix_
+ 	its= clustering.n_iter_
+ 	affinity=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+ 	result.append(affinity)
+	u=time.time()
+ 	print [i.name for i in result][len(result)-1]
+	print (u-t)/60
 # 	
 # 	## #4: Spectral clustering
 # 	model=sklearn.cluster.SpectralClustering()
@@ -259,7 +262,7 @@ def main():
 	folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
 	featuredict=dictmaker(folders, 3000)
-	wordmatrix_without_cat, wordmatrix_with_cat, catdicti = matrixmachine(folders, featuredict, "category1")
+	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, "category1")
 	x=clustermachine(wordmatrix_without_cat,4)
 	print [(i.name, i.no_of_clusters) for i in x]
 	#print [i.name for i in x]
@@ -297,10 +300,17 @@ def main():
 		
 		
 		print "\n\n-----------\n\nHere is a typical document for each cluster"
-		ct.Centroidstats(clustering.name, clustering.labels, clustering.centroids).central_documents(wordmatrix_with_cat)
+		distance='euclidean'
+		print "We set the distance metric to {}".format(distance)
+		docs=ct.Centroidstats(clustering.name, clustering.labels, clustering.centroids).central_documents(wordmatrix_with_cat, filedicti)
+		for cluster in docs:
+			print "\nCLUSTER {} \n".format(cluster)
+			f=open(docs[cluster][distance][0]).read()
+			print f
+	
 	endtime=time.time()
 	process=endtime-starttime
-	print "This took us {} minutes".format(process/60)
+	print "\n\n\n\nThis took us {} minutes".format(process/60)
 		#or do we want to do predictive features and typical document per cluster as well????
 		
 		
