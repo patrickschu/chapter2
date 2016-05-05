@@ -54,7 +54,7 @@ class Clustering(object):
 
 class Clusteringstats(Clustering):
 	"""
-	Compute basic statistics of a clustering
+	Compute basic statistics of a clustering.
 	"""
 	
 	def __init__(self, matrix_with_cats, matrix_without_cats, name, labels , centroids=None, actual_centroids=None): 
@@ -105,7 +105,7 @@ class Clusteringstats(Clustering):
 # remember that we could use z scores		
 class Centroidstats(Clustering):
 	"""
-	Statistics and calculations with centroids within a clustering.
+	Statistics and calculations with centroids of a clustering.
 	"""
 			
 	def __init__(self, name, labels,centroids=None, actual_centroids=None):
@@ -115,41 +115,43 @@ class Centroidstats(Clustering):
 		
 	def _centroid_check(self):
 		if self.centroids == None:
-			print "Model {} has no centroids".format(self.name)
-			return False
+			raise ValueError("Model {} has no centroids".format(self.name))
 		else:
 			pass
 			
 	def _centroiddictmaker(self):
 		# returns a dictionary of centroid per cluster
 		# structure: {cluster:vector_of_centorids, cluster2: ....}
-		centroiddicti=defaultdict()
-		if self._centroid_check()==False:
-			return None
-		else:
+		try:
+			self._centroid_check()
+			centroiddicti=defaultdict()
 			for i in range(self.no_of_clusters):
 				centroiddicti[i]=self.centroids[i]
 			return centroiddicti
-				
+		except ValueError as err:
+			print err
+	
 			
 	def distance_between_centroids(self):
 		#returns dictionary of distance between centroids of clustering
 		# structure: {cluster_to_cluster2:{hamming_dist:x, euclid_dist:y ....} , cluster_to_cluster3: ....}	
-		if self._centroid_check()==False:
-			return None
-		centroiddicti=self._centroiddictmaker()
-		distdicti=defaultdict()
-		for combo in itertools.combinations(centroiddicti.keys(), 2):
-			distdicti[combo]={
-			'raw_dist':sum(pow(centroiddicti[combo[0]]-centroiddicti[combo[1]], 2)),
-			'manhattan_dist':scipy.spatial.distance.cityblock(centroiddicti[combo[0]],centroiddicti[combo[1]]),
-			'euclid_dist':scipy.spatial.distance.euclidean(centroiddicti[combo[0]],centroiddicti[combo[1]]),
-			#"[Cosine] is thus a judgement of orientation and not magnitude"
-			'cosine_dist':scipy.spatial.distance.cosine(centroiddicti[combo[0]],centroiddicti[combo[1]]),
-			'minkowski_dist':scipy.spatial.distance.minkowski(centroiddicti[combo[0]],centroiddicti[combo[1]], 3),
-			'correlation_dist':scipy.spatial.distance.cosine(centroiddicti[combo[0]],centroiddicti[combo[1]])
-			}
-		return distdicti		
+		try:
+			self._centroid_check()
+			centroiddicti=self._centroiddictmaker()
+			distdicti=defaultdict()
+			for combo in itertools.combinations(centroiddicti.keys(), 2):
+				distdicti[combo]={
+				'raw_dist':sum(pow(centroiddicti[combo[0]]-centroiddicti[combo[1]], 2)),
+				'manhattan_dist':scipy.spatial.distance.cityblock(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+				'euclid_dist':scipy.spatial.distance.euclidean(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+				#"[Cosine] is thus a judgement of orientation and not magnitude"
+				'cosine_dist':scipy.spatial.distance.cosine(centroiddicti[combo[0]],centroiddicti[combo[1]]),
+				'minkowski_dist':scipy.spatial.distance.minkowski(centroiddicti[combo[0]],centroiddicti[combo[1]], 3),
+				'correlation_dist':scipy.spatial.distance.cosine(centroiddicti[combo[0]],centroiddicti[combo[1]])
+				}
+			return distdicti
+		except ValueError as err:
+			print err		
 	
 	def _differencemaker(self, dict_of_values):
 		# takes a dictionary, computes differences between each pair of entries 
@@ -163,66 +165,78 @@ class Centroidstats(Clustering):
 	
 		
 	def cluster_predictors(self, vocab_used_for_feature_extraction):
-		# takes a dictionary of centroids and a dictionary of vocab to compute features most predictive of each cluster
+		# takes a dictionary of centroids and a dictionary of features to compute features most predictive of each cluster
 		# returns dictionary { cluster: {raw_diff:(word X,difference score), (word Y, difference score) ..., zscores_diff: ()()}, cluster2: {...}}
-		centroiddicti=self._centroiddictmaker()
-		vocab=vocab_used_for_feature_extraction.keys()
-		arrayed_vocab=np.array(vocab)
-		zscoredicti={k:scipy.stats.mstats.zscore(centroiddicti[k], axis=0, ddof = 1) for k in centroiddicti.keys()} #setting  "ddof = 1" so we get the same output as in R
-		predictdicti=defaultdict()
-		sorted_values=self._differencemaker(centroiddicti)
-		sorted_zscores=self._differencemaker(zscoredicti)
-		predictdicti={tup[0]:{
-		'raw_diff':None,
-		'zscores_diff':None
-		} 
-		for tup in sorted_values}
-		# "In other words, a[index_array] yields a sorted a."
-		for tup in sorted_values:
-			index=tup[2]
-			#sort by index, reverse so largest values are first
-			sorted_diffs=tup[1][index][::-1]
-			sorted_vocab=arrayed_vocab[index][::-1]
-			raw_dist=zip(sorted_diffs, sorted_vocab)
-			predictdicti[tup[0]]['raw_diff']=raw_dist
-		for tup in sorted_zscores:
-			index=tup[2]
-			sorted_diffs=tup[1][index][::-1]
-			sorted_vocab=arrayed_vocab[index][::-1]
-			zscore_dist=zip(sorted_diffs, sorted_vocab)
-			predictdicti[tup[0]]['zscores_diff']=zscore_dist
-		return predictdicti
+		
+		try:
+			self._centroid_check()
+			centroiddicti=self._centroiddictmaker()
+			vocab=vocab_used_for_feature_extraction.keys()
+			arrayed_vocab=np.array(vocab)
+			zscoredicti={k:scipy.stats.mstats.zscore(centroiddicti[k], axis=0, ddof = 1) for k in centroiddicti.keys()} #setting  "ddof = 1" so we get the same output as in R
+			predictdicti=defaultdict()
+			sorted_values=self._differencemaker(centroiddicti)
+			sorted_zscores=self._differencemaker(zscoredicti)
+			predictdicti={tup[0]:{
+			'raw_diff':None,
+			'zscores_diff':None
+			} 
+			for tup in sorted_values}
+			
+			# "In other words, a[index_array] yields a sorted a."
+			for tup in sorted_values:
+				index=tup[2]
+				#sort by index, reverse so largest values are first
+				sorted_diffs=tup[1][index][::-1]
+				sorted_vocab=arrayed_vocab[index][::-1]
+				raw_dist=zip(sorted_diffs, sorted_vocab)
+				predictdicti[tup[0]]['raw_diff']=raw_dist
+			for tup in sorted_zscores:
+				index=tup[2]
+				sorted_diffs=tup[1][index][::-1]
+				sorted_vocab=arrayed_vocab[index][::-1]
+				zscore_dist=zip(sorted_diffs, sorted_vocab)
+				predictdicti[tup[0]]['zscores_diff']=zscore_dist
+			return predictdicti
+		except ValueError as err:
+			print err
 	
 	def central_documents(self, wordmatrix_with_cats, filedict):
 		# takes a matrix with labels and the dictionary of files ({number: file_location})
 		# returns a sorted list of file_locations with first file closest to centroid
-		centroids=self._centroiddictmaker()
-		docs={}
-		# note that we can use the distance metric above as well
-		for entry in centroids:
-			centroid=np.array([centroids[entry]])
-			docs[entry]=defaultdict(list)
-			matrix_without_cats=wordmatrix_with_cats[:wordmatrix_with_cats.shape[0], wordmatrix_with_cats.shape[1]-centroid.shape[1]:wordmatrix_with_cats.shape[1]]
-			for d in scipy_distances:
-				dist=scipy.spatial.distance.cdist(matrix_without_cats,centroid, d)
-				sorted_index=np.argsort(dist, axis=0)
-				wordmatrix_with_cats.shape
-				result = wordmatrix_with_cats.take(sorted_index.reshape(-1), 0)
-				# row 1 contains the file number
-				for item in result[:,1]:
-					docs[entry][d].append(filedict[item])
-		return docs
+		try:
+			self._centroid_check()
+			centroids=self._centroiddictmaker()
+			docs={}
+			# note that we can use the distance metric above as well
+			for entry in centroids:
+				centroid=np.array([centroids[entry]])
+				docs[entry]=defaultdict(list)
+				matrix_without_cats=wordmatrix_with_cats[:wordmatrix_with_cats.shape[0], wordmatrix_with_cats.shape[1]-centroid.shape[1]:wordmatrix_with_cats.shape[1]]
+				for d in scipy_distances:
+					dist=scipy.spatial.distance.cdist(matrix_without_cats,centroid, d)
+					sorted_index=np.argsort(dist, axis=0)
+					wordmatrix_with_cats.shape
+					result = wordmatrix_with_cats.take(sorted_index.reshape(-1), 0)
+					# row 1 contains the file number
+					for item in result[:,1]:
+						docs[entry][d].append(filedict[item])
+			return docs
+		except ValueError as err:
+			print err
 	
 
 
 class Clusteringsimilarity(Clustering):
 	""" 
-	Calculates similarity measures between clusterings for clustering comparison. 
+	Calculates similarity measures between clusterings, tools for  clustering comparison. 
 	"""
-###FIX MATRIX ISSUE 
+
 	def __init__(self, matrix_with_cats, matrix_without_cats, models): 
 		#partitionings consists of model name and model out of the list of tuples input into models
 		self.partitionings=dict((k, v) for k, v in models)
+		self.matrix_without_cats=matrix_without_cats
+		self.matrix_with_cats=matrix_with_cats
 				
 	def get_variables(self, key):
 		return self.partitionings.get(key, None)
@@ -232,9 +246,8 @@ class Clusteringsimilarity(Clustering):
 		
 	def _partitionsimilarity_dictmaker(self):		
 		# for item in self.partitionings:
-		print self.partitionings[item].name
-		# what is this?
-		matrix_without_cats=matrix_without_cats
+# 		print self.partitionings[item].name
+# 		# what is this?
 		similaritydict={}
 		# all possible combinations between models
 		for combo in itertools.combinations(self.partitionings.keys(),2):
@@ -293,15 +306,13 @@ class Clusteringsimilarity(Clustering):
 
 
 class Categorystats(Clustering):
-	"""basic statistics of categories within a clustering"""
+	"""
+	Statistics of categories within a clustering.
+	"""
 	
 	def __init__(self, matrix_with_cats, name, labels , centroids=None, actual_centroids=None): 
 		Clustering.__init__(self, name, labels , centroids=None, actual_centroids=None)
 		self.matrix_with_cats=matrix_with_cats
-			
-			
-	
-	#get item per category and how spread out over clusters
 	
 	def size_of_categories(self):
 		#returns the number of categories, and how they are spread out over clusters

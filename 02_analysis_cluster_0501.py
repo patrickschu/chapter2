@@ -1,12 +1,20 @@
 import clustertools as ct
-import os, re, shutil,string,numpy,nltk,codecs, scipy, scipy.cluster, scipy.spatial, time, sklearn, itertools
+import os
+import re 
+import shutil
+import string
+import nltk
+import codecs 
+import scipy, scipy.cluster, scipy.spatial
+import time
+import sklearn
+import itertools
 import numpy as np 
 from sklearn import cluster, mixture, metrics
 from scipy import spatial, sparse
 from collections import defaultdict
 from nltk.tokenize import word_tokenize
-# read the clustering documentation here: 
-# http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.cluster.vq.kmeans2.html
+
 
 metriclist=[['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan'],['braycurtis', 'canberra', 'chebyshev', 'correlation', 'dice', 'hamming', 'jaccard', 'kulsinski', 'mahalanobis', 'matching', 'minkowski', 'rogerstanimoto', 'russellrao', 'seuclidean', 'sokalmichener', 'sokalsneath', 'sqeuclidean', 'yule']]
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath', 'wminkowski']
@@ -181,18 +189,18 @@ def clustermachine(matrix, clusters=4):
  	print [i.name for i in result][len(result)-1]
 	print (u-t)/60
 # 	
-# 	## #4: Spectral clustering
-# 	model=sklearn.cluster.SpectralClustering()
-# 	clustering=model.fit(matrix)
-# 	labels=clustering.labels_
-#  	aff_matrix=clustering.affinity_matrix_
-#  	spectral= ct.Clustering(model, clustering.labels_)
-# 	result.append(spectral)
-#  	u=time.time()
-#  	print [i.name for i in result][len(result)-1]
-# 	print (u-t)/60
-#  	
-#  	
+	## #4: Spectral clustering
+	model=sklearn.cluster.SpectralClustering()
+	clustering=model.fit(matrix)
+	labels=clustering.labels_
+ 	aff_matrix=clustering.affinity_matrix_
+ 	spectral= ct.Clustering(model, clustering.labels_)
+	result.append(spectral)
+ 	u=time.time()
+ 	print [i.name for i in result][len(result)-1]
+	print (u-t)/60
+ 	
+  	
 #  	
 # #  	##watch out --------- centroids are indices!!!!!	
 # # 	## # 5: DBCASN, eanShift, takes forever @  12600, 42
@@ -221,31 +229,31 @@ def clustermachine(matrix, clusters=4):
 # 	print (u-t)/60
 # 	
 # 
-# 	#These are essentially trees; maybe need a different approach. They are kinda predictive
-# 	
-# # 	## #7: Agglomerative // Ward Hierarchical 
-# 	model=sklearn.cluster.AgglomerativeClustering()
-# 	clustering=model.fit(matrix)
-# 	labels=clustering.labels_
-# 	leaves=clustering.n_leaves_
-# 	components=clustering.n_components_
-# 	ward= ct.Clustering(model, clustering.labels_)
-# 	result.append(ward)
-# 	u=time.time()
-#  	print [i.name for i in result][len(result)-1]
-# 	print (u-t)/60
-# 
-# 	## #8: Birch Hierarchical 	
-# 	model=sklearn.cluster.Birch(threshold=0.025)
-# 	clustering=model.fit(matrix)
-# 	labels=clustering.labels_
-# 	root=clustering.root_
-# 	subcluster_labels=clustering.subcluster_labels_
-# 	birch= ct.Clustering(model, clustering.labels_)
-# 	result.append(birch)
-# 	u=time.time()
-#  	print [i.name for i in result][len(result)-1]
-# 	print (u-t)/60
+	#These are essentially trees; maybe need a different approach. They are kinda predictive
+	
+# 	## #7: Agglomerative // Ward Hierarchical 
+	model=sklearn.cluster.AgglomerativeClustering()
+	clustering=model.fit(matrix)
+	labels=clustering.labels_
+	leaves=clustering.n_leaves_
+	components=clustering.n_components_
+	ward= ct.Clustering(model, clustering.labels_)
+	result.append(ward)
+	u=time.time()
+ 	print [i.name for i in result][len(result)-1]
+	print (u-t)/60
+
+	## #8: Birch Hierarchical 	
+	model=sklearn.cluster.Birch(threshold=0.025)
+	clustering=model.fit(matrix)
+	labels=clustering.labels_
+	root=clustering.root_
+	subcluster_labels=clustering.subcluster_labels_
+	birch= ct.Clustering(model, clustering.labels_)
+	result.append(birch)
+	u=time.time()
+ 	print [i.name for i in result][len(result)-1]
+	print (u-t)/60
 	
 	return(result)
 	
@@ -267,13 +275,16 @@ def main():
 	print [(i.name, i.no_of_clusters) for i in x]
 	#print [i.name for i in x]
 	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
+	
 	for clustering in x:
 		cati=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels)
 		sili=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cluster_silhouette()
 	# 	print cati.size_of_categories()
-		
+		headline="\n\n-----------\n\n"
 	
-	 	print "\n\n-----------\n\nClustering called {} has {} clusters". format(clustering.getname()[0], clustering.no_of_clusters)
+	
+		#GENERAL STATS
+	 	print headline, headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[0], clustering.no_of_clusters)
  		print "Its silhouette score is {}".format(str(sili))
 		stats=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).size_of_clusters()
 		catstats=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cats_per_cluster()
@@ -282,51 +293,54 @@ def main():
 			for cat in [i for i in catstats[cluster] if not i in excludelist]:
 				print "{} items of category {} make up {} % of this cluster".format(catstats[cluster][cat], "".join([i[0] for i in catdicti.items() if i[1] == int(cat)]), round(catstats[cluster][cat]/catstats[cluster]['total']*100))
 		cats=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels).size_of_categories()
-		print "\n\n-----------\n\nStatistics per category"
+		
+		#STATS PER CAT
+		print headline,"Statistics per category"
 		for cat in [i for i in cats if not i in excludelist]:
 			print "\nCategory {} has {} items".format("".join([i[0] for i in catdicti.items() if i[1] == int(cat)]), cats[cat]['total'])
 			for entry in [i for i in cats[cat]['cat_per_cluster'] if not i in excludelist]:
 				print "{} items or {} percent in cluster {}".format(cats[cat]['cat_per_cluster'][entry], round(float(cats[cat]['cat_per_cluster'][entry])/float(cats[cat]['total'])*100), entry)
 
-		print "\n\n-----------\n\nStronly predictive features are"
+		#PREDICTIVE FEATURES
+		print headline, "Stronly predictive features are"
 		cents=ct.Centroidstats(clustering.name, clustering.labels, clustering.centroids).cluster_predictors(featuredict)
-		for diff in cents:
-			print "\n Raw Scores"
-			print "{} differentiate {} and {}\n".format(", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['raw_diff']]), diff[0], diff[1]) 
-			print "Zscores"
-			print "{} differentiate {} and {}".format(", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['zscores_diff']]), diff[0], diff[1])
-		"We can also add equivalent features if we want"
-		"And stems and whatnot"
+		print cents
+		if cents:
+			for diff in cents:
+				print "\n Raw Scores"
+				print "{} differentiate {} and {}\n".format(", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['raw_diff']]), diff[0], diff[1]) 
+				print "Zscores"
+				print "{} differentiate {} and {}".format(", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['zscores_diff']]), diff[0], diff[1])
+			"We can also add equivalent features if we want"
+			"And stems and whatnot"
 		
-		
-		print "\n\n-----------\n\nHere is a typical document for each cluster"
+		#PROTOTYPES
+		print headline, "Here is a typical document for each cluster"
 		distance='euclidean'
 		print "We set the distance metric to {}".format(distance)
 		docs=ct.Centroidstats(clustering.name, clustering.labels, clustering.centroids).central_documents(wordmatrix_with_cat, filedicti)
-		for cluster in docs:
-			print "\nCLUSTER {} \n".format(cluster)
-			f=open(docs[cluster][distance][0]).read()
-			print f
+		if docs:
+			for cluster in docs:
+				print "\nCLUSTER {} \n".format(cluster)
+				f=open(docs[cluster][distance][0]).read()
+				print f
 	
+	#CROSS CLUSTERING COMPARISON
+	print headline, "Comparing clusterings"
+# 		
+	input=[(str(type(i.name)).split(".")[3].rstrip("'>"), i) for i in x]
+ 	simi=ct.Clusteringsimilarity(wordmatrix_with_cat, wordmatrix_without_cat ,input)
+ 	options=['adjustedrand_sim', 'adjustedmutualinfo_sim', 'jaccard_sim', 'v_sim', 'completeness_sim', 'homogeneity_sim', 'silhouette_score_sim']
+ 	for o in options:
+ 		print "\n---\n"
+ 		ct.Clusteringsimilarity(wordmatrix_with_cat, wordmatrix_without_cat ,input).similarity_matrix(o)
+	
+	
+	print "\n---\n"
 	endtime=time.time()
 	process=endtime-starttime
-	print "\n\n\n\nThis took us {} minutes".format(process/60)
-		#or do we want to do predictive features and typical document per cluster as well????
-		
-		
-#	print "\n\n-----------\n\nComparing clusterings"
-# 		
-# 	input=[(str(type(i.name)).split(".")[3].rstrip("'>"), i) for i in x]
-# 	simi=ct.Clusteringsimilarity(wordmatrix_with_cat, input)
-# 	options=['adjustedrand_sim', 'adjustedmutualinfo_sim', 'jaccard_sim', 'v_sim', 'completeness_sim', 'homogeneity_sim', 'silhouette_score_sim']
-# 	for o in options:
-# 		print "\n---\n"
-# 		ct.Clusteringsimilarity(wordmatrix_with_cat, input).similarity_matrix(o)
-# 	endtime=time.time()
-# 	print "This took us {} minutes".format((endtime-starttime)/60)
-# 	#t=str(type(i.name)).split("."))[3].rstrip("'>")
-# 	
-	
+	print headline, "This took us {} minutes".format(process/60)
+		#or do we want to do predictive features and typical document per cluster as well????	
 	
 main()
 
@@ -393,104 +407,4 @@ main()
 		# Adjusted Mutual Information: 0.883
 		# Silhouette Coefficient: 0.626
 		
-			
-# 	
 
-# 		
-# #
-
-# 		
-# 		
-# 		
-# 		
-# 		
-# 		
-# 		
-# 		
-# 		
-# #
-# ###DISPERSION
-# #
-# # How good are our clusters?
-# # maybe just calculate the square of the distance to the centroid, then sum
-# # ??
-# # then average out per data point
-# # look at real outliers (more than 2 stdevs)
-# 
-# #in this distancedict, we collect the indexes for each cluster 
-# #that way we can access the actual data points
-# distancedict=defaultdict(list)
-# for item in labellist_enum:
-# 	#establish index numbers for each cluster
-# 	#items are (index, value). thus: item[0] - index, item[1]-cluster
-# 	distancedict[item[1]].append(item[0])
-# 
-# print "\n---------------\nThe dispersion of clusters:\n"
-# 
-# # print distancedict[1]
-# for c in clusters:
-# 	print "CLUSTER ",c, ":"
-# 	centroid_by_cluster=centroids[c]
-# 	wordmatrix_by_cluster=[wordmatrix_without_cat[i] for i in distancedict[c]]
-# 	difference=[pow((np.array(centroid_by_cluster) - np.array(i)),2) for i in wordmatrix_by_cluster]
-# 	# print wordmatrix_by_cluster[0][:3]
-# # 	print centroid_by_cluster[:3]
-# # 	print difference[0][:3]
-# 	totaldifference=sum([sum(i) for i in difference])
-# 	meantotaldifference= totaldifference/len(wordmatrix_by_cluster)
-# 	print "Total difference is {} for {} data points, mean difference: {}".format(
-# 	round(totaldifference), 
-# 	len(wordmatrix_by_cluster),
-# 	round(meantotaldifference*1000))
-# 	print "\n---\n"
-# 	
-# 	
-# #
-# ###PREDICTORS
-# #
-# #which words drive our clusters?
-# # we have a number of centroids == len(clusters)
-# #centroids=[x,y,z]
-# # for each x,y,z we calculate the range
-# # note that we would have to scale them if we dont have per word counts
-# # then we have to relate the centroids to the value in the vocab
-# # they should have the same index but vocab is a dict
-# # but it is fixed; if we do an items(). ?
-# #ranges=[range() for c in centroids
-# range=np.ptp(centroids, axis=0)	
-# #range_with_words=[(i, 
-# #note that this was stolen from 
-# # http://stackoverflow.com/questions/26984414/efficiently-sorting-a-numpy-array-in-descending-order
-# # http://stackoverflow.com/questions/14875248/python-numpy-sort-array
-# sorted_range= np.sort(range)[::-1]
-# sorted_range_index=np.argsort(range)[::-1]
-# print "range", range
-# print "sorted range", sorted_range
-# print "indexes", sorted_range_index
-# print "original keys", featuredict.keys()
-# print "original items", featuredict.items()
-# sorted_range_keys=[featuredict.keys()[i] for i in sorted_range_index]
-# sorted_range_values=[float(featuredict.values()[i]) for i in sorted_range_index]
-# sorted_range_ranges=[range[i] for i in sorted_range_index]
-# sorted_range_centroids=[centroids[:,i].tolist() for i in sorted_range_index]
-# #flattened = [val for sublist in list_of_lists for val in sublist]
-# 
-# 
-# #t=[i[0] for i in sorted_range_centroids for i in [l] ]	
-# # t=[entry[0] for entry in i for l in sorted_range_centroids]
-# 		
-# # print "the keys", sorted_range_keys
-# # print "the values", sorted_range_values
-# # print "the ranges", sorted_range_ranges
-# print "the original range", sorted_range_centroids
-# 
-# #now that were doing it this way, we could have sorted on the list in the first place
-# #but its whatevs at this point
-# result=zip(sorted_range_ranges, sorted_range_centroids, sorted_range_keys, sorted_range_values)
-# print "result", result
-# 
-# endtime=time.time()
-# print "Finished. the threshold was {}, this took us {} minutes".format(threshold, (endtime - starttime)/60)
-# 
-# #exclude too low categories
-# #express as: percentage of category, percentage of cluster, distance from centroid
