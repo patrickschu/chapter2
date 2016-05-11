@@ -152,6 +152,34 @@ def clustermachine(matrix, clusters=4):
 	#
 	#this makes clusters; takes the dataset (matrix) and the algorithm
 
+## # 1: kmeans
+	model=sklearn.cluster.KMeans(clusters)
+	clustering=model.fit(matrix)
+	centroids=clustering.cluster_centers_
+	labels=clustering.labels_
+	inertia=clustering.inertia_
+	kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+	result.append(kmeans)
+	print [i.name for i in result][len(result)-1]
+	u=time.time()
+	print (u-t)/60
+	
+	
+	model=sklearn.cluster.KMeans(8)
+	clustering=model.fit(matrix)
+	centroids=clustering.cluster_centers_
+	labels=clustering.labels_
+	inertia=clustering.inertia_
+	kmeans2=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+	result.append(kmeans2)
+	print [i.name for i in result][len(result)-1]
+	u=time.time()
+	print (u-t)/60
+	
+	
+	
+
+
 #	## #2: MeanShift, takes forever @  12600, 42
 #	model=sklearn.cluster.MeanShift()
 #	clustering=model.fit(matrix)
@@ -177,16 +205,16 @@ def clustermachine(matrix, clusters=4):
 	print [i.name for i in result][len(result)-1]
 	print (u-t)/60
 	
-	## #4: Spectral clustering
-	model=sklearn.cluster.SpectralClustering()
-	clustering=model.fit(matrix)
-	labels=clustering.labels_
-	aff_matrix=clustering.affinity_matrix_
-	spectral= ct.Clustering(model, clustering.labels_)
-	result.append(spectral)
-	u=time.time()
-	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
+# 	## #4: Spectral clustering
+# 	model=sklearn.cluster.SpectralClustering()
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	aff_matrix=clustering.affinity_matrix_
+# 	spectral= ct.Clustering(model, clustering.labels_)
+# 	result.append(spectral)
+# 	u=time.time()
+# 	print [i.name for i in result][len(result)-1]
+# 	print (u-t)/60
 
 
 ##watch out --------- centroids are indices!!!!!	
@@ -219,28 +247,28 @@ def clustermachine(matrix, clusters=4):
 	#These are essentially trees; maybe need a different approach. They are kinda predictive
 	
 # 	## #7: Agglomerative // Ward Hierarchical 
-	model=sklearn.cluster.AgglomerativeClustering()
-	clustering=model.fit(matrix)
-	labels=clustering.labels_
-	leaves=clustering.n_leaves_
-	components=clustering.n_components_
-	ward= ct.Clustering(model, clustering.labels_)
-	result.append(ward)
-	u=time.time()
-	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
-
-	## #8: Birch Hierarchical 	
-	model=sklearn.cluster.Birch(threshold=0.025)
-	clustering=model.fit(matrix)
-	labels=clustering.labels_
-	root=clustering.root_
-	subcluster_labels=clustering.subcluster_labels_
-	birch= ct.Clustering(model, clustering.labels_)
-	result.append(birch)
-	u=time.time()
-	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
+# 	model=sklearn.cluster.AgglomerativeClustering()
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	leaves=clustering.n_leaves_
+# 	components=clustering.n_components_
+# 	ward= ct.Clustering(model, clustering.labels_)
+# 	result.append(ward)
+# 	u=time.time()
+# 	print [i.name for i in result][len(result)-1]
+# 	print (u-t)/60
+# 
+# 	## #8: Birch Hierarchical 	
+# 	model=sklearn.cluster.Birch(threshold=0.025)
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	root=clustering.root_
+# 	subcluster_labels=clustering.subcluster_labels_
+# 	birch= ct.Clustering(model, clustering.labels_)
+# 	result.append(birch)
+# 	u=time.time()
+# 	print [i.name for i in result][len(result)-1]
+# 	print (u-t)/60
 	
 	return(result)
 	
@@ -256,7 +284,7 @@ def main():
 	print ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
 	#folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
-	featuredict=dictmaker(folders, 1000)
+	featuredict=dictmaker(folders, 10000)
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, "category1")
 	x=clustermachine(wordmatrix_without_cat,4)
 	print [(i.name, i.no_of_clusters) for i in x]
