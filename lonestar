@@ -1,0 +1,1 @@
+launcher_creator.py -n cluster_centroid_test2 -q normal -t 15:00:00 -e patrickschultz@utexas.edu -b "python LS_analysis_cluster_centroid_0511.py > output_centroid_0512.txt" -m "module load python/2.7.11"
