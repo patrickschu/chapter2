@@ -1,0 +1,59 @@
+start
+
+---------------
+Some public service announcements
+files8_output_0102, files9_output_0102, files_output_0101, files2_output_0102, files3_output_0102, files5_output_0102, files4_output_0102
+1, 1239, 11441, 27947, 9819, 6598, 6845
+We have 7 folders
+Building vocab: we have 1 files in folder files8_output_0102
+Building vocab: we have 1239 files in folder files9_output_0102
+Building vocab: we have 11441 files in folder files_output_0101
+Building vocab: we have 27947 files in folder files2_output_0102
+Building vocab: we have 9819 files in folder files3_output_0102
+Building vocab: we have 6598 files in folder files5_output_0102
+Building vocab: we have 6845 files in folder files4_output_0102
+Our vocab dictionary has 84948 entries
+Our feature dictionary has 94 entries
+---------------
+
+Starting the matrixmachine
+external categories:  1
+('category1',)
+Matrix initial shape:  (1, 96)
+starting category machine
+We added w4w to the category dictionary, coded as 0
+We added w4m to the category dictionary, coded as 1
+We added w4t to the category dictionary, coded as 2
+We added m4w to the category dictionary, coded as 3
+We added m4m to the category dictionary, coded as 4
+We added m4t to the category dictionary, coded as 5
+We added t4w to the category dictionary, coded as 6
+We added t4t to the category dictionary, coded as 7
+We added m4mw to the category dictionary, coded as 8
+We added m4mm to the category dictionary, coded as 9
+We added t4m to the category dictionary, coded as 10
+We added wm4wm to the category dictionary, coded as 11
+We added mw4mw to the category dictionary, coded as 12
+We added w4wm to the category dictionary, coded as 13
+Building matrices: we have 1 files in folder files8_output_0102
+Building matrices: we have 1239 files in folder files9_output_0102
+Building matrices: we have 11441 files in folder files_output_0101
+Building matrices: we have 27947 files in folder files2_output_0102
+Building matrices: we have 9819 files in folder files3_output_0102
+Building matrices: we have 6598 files in folder files5_output_0102
+Building matrices: we have 6845 files in folder files4_output_0102
+Features of word matrix: shape (63891, 96), dtype float64
+---------------
+End of public service announcements
+
+
+without (63890, 94)
+with (63890, 96)
+KMeans(copy_x=True, init='k-means++', max_iter=300, n_clusters=4, n_init=10,
+    n_jobs=1, precompute_distances='auto', random_state=None, tol=0.0001,
+    verbose=0)
+0.253013948599
+KMeans(copy_x=True, init='k-means++', max_iter=300, n_clusters=8, n_init=10,
+    n_jobs=1, precompute_distances='auto', random_state=None, tol=0.0001,
+    verbose=0)
+0.928321015835
