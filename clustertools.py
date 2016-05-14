@@ -214,7 +214,6 @@ class Centroidstats(Clustering):
 				docs[entry]=defaultdict(list)
 				matrix_without_cats=wordmatrix_with_cats[:wordmatrix_with_cats.shape[0], wordmatrix_with_cats.shape[1]-centroid.shape[1]:wordmatrix_with_cats.shape[1]]
 				for d in scipy_distances:
-					print d
 					dist=scipy.spatial.distance.cdist(matrix_without_cats,centroid, d)
 					sorted_index=np.argsort(dist, axis=0)
 					wordmatrix_with_cats.shape
