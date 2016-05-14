@@ -1,4 +1,15 @@
-launcher_creator.py -n cluster_centroid_test2 -q normal -t 15:00:00 -e patrickschultz@utexas.edu -b "python LS_analysis_cluster_centroid_0511.py > output_centroid_0512.txt" -m "module load python/2.7.11"
+
+CREATING SLURMS
+launcher_creator.py -n cluster_centroid_test_kmeans -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python LS_analysis_cluster_centroid_0511_kmeans.py > output_centroid_kmeans_`date '+%Y%m%d.%H%M'`" -m "module load python/2.7.11"
+
+
+
+
 
 COPY
 scp -r ps22344@ls5.tacc.utexas.edu:temp ~/Desktop
+
+
+making file names
+today=`date +%Y%m%d.%H%M`
+touch file_$today
