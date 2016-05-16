@@ -79,7 +79,7 @@ def categorymachine(folderlist):
 
 
 
-def matrixmachine(folderlist, featuredict, *args):
+def matrixmachine(folderlist, featuredict, testmode, *args):
 	#
 	###BUILDING MATRICES
 	#
@@ -98,8 +98,11 @@ def matrixmachine(folderlist, featuredict, *args):
 	filedict={}
 	for folder in folderlist:
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
+		if testmode == True:
+			print "\n\nRUNNING\nIN\nTEST\nMODE\n"
+			filis=filis[:30]
 		print "Building matrices: we have {} files in folder {}".format(len(filis), folder)
-		for fili in filis[:20]:
+		for fili in filis:
 			inputfile=codecs.open(os.path.join(pathi, folder, fili), "r", "utf-8").read()
 			#establish category
 			for external_cat in args:
@@ -257,7 +260,7 @@ def main():
 	#folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
 	featuredict=dictmaker(folders, 1000)
-	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, "category1")
+	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, True, "category1")
 	x=clustermachine(wordmatrix_without_cat,4)
 	print [(i.name, i.no_of_clusters) for i in x]
 	#print [i.name for i in x]
