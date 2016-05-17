@@ -4,7 +4,7 @@ ssh ps22344@ls5.tacc.utexas.edu
 
 
 CREATING SLURMS
-launcher_creator.py -n cluster_centroid_test_kmeans -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python LS_analysis_cluster_centroid_0511_kmeans.py > output_centroid_kmeans_`date '+%Y%m%d.%H%M'`" -m "module load python/2.7.11"
+launcher_creator.py -n cluster_centroid_test_kmeans -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python LS_analysis_cluster_centroid_0511_kmeans.py > output_centroid_kmeans_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
 
 
 
@@ -26,3 +26,18 @@ WORK FLOW
 put all files in folder “tests_DAY”, include craig and clustertools.py
 zip and upload
 unzip in WORK
+
+
+launcher_creator.py -n cluster_birch_nocluster -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python LS_Birch_nocluster_0516.py  > output_LS_Birch_nocluster_0516_`date '+%Y%m%d.%H%M'`" -m "module load python/2.7.11"
+launcher_creator.py -n cluster_birch_cluster -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python LS_Birch_cluster_0516.py  > output_LS_Birch_cluster_0516_`date '+%Y%m%d.%H%M'`" -m "module load python/2.7.11"
+launcher_creator.py -n cluster_kmeans_nonrandom -q normal -t 24:00:00 -e patrickschultz@utexas.edu -b "python LS_kmeans_test_nonrandom_0516.py  > output_kmeans_test_nonrandom_0516_`date '+%Y%m%d.%H%M'`" -m "module load python/2.7.11"
+launcher_creator.py -n cluster_kmeans_random -q normal -t 24:00:00 -e patrickschultz@utexas.edu -b "python LS_kmeans_test_random_0516.py > output_kmeans_test_random_0516_`date '+%Y%m%d.%H%M'`" -m "module load python/2.7.11"
+
+
+for file in $(curl -s http://tgdp.la.utexas.edu/gilbert-byphrase/ |
+                  grep href |
+                  sed 's/.*href="//' |
+                  sed 's/".*//' |
+                  grep '^[a-zA-Z].*'); do
+    curl -s -O http://tgdp.la.utexas.edu/gilbert-byphrase/$file
+done
