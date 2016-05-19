@@ -97,8 +97,8 @@ class Clusteringstats(Clustering):
 			} 
 		return featuredicti
 
-	def cluster_silhouette(self):
-		silhouette=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.labels)
+	def cluster_silhouette(self, distance_metric):
+		silhouette=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.labels, metric=distance_metric)
 		return silhouette
 
 
@@ -108,14 +108,26 @@ class Centroidstats(Clustering):
 	Statistics and calculations with centroids of a clustering.
 	"""
 			
-	def __init__(self, name, labels,centroids=None, actual_centroids=None):
+	def __init__(self, matrix_without_cats, name, labels, centroids=None, actual_centroids=None):
 		Clustering.__init__(self, name, labels, centroids, actual_centroids)
 		#relevant here: centroids and actual centroids
 		#centroid will be a vector of len (x)
+		self.matrix_without_cats=matrix_without_cats
 		
 	def _centroid_check(self):
 		if self.centroids == None:
-			raise ValueError("Model {} has no centroids".format(self.name))
+			#raise ValueError("Model {} has no centroids".format(self.name))
+			#make a new centroid for each cluster
+			centroids=[]
+			try:
+				for c in range(0,len(np.unique(self.labels))):
+					vectors=self.matrix_without_cats[np.where(self.labels==c)]
+					centroid=np.mean(vectors, axis=0)
+					centroids.append(centroid)
+				print "Warning:\nCentroids for {} calculated after the clustering".format(self.name)
+				self.centroids=centroids
+			except:
+				raise ValueError("Model {} has no centroids".format(self.name))
 		else:
 			pass
 			
@@ -261,7 +273,7 @@ class Clusteringsimilarity(Clustering):
 			'completeness_sim': sklearn.metrics.completeness_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
 			'homogeneity_sim':sklearn.metrics.homogeneity_score(self.partitionings[combo[0]].labels, self.partitionings[combo[1]].labels),
 			#double check this silhouette score. how do we get the matrix without in here???
-			'silhouette_score_sim': (sklearn.metrics.silhouette_score(self.matrix_without_cats, self.partitionings[combo[0]].labels), sklearn.metrics.silhouette_score(self.matrix_without_cats, self.partitionings[combo[1]].labels)),
+			#'silhouette_score_sim': (sklearn.metrics.silhouette_score(self.matrix_without_cats, self.partitionings[combo[0]].labels), sklearn.metrics.silhouette_score(self.matrix_without_cats, self.partitionings[combo[1]].labels)),
 			'variation_of_information':'is in R'
 		}
 		return similaritydict

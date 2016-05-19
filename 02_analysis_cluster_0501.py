@@ -131,7 +131,7 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 	
 	
 
-def clustermachine(matrix, clusters=4):
+def clustermachine(matrix, distance_metric, clusters=4):
 	#we need a similarity matrix to feed into some of the algos
 	similarity_matrix=metrics.pairwise.euclidean_distances(matrix)	
 	#meanshift and kmeans take features, others need distance matrixes
@@ -140,16 +140,16 @@ def clustermachine(matrix, clusters=4):
 	t=time.time()
 	
 	## # 1: kmeans
-	model=sklearn.cluster.KMeans(clusters,tol=0)
-	clustering=model.fit(matrix)
-	centroids=clustering.cluster_centers_
-	labels=clustering.labels_
-	inertia=clustering.inertia_
-	kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
-	result.append(kmeans)
-	print [i.name for i in result][len(result)-1]
-	u=time.time()
-	print (u-t)/60
+# 	model=sklearn.cluster.KMeans(clusters,tol=0)
+# 	clustering=model.fit(matrix)
+# 	centroids=clustering.cluster_centers_
+# 	labels=clustering.labels_
+# 	inertia=clustering.inertia_
+# 	kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+# 	result.append(kmeans)
+# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 	u=time.time()
+# 	print (u-t)/60
 		#
 	###CREATING CLUSTERS
 	#
@@ -167,83 +167,115 @@ def clustermachine(matrix, clusters=4):
 #	print (u-t)/60
 #	
 	# 3: Affinity Propagation, breaks @ 12600, 42
-	model=sklearn.cluster.AffinityPropagation()
-	clustering=model.fit(matrix)
-	centroid_index=model.cluster_centers_indices_
-	centroids=clustering.cluster_centers_
-	labels=clustering.labels_
-	aff_matrix=clustering.affinity_matrix_
-	its= clustering.n_iter_
-	affinity=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
-	result.append(affinity)
-	u=time.time()
-	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
+# 	model=sklearn.cluster.AffinityPropagation()
+# 	clustering=model.fit(matrix)
+# 	centroid_index=model.cluster_centers_indices_
+# 	centroids=clustering.cluster_centers_
+# 	labels=clustering.labels_
+# 	aff_matrix=clustering.affinity_matrix_
+# 	its= clustering.n_iter_
+# 	affinity=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+# 	result.append(affinity)
+# 	u=time.time()
+# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 	print (u-t)/60
 	
-	## #4: Spectral clustering
-	model=sklearn.cluster.SpectralClustering()
-	clustering=model.fit(matrix)
-	labels=clustering.labels_
-	aff_matrix=clustering.affinity_matrix_
-	spectral= ct.Clustering(model, clustering.labels_)
-	result.append(spectral)
-	u=time.time()
-	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
+# 	## #4: Spectral clustering
+# 	model=sklearn.cluster.SpectralClustering()
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	aff_matrix=clustering.affinity_matrix_
+# 	spectral= ct.Clustering(model, clustering.labels_)
+# 	result.append(spectral)
+# 	u=time.time()
+# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 	print (u-t)/60
 
 
-##watch out --------- centroids are indices!!!!!	
-## 	## # 5: DBCASN, eanShift, takes forever @  12600, 42
-#	model=sklearn.cluster.DBSCAN()
-#	clustering=model.fit(matrix)
-#	core_samples=clustering.core_sample_indices_
-#	components=clustering.components_
-#	labels=clustering.labels_
-#	dbscan= ct.Clustering(model, clustering.labels_, clustering.core_sample_indices_)
-#	result.append(dbscan)
-#	u=time.time()
-#	print [i.name for i in result][len(result)-1]
-#	print (u-t)/60
+##watch out --------- centroids are indices!!!!!
+
+	
+# 	## # 5: DBCASN, eanShift, takes forever @  12600, 42
+# 	for x in [0.025,0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25]:
+# 		model=sklearn.cluster.DBSCAN(eps=x, metric=distance_metric, algorithm='brute')
+# 		clustering=model.fit(matrix)
+# 		core_samples=clustering.core_sample_indices_
+# 		components=clustering.components_
+# 		labels=clustering.labels_
+# 		print labels
+# 		dbscan= ct.Clustering(model, clustering.labels_, clustering.core_sample_indices_)
+# 		result.append(dbscan)
+# 		u=time.time()
+# 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 		print (u-t)/60
 #	
 #	##GUASSIN DOEs NOT FIT OUR SCHEMA AT THIS POINT
 #	## 6: GAUSSIAN MIXTURE. eh this does not really fit in here
-#	model=sklearn.mixture.GMM()
-#	clustering=model.fit(matrix)
-#	weights=model.weights_
-#	means=model.means_
-#	covars=model.covars_
-#	converged=clustering.converged_	
-#	u=time.time()
-#	result.append(dbscan)
-#	print [i.name for i in result][len(result)-1]
-#	print (u-t)/60
+	for x in range(2,44):
+		model=sklearn.mixture.DPGMM(x)
+		clustering=model.fit(matrix)
+		labels=model.fit_predict(matrix)
+		weights=model.weights_
+		means=clustering.means_
+		print "bic", model.bic(matrix)
+		print "aic", model.aic(matrix)
+		print "components", clustering.n_components
+		centroids=clustering.means_
+		converged=clustering.converged_	
+		print "converged?", converged
+		gauss= ct.Clustering(model, model.fit_predict(matrix), clustering.means_)
+		u=time.time()
+		result.append(gauss)
+		#print [i.name for i in result][len(result)-1]
+		#print (u-t)/60
 #	
 #
 	#These are essentially trees; maybe need a different approach. They are kinda predictive
 	
-# 	## #7: Agglomerative // Ward Hierarchical 
-	model=sklearn.cluster.AgglomerativeClustering()
-	clustering=model.fit(matrix)
-	labels=clustering.labels_
-	leaves=clustering.n_leaves_
-	components=clustering.n_components_
-	ward= ct.Clustering(model, clustering.labels_)
-	result.append(ward)
-	u=time.time()
-	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
+# 	## #7: Agglomerative 
 
-	## #8: Birch Hierarchical 	
-	model=sklearn.cluster.Birch(threshold=0.025)
-	clustering=model.fit(matrix)
-	labels=clustering.labels_
-	root=clustering.root_
-	subcluster_labels=clustering.subcluster_labels_
-	birch= ct.Clustering(model, clustering.labels_)
-	result.append(birch)
-	u=time.time()
-	print [i.name for i in result][len(result)-1]
-	print (u-t)/60
+# 	for x in range(2,6):
+# 		model=sklearn.cluster.AgglomerativeClustering(affinity=distance_metric, n_clusters=x, linkage='complete')
+# 		clustering=model.fit(matrix)
+# 		labels=clustering.labels_
+# 		leaves=clustering.n_leaves_
+# 		children=clustering.children_
+# 		components=clustering.n_components_
+# 		ward= ct.Clustering(model, clustering.labels_)
+# 		result.append(ward)
+# 		u=time.time()
+# 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 		print (u-t)/60
+# # 	
+# 
+# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 	print (u-t)/60
+
+	
+	
+	
+# 	model=sklearn.cluster.AgglomerativeClustering(affinity='cosine', linkage='complete')
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	leaves=clustering.n_leaves_
+# 	components=clustering.n_components_
+# 	ward= ct.Clustering(model, clustering.labels_)
+# 	result.append(ward)
+# 	u=time.time()
+# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 	print (u-t)/60
+
+# 	## #8: Birch Hierarchical 	
+# 	model=sklearn.cluster.Birch(threshold=0.025)
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	root=clustering.root_
+# 	subcluster_labels=clustering.subcluster_labels_
+# 	birch= ct.Clustering(model, clustering.labels_)
+# 	result.append(birch)
+# 	u=time.time()
+# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 	print (u-t)/60
 	
 	return(result)
 	
@@ -252,26 +284,25 @@ def clustermachine(matrix, clusters=4):
 
 
 	 
-def main():
+def main(distance_metric):
 	starttime=time.time()
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
 	print ", ".join(folders)
 	print ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
 	#folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
-	featuredict=dictmaker(folders, 1000)
-	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, True, "category1")
-	x=clustermachine(wordmatrix_without_cat,4)
-	print [(i.name, i.no_of_clusters) for i in x]
-	#print [i.name for i in x]
+	featuredict=dictmaker(folders, 10000)
+	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, False, "category1")
+	x=clustermachine(wordmatrix_without_cat,distance_metric,4)
+	#print [(i.name, i.no_of_clusters) for i in x]
 	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
-	
-	for clustering in x:
+	print "These clusterings have less than 2 clusters\n{}\n\n".format("\n".join([str(c.name) for c in x if c.no_of_clusters < 2]))
+	#PRINTING STUFF
+	headline="\n\n-----------\n\n"
+	print "Working with {} distance metric".format(distance_metric)
+	for clustering in [c for c in x if c.no_of_clusters > 1]:
 		cati=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels)
-		sili=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cluster_silhouette()
-	# 	print cati.size_of_categories()
-		headline="\n\n-----------\n\n"
-	
+		sili=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cluster_silhouette(distance_metric)
 	
 		#GENERAL STATS
 	 	print headline, headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[0], clustering.no_of_clusters)
@@ -292,32 +323,38 @@ def main():
 				print "{} items or {} percent in cluster {}".format(cats[cat]['cat_per_cluster'][entry], round(float(cats[cat]['cat_per_cluster'][entry])/float(cats[cat]['total'])*100), entry)
 
 		#PREDICTIVE FEATURES
-		print headline, "Stronly predictive features are"
-		cents=ct.Centroidstats(clustering.name, clustering.labels, clustering.centroids).cluster_predictors(featuredict)
+		print headline, "Strongly predictive features are"
+		#centroids=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids)
+		cents=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids).cluster_predictors(featuredict)
 		if cents:
 			for diff in cents:
 				print "\nRaw Scores"
 				print "Cluster {} and cluster {} are differentiated by \n{}\n\n\n".format(diff[0], diff[1], ", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['raw_diff']][:10])) 
 				print "Zscores"
 				print "Cluster {} and cluster {} are differentiated by \n{}\n\n\n".format(diff[0], diff[1], ", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['zscores_diff']][:10]))	
-				print "We can also add equivalent features if we want"
-				print "And stems and whatnot"
+			
 		
 		#PROTOTYPES
 		print headline, "Here is a typical document for each cluster"
-		distance='euclidean'
+		distance=distance_metric
 		print "We set the distance metric to {}".format(distance)
-		docs=ct.Centroidstats(clustering.name, clustering.labels, clustering.centroids).central_documents(wordmatrix_with_cat, filedicti)
+		docs=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids).central_documents(wordmatrix_with_cat, filedicti)
 		if docs:
 			for cluster in docs:
 				print "\nCLUSTER {} \n".format(cluster)
-				f=open(docs[cluster][distance][0]).read()
-				print f
+				with open(docs[cluster][distance][0]) as f:
+					print f.read()
+				if len(docs[cluster][distance]) > 8:
+					print "\nOther files close by in cluster {}:\n".format(cluster)
+					print ("{}\n"*8).format(*docs[cluster][distance][1:9])
 	
 	#CROSS CLUSTERING COMPARISON
 	print headline, "Comparing clusterings"
-# 		
-	input=[(str(type(i.name)).split(".")[3].rstrip("'>"), i) for i in x]
+	for clustering in [c for c in x if c.no_of_clusters > 1]:
+		print headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[0], clustering.no_of_clusters)
+		print "Its silhouette score is {}".format(str(ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cluster_silhouette(distance_metric)))
+	#all input does it just concatenate name + cluster # and supply clustering object to similarity measurement
+	input=[(str(type(i.name)).split(".")[3].rstrip("'>")+"--"+str(i.no_of_clusters), i) for i in x]
 	simi=ct.Clusteringsimilarity(wordmatrix_with_cat, wordmatrix_without_cat ,input)
 	options=['adjustedrand_sim', 'adjustedmutualinfo_sim', 'jaccard_sim', 'v_sim', 'completeness_sim', 'homogeneity_sim', 'silhouette_score_sim']
 	for o in options:
@@ -331,9 +368,12 @@ def main():
 	print headline, "This took us {} minutes".format(process/60)
 		#or do we want to do predictive features and typical document per cluster as well????	
 	
-main()
+main('cosine')
 
-
+# Valid values for metric are:
+# From scikit-learn: ['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan']. These metrics support sparse matrix inputs.
+# From scipy.spatial.distance: ['braycurtis', 'canberra', 'chebyshev', 'correlation', 'dice', 'hamming', 'jaccard', 'kulsinski', 'mahalanobis', 'matching', 'minkowski', 'rogerstanimoto', 'russellrao', 'seuclidean', 'sokalmichener', 'sokalsneath', 'sqeuclidean', 'yule'] See the documentation for scipy.spatial.distance for details on these metrics. 
+# These metrics do not support sparse matrix inputs.
 
 ##
 ####NOTES
