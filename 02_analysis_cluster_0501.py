@@ -292,7 +292,7 @@ def main(distance_metric):
 	#folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
 	featuredict=dictmaker(folders, 10000)
-	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, False, "category1")
+	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, True, "category1")
 	x=clustermachine(wordmatrix_without_cat,distance_metric,4)
 	#print [(i.name, i.no_of_clusters) for i in x]
 	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
@@ -323,6 +323,7 @@ def main(distance_metric):
 				print "{} items or {} percent in cluster {}".format(cats[cat]['cat_per_cluster'][entry], round(float(cats[cat]['cat_per_cluster'][entry])/float(cats[cat]['total'])*100), entry)
 
 		#PREDICTIVE FEATURES
+		###NOTE THAT THIS IS A BREAK POINT IF WE HAVE REALLY SMALL CLUSTERS
 		print headline, "Strongly predictive features are"
 		#centroids=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids)
 		cents=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids).cluster_predictors(featuredict)
