@@ -1,4 +1,6 @@
+
 import clustertools as ct
+import sys
 import os
 import re 
 import shutil
@@ -14,7 +16,6 @@ from sklearn import cluster, mixture, metrics
 from scipy import spatial, sparse
 from collections import defaultdict
 from nltk.tokenize import word_tokenize
-
 
 metriclist=[['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan'],['braycurtis', 'canberra', 'chebyshev', 'correlation', 'dice', 'hamming', 'jaccard', 'kulsinski', 'mahalanobis', 'matching', 'minkowski', 'rogerstanimoto', 'russellrao', 'seuclidean', 'sokalmichener', 'sokalsneath', 'sqeuclidean', 'yule']]
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath', 'wminkowski']
@@ -100,7 +101,7 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
 		if testmode == True:
 			print "\n\nRUNNING\nIN\nTEST\nMODE\n"
-			filis=filis[:30]
+			filis=filis[:100]
 		print "Building matrices: we have {} files in folder {}".format(len(filis), folder)
 		for fili in filis:
 			inputfile=codecs.open(os.path.join(pathi, folder, fili), "r", "utf-8").read()
@@ -133,7 +134,7 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 
 def clustermachine(matrix, distance_metric, clusters=4):
 	#we need a similarity matrix to feed into some of the algos
-	similarity_matrix=metrics.pairwise.euclidean_distances(matrix)	
+	#similarity_matrix=metrics.pairwise.euclidean_distances(matrix)	
 	#meanshift and kmeans take features, others need distance matrixes
 	no_of_clusters=range(clusters)	
 	result=[]
@@ -195,35 +196,44 @@ def clustermachine(matrix, distance_metric, clusters=4):
 ##watch out --------- centroids are indices!!!!!
 
 	
-# 	## # 5: DBCASN, eanShift, takes forever @  12600, 42
-# 	for x in [0.025,0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25]:
-# 		model=sklearn.cluster.DBSCAN(eps=x, metric=distance_metric, algorithm='brute')
-# 		clustering=model.fit(matrix)
-# 		core_samples=clustering.core_sample_indices_
-# 		components=clustering.components_
-# 		labels=clustering.labels_
-# 		print labels
-# 		dbscan= ct.Clustering(model, clustering.labels_, clustering.core_sample_indices_)
-# 		result.append(dbscan)
-# 		u=time.time()
-# 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
-# 		print (u-t)/60
+	## # 5: DBCASN, eanShift, takes forever @  12600, 42
+	for x in [0.025,0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25]:
+		model=sklearn.cluster.DBSCAN(eps=x, metric=distance_metric, algorithm='brute')
+		clustering=model.fit(matrix)
+		core_samples=clustering.core_sample_indices_
+		components=clustering.components_
+		labels=clustering.labels_
+		print labels
+		dbscan= ct.Clustering(model, clustering.labels_, clustering.core_sample_indices_)
+		result.append(dbscan)
+		u=time.time()
+		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+		print (u-t)/60
 #	
 #	##GUASSIN DOEs NOT FIT OUR SCHEMA AT THIS POINT
 #	## 6: GAUSSIAN MIXTURE. eh this does not really fit in here
-	for x in range(2,44):
-		model=sklearn.mixture.DPGMM(x)
-		clustering=model.fit(matrix)
-		labels=model.fit_predict(matrix)
-		weights=model.weights_
-		means=clustering.means_
-		print "bic", model.bic(matrix)
-		print "aic", model.aic(matrix)
-		print "components", clustering.n_components
-		centroids=clustering.means_
-		converged=clustering.converged_	
-		print "converged?", converged
-		gauss= ct.Clustering(model, model.fit_predict(matrix), clustering.means_)
+# 	for x in range(2,10):
+# 		model=sklearn.mixture.DPGMM(x, n_iter=100, verbose=0)
+# 		print "initial weights", model.weights_
+# 		print "initial components", model.n_components
+# 		print "initial converge", model.converged_
+# 		model.fit(matrix)
+# 		print "trained weights", model.weights_
+# 		print "trained components", model.n_components
+# 		print "trained converge", model.converged_
+# 		print "\n predict", set(model.predict(matrix))
+# 		print "\n predict probs", model.predict_proba(matrix)
+# 		
+# 		
+# 		weights=model.weights_
+# 		means=clustering.means_
+		# print "bic", model.bic(matrix)
+# 		print "aic", model.aic(matrix)
+# 		print "components", clustering.n_components
+# 		centroids=clustering.means_
+# 		converged=clustering.converged_	
+# 		print "converged?", converged
+		gauss= ct.Clustering(model, model.fit_predict(matrix), model.means_)
 		u=time.time()
 		result.append(gauss)
 		#print [i.name for i in result][len(result)-1]
@@ -284,15 +294,15 @@ def clustermachine(matrix, distance_metric, clusters=4):
 
 
 	 
-def main(distance_metric):
+def main(distance_metric, threshold, testmode=True):
 	starttime=time.time()
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
 	print ", ".join(folders)
 	print ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
 	#folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
-	featuredict=dictmaker(folders, 10000)
-	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, True, "category1")
+	featuredict=dictmaker(folders, threshold)
+	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, testmode, "category1")
 	x=clustermachine(wordmatrix_without_cat,distance_metric,4)
 	#print [(i.name, i.no_of_clusters) for i in x]
 	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
@@ -369,7 +379,7 @@ def main(distance_metric):
 	print headline, "This took us {} minutes".format(process/60)
 		#or do we want to do predictive features and typical document per cluster as well????	
 	
-main('cosine')
+main('manhattan', 2000, False)
 
 # Valid values for metric are:
 # From scikit-learn: ['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan']. These metrics support sparse matrix inputs.
