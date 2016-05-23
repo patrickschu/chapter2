@@ -72,9 +72,12 @@ class Clusteringstats(Clustering):
 		dict=self._clustercatdictmaker(self.matrix_with_cats)
 		cluster_features=defaultdict()
 		for i in dict:
-			cluster_features[i]={k:float(len(v)) for k,v in dict[i].items()}
-			cluster_features[i]['total']=sum(cluster_features[i].values())
-			cluster_features[i]['no_of_categories']=len(dict[i])
+			if sum(cluster_features[i].values()) < 1:
+				print "Cluster {} is empty".format(i)
+			else:
+				cluster_features[i]={k:float(len(v)) for k,v in dict[i].items()}
+				cluster_features[i]['total']=sum(cluster_features[i].values())
+				cluster_features[i]['no_of_categories']=len(dict[i])
 		return cluster_features
 		
 	def cluster_features(self):

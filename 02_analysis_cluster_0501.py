@@ -201,7 +201,9 @@ def clustermachine(matrix, distance_metric, clusters=4):
 		model=sklearn.cluster.DBSCAN(eps=x, metric=distance_metric, algorithm='brute')
 		clustering=model.fit(matrix)
 		core_samples=clustering.core_sample_indices_
+		print "core samples", clustering.core_sample_indices_
 		components=clustering.components_
+		print "components", components
 		labels=clustering.labels_
 		print labels
 		dbscan= ct.Clustering(model, clustering.labels_, clustering.core_sample_indices_)
@@ -233,9 +235,9 @@ def clustermachine(matrix, distance_metric, clusters=4):
 # 		centroids=clustering.means_
 # 		converged=clustering.converged_	
 # 		print "converged?", converged
-		gauss= ct.Clustering(model, model.fit_predict(matrix), model.means_)
-		u=time.time()
-		result.append(gauss)
+# 		gauss= ct.Clustering(model, model.fit_predict(matrix), model.means_)
+# 		u=time.time()
+# 		result.append(gauss)
 		#print [i.name for i in result][len(result)-1]
 		#print (u-t)/60
 #	
