@@ -231,7 +231,6 @@ class Centroidstats(Clustering):
 					# row 1 contains the file number
 					for item in result[:20,1]:
 						docs[entry][d].append(filedict[item])
-			print docs
 			return docs
 		except ValueError as err:
 			print err
