@@ -6,8 +6,8 @@ import itertools
 import sklearn
 from collections import defaultdict
 
-#scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath', 'wminkowski']
-scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis']#, 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']
+scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']#, 'wminkowski']
+#scipy_distances=['euclidean', 'minkowski', 'manhattan', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis']#, 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']
 
 
 class Clustering(object):
@@ -72,12 +72,9 @@ class Clusteringstats(Clustering):
 		dict=self._clustercatdictmaker(self.matrix_with_cats)
 		cluster_features=defaultdict()
 		for i in dict:
-			if sum(cluster_features[i].values()) < 1:
-				print "Cluster {} is empty".format(i)
-			else:
-				cluster_features[i]={k:float(len(v)) for k,v in dict[i].items()}
-				cluster_features[i]['total']=sum(cluster_features[i].values())
-				cluster_features[i]['no_of_categories']=len(dict[i])
+			cluster_features[i]={k:float(len(v)) for k,v in dict[i].items()}
+			cluster_features[i]['total']=sum(cluster_features[i].values())
+			cluster_features[i]['no_of_categories']=len(dict[i])
 		return cluster_features
 		
 	def cluster_features(self):
@@ -182,7 +179,6 @@ class Centroidstats(Clustering):
 	def cluster_predictors(self, vocab_used_for_feature_extraction):
 		# takes a dictionary of centroids and a dictionary of features to compute features most predictive of each cluster
 		# returns dictionary { cluster: {raw_diff:(word X,difference score), (word Y, difference score) ..., zscores_diff: ()()}, cluster2: {...}}
-		
 		try:
 			self._centroid_check()
 			centroiddicti=self._centroiddictmaker()
@@ -231,11 +227,11 @@ class Centroidstats(Clustering):
 				for d in scipy_distances:
 					dist=scipy.spatial.distance.cdist(matrix_without_cats,centroid, d)
 					sorted_index=np.argsort(dist, axis=0)
-					wordmatrix_with_cats.shape
 					result = wordmatrix_with_cats.take(sorted_index.reshape(-1), 0)
 					# row 1 contains the file number
-					for item in result[:,1]:
+					for item in result[:20,1]:
 						docs[entry][d].append(filedict[item])
+			print docs
 			return docs
 		except ValueError as err:
 			print err

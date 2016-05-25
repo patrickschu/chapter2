@@ -196,17 +196,17 @@ def clustermachine(matrix, distance_metric, clusters=4):
 ##watch out --------- centroids are indices!!!!!
 
 	
-	## # 5: DBCASN, eanShift, takes forever @  12600, 42
-	for x in [0.025,0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25]:
+	## # 5: DBCASN,  takes forever @  12600, 42
+	for x in [0.05, 0.075, 0.1]:
 		model=sklearn.cluster.DBSCAN(eps=x, metric=distance_metric, algorithm='brute')
 		clustering=model.fit(matrix)
 		core_samples=clustering.core_sample_indices_
-		print "core samples", clustering.core_sample_indices_
+		print "core samples", matrix[clustering.core_sample_indices_]
 		components=clustering.components_
 		print "components", components
 		labels=clustering.labels_
 		print labels
-		dbscan= ct.Clustering(model, clustering.labels_, clustering.core_sample_indices_)
+		dbscan= ct.Clustering(model, clustering.labels_, matrix[clustering.core_sample_indices_])
 		result.append(dbscan)
 		u=time.time()
 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
@@ -333,11 +333,11 @@ def main(distance_metric, threshold, testmode=True):
 			print "\nCategory {} has {} items".format("".join([i[0] for i in catdicti.items() if i[1] == int(cat)]), cats[cat]['total'])
 			for entry in [i for i in cats[cat]['cat_per_cluster'] if not i in excludelist]:
 				print "{} items or {} percent in cluster {}".format(cats[cat]['cat_per_cluster'][entry], round(float(cats[cat]['cat_per_cluster'][entry])/float(cats[cat]['total'])*100), entry)
+####UP TO HERE, WORKS WITH ZERO SIZE CLUSTERS
 
 		#PREDICTIVE FEATURES
 		###NOTE THAT THIS IS A BREAK POINT IF WE HAVE REALLY SMALL CLUSTERS
 		print headline, "Strongly predictive features are"
-		#centroids=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids)
 		cents=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids).cluster_predictors(featuredict)
 		if cents:
 			for diff in cents:
@@ -350,6 +350,8 @@ def main(distance_metric, threshold, testmode=True):
 		#PROTOTYPES
 		print headline, "Here is a typical document for each cluster"
 		distance=distance_metric
+		if distance_metric=='manhattan':
+			distance='cityblock'
 		print "We set the distance metric to {}".format(distance)
 		docs=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids).central_documents(wordmatrix_with_cat, filedicti)
 		if docs:
@@ -380,6 +382,7 @@ def main(distance_metric, threshold, testmode=True):
 	process=endtime-starttime
 	print headline, "This took us {} minutes".format(process/60)
 		#or do we want to do predictive features and typical document per cluster as well????	
+	os.system('say "your program has finished"')
 	
 main('manhattan', 2000, False)
 
