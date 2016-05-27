@@ -27,12 +27,7 @@ zip and upload
 unzip in WORK
 
 
-launcher_creator.py -n cluster_birch_nocluster -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python LS_Birch_nocluster_0516.py  > output_LS_Birch_nocluster_0516_`date '+%Y%m%d.%H%M'`" -m "module load python/2.7.11"
-launcher_creator.py -n cluster_birch_cluster -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python LS_Birch_cluster_0516.py  > output_LS_Birch_cluster_0516_`date '+%Y%m%d.%H%M'`" -m "module load python/2.7.11"
-launcher_creator.py -n cluster_kmeans_nonrandom -q normal -t 24:00:00 -e patrickschultz@utexas.edu -b "python LS_kmeans_test_nonrandom_0516.py  > output_kmeans_test_nonrandom_0516_`date '+%Y%m%d.%H%M'`" -m "module load python/2.7.11"
-launcher_creator.py -n cluster_kmeans_random -q normal -t 24:00:00 -e patrickschultz@utexas.edu -b "python LS_kmeans_test_random_0516.py > output_kmeans_test_random_0516_`date '+%Y%m%d.%H%M'`" -m "module load python/2.7.11"
-
-launcher_creator.py -n dbscan -q normal -t 10:00:00 -e patrickschultz@utexas.edu -b "python LS_Dbscan.py > output_DBScan_`date '+%Y%m%d.%H%M'`" -m "module load python/2.7.11"
+launcher_creator.py -n dbscan -q normal -t 10:00:00 -e patrickschultz@utexas.edu -b "python LS_Dbscan.py > output_DBScan_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
 
 for file in $(curl -s http://tgdp.la.utexas.edu/gilbert-byphrase/ |
                   grep href |

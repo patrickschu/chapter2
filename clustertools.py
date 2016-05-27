@@ -350,6 +350,79 @@ class Categorystats(Clustering):
 ###FUNCTIONS
 ##
 
+def basicstatsmaker(dataset):
+		statdict={
+		'means':np.mean(dataset, axis=0),
+		'median':np.median(dataset, axis=0),
+		'std':np.std(dataset, axis=0),
+		'min':np.min(dataset, axis=0),
+		'max':np.max(dataset, axis=0),
+		'range':np.ptp(dataset, axis=0)
+		}
+		return statdict
+
+
+def outlierremover(dataset, median_metric, standard_deviations):
+	''' 
+	Removes outliers from dataset removed more than standard_deviations * standard deviations removed from median
+	'''
+	print "We are removing outliers"
+	stats=basicstatsmaker(dataset)
+	diff_to_median = dataset - stats[median_metric]
+	
+	# print "medi", stats['median']
+# 	print "stdev", stats['std']
+# 	print "diffi with meedian\n", diff_to_median
+	diff_median_stdev=np.absolute(diff_to_median)-(standard_deviations * np.absolute(stats['std']))
+	#print "diffi with stdev\n", diff_median_stdev
+	#http://stackoverflow.com/questions/11130831/getting-all-rows-where-complex-condition-holds-in-scipy-numpy
+	gooddata=diff_median_stdev[(diff_median_stdev < 0).all(axis=1)]
+	return gooddata
+	
+
+	
+### ADD DISTANCE METRIC AND STATS
+
+
+def matrixstats(matrix, zscores=False, outlier_removal=False, outlier_threshold=2, median_metric='median' ):
+	'''
+	Matrixstats computes basic statistics and optionally normalizes scores and removes outliers.
+	It computes basic statistical values such as the mean, median, standard deviation, and range of values.
+	Outliers can be removed by specifying a limit on the number of standard deviations a score may be removed from the median.
+	For the zscore transformation, degrees of freedom is set to 1 to make results equivalent to R zscores. 
+	'''
+	print "Starting the matrix stats"
+	print "Sample rows\n", matrix[:3,:], "\n"
+	print "\nInput statistics"
+	inputstats=basicstatsmaker(matrix)
+	for entry in inputstats:
+		print entry, inputstats[entry]
+	print "\n"
+
+	# here we remove outliers
+	if outlier_removal:
+		print "Matrix shape before outlier removal", matrix.shape
+		matrix=outlierremover(matrix, median_metric, outlier_threshold)
+		print "Matrix shape after outlier removal", matrix.shape
+		outlierstats=basicstatsmaker(matrix)
+		for entry in outlierstats:
+			print entry, outlierstats[entry]
+		print "\n"
+
+	# here we transform data set to zscores
+	if zscores:
+		print "\n\nWe are computing zscores"
+		matrix = scipy.stats.mstats.zscore(matrix, axis=0, ddof=1)
+		print "Sample rows zscores", matrix[:3,:]
+		if np.isnan(np.min(matrix)):
+			print "\n\nAlarm. NaNs detected in zscore transformation\n\n"
+		zscoredict=basicstatsmaker(matrix)
+		for entry in zscoredict:
+			print entry, zscoredict[entry]
+	print "\n\ndone with matrix stats"
+	return matrix
+
+
 #setting up some helper functions
 def tagextractor(text, tag, fili):
     regexstring="<"+tag+"=(.*?)>"

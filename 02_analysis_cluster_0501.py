@@ -197,7 +197,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 
 	
 	## # 5: DBCASN,  takes forever @  12600, 42
-	for x in [0.175, 0.2, 0.225, 0.3]:
+	for x in [0.2]: #[0.175, 0.2, 0.225, 0.3]:
 		model=sklearn.cluster.DBSCAN(eps=x, metric=distance_metric, algorithm='brute')
 		clustering=model.fit(matrix)
 		core_samples=clustering.core_sample_indices_
@@ -300,12 +300,16 @@ def main(distance_metric, threshold, testmode=True):
 	starttime=time.time()
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
 	print ", ".join(folders)
-	print ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
+	print "Items in folders", ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
 	#folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
 	featuredict=dictmaker(folders, threshold)
+	
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, testmode, "category1")
-	x=clustermachine(wordmatrix_without_cat,distance_metric,4)
+	
+	wordmatrix_without_cat=ct.matrixstats(wordmatrix_without_cat, zscores=False, outlier_removal=True, outlier_threshold = 7, median_metric='means')
+	
+	#x=clustermachine(wordmatrix_without_cat,distance_metric,4)
 	#print [(i.name, i.no_of_clusters) for i in x]
 	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
 	print "These clusterings have less than 2 clusters\n{}\n\n".format("\n".join([str(c.name) for c in x if c.no_of_clusters < 2]))
@@ -383,7 +387,7 @@ def main(distance_metric, threshold, testmode=True):
 		#or do we want to do predictive features and typical document per cluster as well????	
 	os.system('say "your program has finished"')
 	
-main('manhattan', 10000, False)
+main('manhattan', 12000, False)
 
 # Valid values for metric are:
 # From scikit-learn: ['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan']. These metrics support sparse matrix inputs.
