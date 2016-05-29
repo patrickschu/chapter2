@@ -16,19 +16,26 @@ from sklearn import cluster, mixture, metrics
 from scipy import spatial, sparse
 from collections import defaultdict
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 
+
+
+#moving parts
+stopwords = stopwords.words('english')+["n\'t","\'m", "br/", "'s", "'ll", "'re", "'d", "amp", "'ve","us", "im"]
+print stopwords
+#
+punctuation= list(string.punctuation)+["...","''", "``"]
+print punctuation
 metriclist=[['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan'],['braycurtis', 'canberra', 'chebyshev', 'correlation', 'dice', 'hamming', 'jaccard', 'kulsinski', 'mahalanobis', 'matching', 'minkowski', 'rogerstanimoto', 'russellrao', 'seuclidean', 'sokalmichener', 'sokalsneath', 'sqeuclidean', 'yule']]
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath', 'wminkowski']
 
 print "start"
 print "\n---------------\nSome public service announcements"
 
-#moving parts
+
 pathi=os.path.join("craig_0208")
 
-def dictmaker(folderlist, threshold):
-	##	
-	###BUILDING VOCAB
+def dictmaker(folderlist, threshold, remove_stopwords=False, remove_punct=False):
 	#threshold sets how many times a word needs to occur to be included in the featuredict
 	vocab={}
 	for folder in folderlist:
@@ -48,9 +55,16 @@ def dictmaker(folderlist, threshold):
 				else:
 					vocab[word]=vocab[word]+1
 	print "Our vocab dictionary has {} entries".format(len(vocab))
+	if remove_stopwords:
+		vocab= {key:value for key, value in vocab.items() if key not in stopwords }
+		print "After stop word removal, dict is {} long".format(len(vocab))
+	if remove_punct:
+		vocab= {key:value for key, value in vocab.items() if key not in punctuation }
+		print "After punctuation removal, dict is {} long".format(len(vocab))
 	#here we set the threshold
 	featuredict= {key:value for key, value in vocab.items() if value > float(threshold) }
 	print "Our feature dictionary has {} entries\n---------------\n".format(len(featuredict))
+	print "This is our featuredict", featuredict
 	return featuredict
 	
 
@@ -197,7 +211,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 
 	
 	## # 5: DBCASN,  takes forever @  12600, 42
-	for x in [0.2]: #[0.175, 0.2, 0.225, 0.3]:
+	for x in [2,4,8,16]:#[0.175, 0.2, 0.225, 0.3]:
 		model=sklearn.cluster.DBSCAN(eps=x, metric=distance_metric, algorithm='brute')
 		clustering=model.fit(matrix)
 		core_samples=clustering.core_sample_indices_
@@ -303,25 +317,27 @@ def main(distance_metric, threshold, testmode=True):
 	print "Items in folders", ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
 	#folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
-	featuredict=dictmaker(folders, threshold)
+	featuredict=dictmaker(folders, threshold, remove_stopwords=True, remove_punct=True)
 	
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, testmode, "category1")
 	
-	wordmatrix_without_cat=ct.matrixstats(wordmatrix_without_cat, zscores=False, outlier_removal=True, outlier_threshold = 7, median_metric='means')
+	wordmatrix_without_cat=ct.matrixstats(wordmatrix_without_cat, distance_metric, zscores=True, outlier_removal=False, outlier_threshold = 7, median_metric='means')
 	
-	#x=clustermachine(wordmatrix_without_cat,distance_metric,4)
+	x=clustermachine(wordmatrix_without_cat,distance_metric,4)
 	#print [(i.name, i.no_of_clusters) for i in x]
 	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
 	print "These clusterings have less than 2 clusters\n{}\n\n".format("\n".join([str(c.name) for c in x if c.no_of_clusters < 2]))
 	#PRINTING STUFF
 	headline="\n\n-----------\n\n"
 	print "Working with {} distance metric".format(distance_metric)
+		
+	#CROSS CLUSTERING COMPARISON
 	for clustering in [c for c in x if c.no_of_clusters > 1]:
 		cati=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels)
 		sili=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cluster_silhouette(distance_metric)
 	
 		#GENERAL STATS
-	 	print headline, headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[1], clustering.no_of_clusters)
+		print headline, headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[1], clustering.no_of_clusters)
 		print "Its silhouette score is {}".format(str(sili))
 		stats=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).size_of_clusters()
 		catstats=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cats_per_cluster()
@@ -339,7 +355,6 @@ def main(distance_metric, threshold, testmode=True):
 				print "{} items or {} percent in cluster {}".format(cats[cat]['cat_per_cluster'][entry], round(float(cats[cat]['cat_per_cluster'][entry])/float(cats[cat]['total'])*100), entry)
 
 		#PREDICTIVE FEATURES
-		###NOTE THAT THIS IS A BREAK POINT IF WE HAVE REALLY SMALL CLUSTERS
 		print headline, "Strongly predictive features are"
 		cents=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids).cluster_predictors(featuredict)
 		if cents:
@@ -365,8 +380,6 @@ def main(distance_metric, threshold, testmode=True):
 				if len(docs[cluster][distance]) > 8:
 					print "\nOther files close by in cluster {}:\n".format(cluster)
 					print ("{}\n"*8).format(*docs[cluster][distance][1:9])
-	
-	#CROSS CLUSTERING COMPARISON
 	print headline, "Comparing clusterings"
 	for clustering in [c for c in x if c.no_of_clusters > 1]:
 		print headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[0], clustering.no_of_clusters)
@@ -387,7 +400,7 @@ def main(distance_metric, threshold, testmode=True):
 		#or do we want to do predictive features and typical document per cluster as well????	
 	os.system('say "your program has finished"')
 	
-main('manhattan', 12000, False)
+main('manhattan', 3000, False)
 
 # Valid values for metric are:
 # From scikit-learn: ['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan']. These metrics support sparse matrix inputs.
