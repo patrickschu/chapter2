@@ -27,6 +27,17 @@ zip and upload
 unzip in WORK
 
 
+launcher_creator.py -n dbscanrawscoreoutlier -q normal -t 12:00:00 -e patrickschultz@utexas.edu -b "python LS_dbscan_raw_outlier.py > output_DBScan_rawoutlier_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
+launcher_creator.py -n dirichletrawscoreoutlier -q normal -t 12:00:00 -e patrickschultz@utexas.edu -b "python LS_dirichlet_raw_outlier.py > output_LS_dirichletrawscoreoutlier_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
+launcher_creator.py -n gaussrawscoreoutlier -q normal -t 12:00:00 -e patrickschultz@utexas.edu -b "python LS_gauss_raw_outlier.py > output_gaussrawscoreoutlier_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
+launcher_creator.py -n hierarchicalrawscoreoutlier -q normal -t 12:00:00 -e patrickschultz@utexas.edu -b "python LS_hierarchical_raw_outlier.py > output_LS_hierarchical_rawscoreoutlier_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
+launcher_creator.py -n dbscanzscoreoutlier -q normal -t 12:00:00 -e patrickschultz@utexas.edu -b "python LS_dbscan_zscore_outlier.py > output_DBScan_zscoreoutlier_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
+launcher_creator.py -n dirichletzcoreoutlier -q normal -t 12:00:00 -e patrickschultz@utexas.edu -b "python LS_dirichlet_zscore_outlier.py > output_LS_dirichletzscoreoutlier_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
+launcher_creator.py -n gausszscoreoutlier -q normal -t 12:00:00 -e patrickschultz@utexas.edu -b "python LS_gauss_zscore_outlier.py > output_gausszscoreoutlier_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
+launcher_creator.py -n hierarchicalzscoreoutlier -q normal -t 12:00:00 -e patrickschultz@utexas.edu -b "python LS_hierarchical_zscore_outlier.py > output_LS_hierarchical_zscoreoutlier_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
+
+
+
 launcher_creator.py -n dbscan -q normal -t 10:00:00 -e patrickschultz@utexas.edu -b "python LS_Dbscan.py > output_DBScan_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
 
 for file in $(curl -s http://tgdp.la.utexas.edu/gilbert-byphrase/ |
@@ -36,3 +47,9 @@ for file in $(curl -s http://tgdp.la.utexas.edu/gilbert-byphrase/ |
                   grep '^[a-zA-Z].*'); do
     curl -s -O http://tgdp.la.utexas.edu/gilbert-byphrase/$file
 done
+
+
+sbatch dbscan.slurm
+sbatch dirichlet.slurm
+sbatch gauss.slurm
+sbatch hierarchical.slurm

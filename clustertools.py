@@ -381,7 +381,7 @@ def outlierremover(dataset, median_metric, standard_deviations):
 
 
 
-def matrixstats(matrix, distance_metric, zscores=False, outlier_removal=False, outlier_threshold=2, median_metric='median' ):
+def matrixstats(matrix, distance_metric, zscores=False, outlier_removal=False, outlier_threshold=2, median_metric='median', compute_distance = False ):
 	'''
 	Matrixstats computes basic statistics and optionally normalizes scores and removes outliers.
 	It computes basic statistical values such as the mean, median, standard deviation, and range of values.
@@ -419,13 +419,14 @@ def matrixstats(matrix, distance_metric, zscores=False, outlier_removal=False, o
 		
 			
 	# compute a distance matrix
-	distmatrix=sklearn.metrics.pairwise.pairwise_distances(matrix, Y=None, metric=distance_metric, n_jobs=1)
-	diststats=basicstatsmaker(distmatrix)
-	print "\nDistance matrix"
-	print "Sample rows distance matrix", distmatrix[:3,:]
-	print "Statistics distance matrix"
-	for item in diststats:
-		print item, diststats[item]
+	if compute_distance:
+		distmatrix=sklearn.metrics.pairwise.pairwise_distances(matrix, Y=None, metric=distance_metric, n_jobs=1)
+		diststats=basicstatsmaker(distmatrix)
+		print "\nDistance matrix"
+		print "Sample rows distance matrix", distmatrix[:3,:]
+		print "Statistics distance matrix"
+		for item in diststats:
+			print item, diststats[item]
 # 	distzscores = scipy.stats.mstats.zscore(distmatrix, axis=0, ddof=1)
 # 	diststats=basicstatsmaker(distzscores)
 # 	print "Distance matrix statistics"

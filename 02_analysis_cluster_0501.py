@@ -23,7 +23,7 @@ from nltk.corpus import stopwords
 #moving parts
 stopwords = stopwords.words('english')+["n\'t","\'m", "br/", "'s", "'ll", "'re", "'d", "amp", "'ve","us", "im"]
 print stopwords
-#
+
 punctuation= list(string.punctuation)+["...","''", "``"]
 print punctuation
 metriclist=[['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan'],['braycurtis', 'canberra', 'chebyshev', 'correlation', 'dice', 'hamming', 'jaccard', 'kulsinski', 'mahalanobis', 'matching', 'minkowski', 'rogerstanimoto', 'russellrao', 'seuclidean', 'sokalmichener', 'sokalsneath', 'sqeuclidean', 'yule']]
@@ -210,25 +210,25 @@ def clustermachine(matrix, distance_metric, clusters=4):
 ##watch out --------- centroids are indices!!!!!
 
 	
-	## # 5: DBCASN,  takes forever @  12600, 42
-	for x in [2,4,8,16]:#[0.175, 0.2, 0.225, 0.3]:
-		model=sklearn.cluster.DBSCAN(eps=x, metric=distance_metric, algorithm='brute')
-		clustering=model.fit(matrix)
-		core_samples=clustering.core_sample_indices_
-		#print "core samples", matrix[clustering.core_sample_indices_]
-		components=clustering.components_
-		print "components", len(components)
-		labels=clustering.labels_
-		print labels
-		dbscan= ct.Clustering(model, clustering.labels_, matrix[clustering.core_sample_indices_])
-		result.append(dbscan)
-		u=time.time()
-		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
-		print (u-t)/60
+	# ## # 5: DBCASN,  takes forever @  12600, 42
+# 	for x in [2,4,8,16,32]:#[0.175, 0.2, 0.225, 0.3]:
+# 		model=sklearn.cluster.DBSCAN(eps=x, metric=distance_metric, algorithm='brute')
+# 		clustering=model.fit(matrix)
+# 		core_samples=clustering.core_sample_indices_
+# 		#print "core samples", matrix[clustering.core_sample_indices_]
+# 		components=clustering.components_
+# 		print "components", len(components)
+# 		labels=clustering.labels_
+# 		print labels
+# 		dbscan= ct.Clustering(model, clustering.labels_, matrix[clustering.core_sample_indices_])
+# 		result.append(dbscan)
+# 		u=time.time()
+# 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 		print (u-t)/60
 #	
 #	##GUASSIN DOEs NOT FIT OUR SCHEMA AT THIS POINT
 #	## 6: GAUSSIAN MIXTURE. eh this does not really fit in here
-# 	for x in range(2,10):
+# 	for x in range(2,20):
 # 		model=sklearn.mixture.DPGMM(x, n_iter=100, verbose=0)
 # 		print "initial weights", model.weights_
 # 		print "initial components", model.n_components
@@ -237,45 +237,52 @@ def clustermachine(matrix, distance_metric, clusters=4):
 # 		print "trained weights", model.weights_
 # 		print "trained components", model.n_components
 # 		print "trained converge", model.converged_
-# 		print "\n predict", set(model.predict(matrix))
-# 		print "\n predict probs", model.predict_proba(matrix)
+# 		print "\n predict", model.predict(matrix)
+# 		print "means", model.means_
+# 		#print "\n predict probs", model.predict_proba(matrix)
+# 		dirichlet= ct.Clustering(model, model.fit_predict(matrix), model.means_)
+#  		u=time.time()
+#  		result.append(dirichlet)
+#  		print (u-t)/60
 # 		
-# 		
-# 		weights=model.weights_
-# 		means=clustering.means_
-		# print "bic", model.bic(matrix)
-# 		print "aic", model.aic(matrix)
-# 		print "components", clustering.n_components
-# 		centroids=clustering.means_
-# 		converged=clustering.converged_	
-# 		print "converged?", converged
+# 	for x in [2,4,8,16,32]:
+# 		model=sklearn.mixture.GMM(x, n_iter=500, verbose=0)
+# 		print "initial weights", model.weights_
+# 		print "initial components", model.n_components
+# 		print "initial converge", model.converged_
+# 		model.fit(matrix)
+# 		print "trained weights", model.weights_
+# 		print "trained components", model.n_components
+# 		print "trained converge", model.converged_
+# 		print "\n predict", model.predict(matrix)
+# 		print "means", model.means_
+# 		#print "\n predict probs", model.predict_proba(matrix)
 # 		gauss= ct.Clustering(model, model.fit_predict(matrix), model.means_)
-# 		u=time.time()
-# 		result.append(gauss)
-		#print [i.name for i in result][len(result)-1]
-		#print (u-t)/60
+#  		u=time.time()
+#  		result.append(gauss)
+#  		print (u-t)/60
 #	
 #
 	#These are essentially trees; maybe need a different approach. They are kinda predictive
 	
 # 	## #7: Agglomerative 
 
-# 	for x in range(2,6):
-# 		model=sklearn.cluster.AgglomerativeClustering(affinity=distance_metric, n_clusters=x, linkage='complete')
-# 		clustering=model.fit(matrix)
-# 		labels=clustering.labels_
-# 		leaves=clustering.n_leaves_
-# 		children=clustering.children_
-# 		components=clustering.n_components_
-# 		ward= ct.Clustering(model, clustering.labels_)
-# 		result.append(ward)
-# 		u=time.time()
-# 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
-# 		print (u-t)/60
-# # 	
-# 
-# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
-# 	print (u-t)/60
+	for x in [2,4,8,16,32]:
+		model=sklearn.cluster.AgglomerativeClustering(affinity=distance_metric, n_clusters=x, linkage='complete')
+		clustering=model.fit(matrix)
+		labels=clustering.labels_
+		leaves=clustering.n_leaves_
+		children=clustering.children_
+		components=clustering.n_components_
+		ward= ct.Clustering(model, clustering.labels_)
+		result.append(ward)
+		u=time.time()
+		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+		print (u-t)/60
+# 	
+
+	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+	print (u-t)/60
 
 	
 	
@@ -400,7 +407,7 @@ def main(distance_metric, threshold, testmode=True):
 		#or do we want to do predictive features and typical document per cluster as well????	
 	os.system('say "your program has finished"')
 	
-main('manhattan', 3000, False)
+main('manhattan', 10000, False)
 
 # Valid values for metric are:
 # From scikit-learn: ['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan']. These metrics support sparse matrix inputs.
