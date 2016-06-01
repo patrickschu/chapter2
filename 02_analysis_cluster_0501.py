@@ -33,7 +33,7 @@ print "start"
 print "\n---------------\nSome public service announcements"
 
 
-pathi=os.path.join("craig_0208")
+pathi=os.path.join("balanced_2")
 
 def dictmaker(folderlist, threshold, remove_stopwords=False, remove_punct=False):
 	#threshold sets how many times a word needs to occur to be included in the featuredict
@@ -115,7 +115,7 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
 		if testmode == True:
 			print "\n\nRUNNING\nIN\nTEST\nMODE\n"
-			filis=filis[:100]
+			filis=filis[:2000]
 		print "Building matrices: we have {} files in folder {}".format(len(filis), folder)
 		for fili in filis:
 			inputfile=codecs.open(os.path.join(pathi, folder, fili), "r", "utf-8").read()
@@ -227,8 +227,8 @@ def clustermachine(matrix, distance_metric, clusters=4):
 # 		print (u-t)/60
 #	
 #	##GUASSIN DOEs NOT FIT OUR SCHEMA AT THIS POINT
-#	## 6: GAUSSIAN MIXTURE. eh this does not really fit in here
-# 	for x in range(2,20):
+#	## 6: GAUSSIAN MIXTURE.
+# 	for x in [2,4,6,8,12,16,20,24]:
 # 		model=sklearn.mixture.DPGMM(x, n_iter=100, verbose=0)
 # 		print "initial weights", model.weights_
 # 		print "initial components", model.n_components
@@ -266,9 +266,9 @@ def clustermachine(matrix, distance_metric, clusters=4):
 	#These are essentially trees; maybe need a different approach. They are kinda predictive
 	
 # 	## #7: Agglomerative 
-
-	for x in [2,4,8,16,32]:
-		model=sklearn.cluster.AgglomerativeClustering(affinity=distance_metric, n_clusters=x, linkage='complete')
+# 
+	for x in [2,4,8,16]:
+		model=sklearn.cluster.AgglomerativeClustering(affinity=distance_metric, n_clusters=x, linkage='average')
 		clustering=model.fit(matrix)
 		labels=clustering.labels_
 		leaves=clustering.n_leaves_
@@ -319,16 +319,17 @@ def clustermachine(matrix, distance_metric, clusters=4):
 	 
 def main(distance_metric, threshold, testmode=True):
 	starttime=time.time()
+	#make this flexible in case there are no subfolders
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
 	print ", ".join(folders)
 	print "Items in folders", ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
 	#folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
-	featuredict=dictmaker(folders, threshold, remove_stopwords=True, remove_punct=True)
+	featuredict=dictmaker(folders, threshold, remove_stopwords=False, remove_punct=False)
 	
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, testmode, "category1")
 	
-	wordmatrix_without_cat=ct.matrixstats(wordmatrix_without_cat, distance_metric, zscores=True, outlier_removal=False, outlier_threshold = 7, median_metric='means')
+	wordmatrix_without_cat=ct.matrixstats(wordmatrix_without_cat, distance_metric, zscores=False, outlier_removal=False, outlier_threshold = 7, median_metric='means')
 	
 	x=clustermachine(wordmatrix_without_cat,distance_metric,4)
 	#print [(i.name, i.no_of_clusters) for i in x]
@@ -367,9 +368,9 @@ def main(distance_metric, threshold, testmode=True):
 		if cents:
 			for diff in cents:
 				print "\nRaw Scores"
-				print "Cluster {} and cluster {} are differentiated by \n{}\n\n\n".format(diff[0], diff[1], ", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['raw_diff']][:10])) 
+				print "Cluster {} and cluster {} are differentiated by \n{}\n\n\n".format(diff[0], diff[1], ", ".join([" : ".join(map(unicode, i[::-1])) for i in cents[diff]['raw_diff']][:10])) 
 				print "Zscores"
-				print "Cluster {} and cluster {} are differentiated by \n{}\n\n\n".format(diff[0], diff[1], ", ".join([" : ".join(map(str, i[::-1])) for i in cents[diff]['zscores_diff']][:10]))	
+				print "Cluster {} and cluster {} are differentiated by \n{}\n\n\n".format(diff[0], diff[1], ", ".join([" : ".join(map(unicode, i[::-1])) for i in cents[diff]['zscores_diff']][:10]))	
 			
 		
 		#PROTOTYPES
@@ -406,8 +407,10 @@ def main(distance_metric, threshold, testmode=True):
 	print headline, "This took us {} minutes".format(process/60)
 		#or do we want to do predictive features and typical document per cluster as well????	
 	os.system('say "your program has finished"')
-	
-main('manhattan', 10000, False)
+
+for thre in [2000,1500,1000]:
+	print thre
+	main('manhattan', thre, True)
 
 # Valid values for metric are:
 # From scikit-learn: ['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan']. These metrics support sparse matrix inputs.
