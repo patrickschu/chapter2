@@ -24,7 +24,7 @@ from nltk.corpus import stopwords
 stopwords = stopwords.words('english')+["n\'t","\'m", "br/", "'s", "'ll", "'re", "'d", "amp", "'ve","us", "im"]
 print stopwords
 
-punctuation= list(string.punctuation)+["...","''", "``"]
+punctuation= list(string.punctuation)+["''", "``", "br/"]
 print punctuation
 metriclist=[['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan'],['braycurtis', 'canberra', 'chebyshev', 'correlation', 'dice', 'hamming', 'jaccard', 'kulsinski', 'mahalanobis', 'matching', 'minkowski', 'rogerstanimoto', 'russellrao', 'seuclidean', 'sokalmichener', 'sokalsneath', 'sqeuclidean', 'yule']]
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath', 'wminkowski']
@@ -115,7 +115,7 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
 		if testmode == True:
 			print "\n\nRUNNING\nIN\nTEST\nMODE\n"
-			filis=filis[:2000]
+			filis=filis[:5000]
 		print "Building matrices: we have {} files in folder {}".format(len(filis), folder)
 		for fili in filis:
 			inputfile=codecs.open(os.path.join(pathi, folder, fili), "r", "utf-8").read()
@@ -155,17 +155,18 @@ def clustermachine(matrix, distance_metric, clusters=4):
 	t=time.time()
 	
 	## # 1: kmeans
-# 	model=sklearn.cluster.KMeans(clusters,tol=0)
-# 	clustering=model.fit(matrix)
-# 	centroids=clustering.cluster_centers_
-# 	labels=clustering.labels_
-# 	inertia=clustering.inertia_
-# 	kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
-# 	result.append(kmeans)
-# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
-# 	u=time.time()
-# 	print (u-t)/60
-		#
+# 	for x in [2,4,6,8,10]:
+# 		model=sklearn.cluster.KMeans(x,tol=0)
+# 		clustering=model.fit(matrix)
+# 		centroids=clustering.cluster_centers_
+# 		labels=clustering.labels_
+# 		inertia=clustering.inertia_
+# 		kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+# 		result.append(kmeans)
+# 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 		u=time.time()
+# 		print (u-t)/60
+# 		#
 	###CREATING CLUSTERS
 	#
 	#this makes clusters; takes the dataset (matrix) and the algorithm
@@ -267,8 +268,8 @@ def clustermachine(matrix, distance_metric, clusters=4):
 	
 # 	## #7: Agglomerative 
 # 
-	for x in [2,4,8,16]:
-		model=sklearn.cluster.AgglomerativeClustering(affinity=distance_metric, n_clusters=x, linkage='average')
+	for x in [4,8,10,12]:
+		model=sklearn.cluster.AgglomerativeClustering(affinity=distance_metric, n_clusters=x, linkage='complete')
 		clustering=model.fit(matrix)
 		labels=clustering.labels_
 		leaves=clustering.n_leaves_
@@ -279,10 +280,10 @@ def clustermachine(matrix, distance_metric, clusters=4):
 		u=time.time()
 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
 		print (u-t)/60
-# 	
-
-	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
-	print (u-t)/60
+# # 	
+# 
+# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 	print (u-t)/60
 
 	
 	
@@ -325,7 +326,7 @@ def main(distance_metric, threshold, testmode=True):
 	print "Items in folders", ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
 	#folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
-	featuredict=dictmaker(folders, threshold, remove_stopwords=False, remove_punct=False)
+	featuredict=dictmaker(folders, threshold, remove_stopwords=False, remove_punct=True)
 	
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, testmode, "category1")
 	
@@ -408,8 +409,8 @@ def main(distance_metric, threshold, testmode=True):
 		#or do we want to do predictive features and typical document per cluster as well????	
 	os.system('say "your program has finished"')
 
-for thre in [2000,1500,1000]:
-	print thre
+for thre in [1000]:
+	print "\n\n\n\n\n\n",thre,"\n"
 	main('manhattan', thre, True)
 
 # Valid values for metric are:
