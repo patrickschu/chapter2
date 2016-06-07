@@ -33,7 +33,7 @@ print "start"
 print "\n---------------\nSome public service announcements"
 
 
-pathi=os.path.join("balanced_2")
+pathi=os.path.join("craigbalanced_0601")
 
 def dictmaker(folderlist, threshold, remove_stopwords=False, remove_punct=False):
 	#threshold sets how many times a word needs to occur to be included in the featuredict
@@ -115,7 +115,7 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
 		if testmode == True:
 			print "\n\nRUNNING\nIN\nTEST\nMODE\n"
-			filis=filis[:8000]
+			filis=filis[:200]
 		print "Building matrices: we have {} files in folder {}".format(len(filis), folder)
 		for fili in filis:
 			inputfile=codecs.open(os.path.join(pathi, folder, fili), "r", "utf-8").read()
@@ -268,7 +268,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 	
 # 	## #7: Agglomerative 
 # 
-	for x in [4,8,10,12]:
+	for x in [4]:
 		model=sklearn.cluster.AgglomerativeClustering(affinity=distance_metric, n_clusters=x, linkage='complete')
 		clustering=model.fit(matrix)
 		labels=clustering.labels_
@@ -330,7 +330,8 @@ def main(distance_metric, threshold, testmode=True):
 	
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, testmode, "category1")
 	
-	wordmatrix_without_cat=ct.matrixstats(wordmatrix_without_cat, distance_metric, zscores=False, outlier_removal=False, outlier_threshold = 7, median_metric='means')
+	wordmatrix_without_cat, wordmatrix_with_cat=ct.matrixstats(wordmatrix_without_cat, wordmatrix_with_cat, distance_metric, zscores=False, outlier_removal=True, outlier_threshold = 2, median_metric='median')
+	#apply to wordmatrix with cats
 	
 	x=clustermachine(wordmatrix_without_cat,distance_metric,4)
 	#print [(i.name, i.no_of_clusters) for i in x]

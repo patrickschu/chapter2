@@ -362,26 +362,30 @@ def basicstatsmaker(dataset):
 		return statdict
 
 
-def outlierremover(dataset, median_metric, standard_deviations):
+def outlierremover(dataset_without_cats, dataset_with_cats, distance_metric, median_metric, standard_deviations):
 	''' 
 	Removes outliers from dataset removed more than standard_deviations * standard deviations removed from median
 	'''
 	print "We are removing outliers"
-	stats=basicstatsmaker(dataset)
-	diff_to_median = dataset - stats[median_metric]
+	print "before outlier removal\n", dataset_without_cats
+	distance_matrix=sklearn.metrics.pairwise.pairwise_distances(dataset_without_cats, Y=None, metric=distance_metric, n_jobs=1)
+	#print "dista matrix\n", distance_matrix
+	average=getattr(np, median_metric)(distance_matrix, axis=1)
+	#print "mean\n", average
+	overall_avg=getattr(np, median_metric)(average)
+	print "mean\n", overall_avg
+	print np.mean(average)
+	overall_std=np.std(average)
+	print "stdev\n", overall_std
+	gooddata_without_cats=dataset_without_cats[average < overall_avg+(standard_deviations * overall_std)]
+	gooddata_with_cats=dataset_with_cats[average < overall_avg+(standard_deviations * overall_std)]
+	print "output\n", gooddata_with_cats
+	return gooddata_without_cats, gooddata_with_cats
 	
-	# print "medi", stats['median']
-# 	print "stdev", stats['std']
-# 	print "diffi with meedian\n", diff_to_median
-	diff_median_stdev=np.absolute(diff_to_median)-(standard_deviations * np.absolute(stats['std']))
-	#print "diffi with stdev\n", diff_median_stdev
-	#http://stackoverflow.com/questions/11130831/getting-all-rows-where-complex-condition-holds-in-scipy-numpy
-	gooddata=diff_median_stdev[(diff_median_stdev < 0).all(axis=1)]
-	return gooddata
 
 
 
-def matrixstats(matrix, distance_metric, zscores=False, outlier_removal=False, outlier_threshold=2, median_metric='median', compute_distance = False ):
+def matrixstats(matrix, matrix_with_cats, distance_metric, zscores=False, outlier_removal=False, outlier_threshold=2, median_metric='median', compute_distance = False ):
 	'''
 	Matrixstats computes basic statistics and optionally normalizes scores and removes outliers.
 	It computes basic statistical values such as the mean, median, standard deviation, and range of values.
@@ -398,12 +402,10 @@ def matrixstats(matrix, distance_metric, zscores=False, outlier_removal=False, o
 
 	# here we remove outliers
 	if outlier_removal:
+		print "\n\nWe are removing outliers"
 		print "Matrix shape before outlier removal", matrix.shape
-		matrix=outlierremover(matrix, median_metric, outlier_threshold)
+		matrix, matrix_with_cats=outlierremover(matrix, matrix_with_cats, distance_metric, median_metric, outlier_threshold)
 		print "Matrix shape after outlier removal", matrix.shape
-		outlierstats=basicstatsmaker(matrix)
-		for entry in outlierstats:
-			print entry, "\n", outlierstats[entry]
 		print "\n"
 
 	# here we transform data set to zscores
@@ -434,7 +436,7 @@ def matrixstats(matrix, distance_metric, zscores=False, outlier_removal=False, o
 # 		print item, "\n", diststats[item]
 # 	print "Range of distances", np.ptp(diststats['range'])
 	print "\n\ndone with matrix stats"
-	return matrix
+	return matrix, matrix_with_cats
 
 
 #setting up some helper functions
