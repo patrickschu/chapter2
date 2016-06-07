@@ -115,7 +115,7 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
 		if testmode == True:
 			print "\n\nRUNNING\nIN\nTEST\nMODE\n"
-			filis=filis[:5000]
+			filis=filis[:8000]
 		print "Building matrices: we have {} files in folder {}".format(len(filis), folder)
 		for fili in filis:
 			inputfile=codecs.open(os.path.join(pathi, folder, fili), "r", "utf-8").read()
