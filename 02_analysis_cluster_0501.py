@@ -111,6 +111,7 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 	count=0
 	catdicti=categorymachine(folderlist)[0]
 	filedict={}
+	featuredict=featuredict.keys()
 	for folder in folderlist:
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
 		if testmode == True:
