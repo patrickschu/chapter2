@@ -41,15 +41,19 @@ leftovers=[u'all', u'any', u'both', u'each',u'other', u'some', u'such', u'only',
 
 
 def remover(original_list, to_delete):
+	"""
+	This is to adapt our stopword list.  
+	"""
 	newlist=[s for s in original_list if s not in to_delete]
 	return newlist
 	
 stopwords = stopwords.words('english')+["n\'t","\'m", "br/", "'s", "'ll", "'re", "'d", "amp", "'ve","us", "im"]
 stopwords = remover(stopwords, [])
-print stopwords
+print "stopwords", stopwords, "\n\n"
 
 punctuation= list(string.punctuation)+["''", "``", "br/"]
-print punctuation
+print "punctuation", punctuation, "\n\n"
+
 metriclist=[['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan'],['braycurtis', 'canberra', 'chebyshev', 'correlation', 'dice', 'hamming', 'jaccard', 'kulsinski', 'mahalanobis', 'matching', 'minkowski', 'rogerstanimoto', 'russellrao', 'seuclidean', 'sokalmichener', 'sokalsneath', 'sqeuclidean', 'yule']]
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath', 'wminkowski']
 
@@ -60,8 +64,16 @@ print "\n---------------\nSome public service announcements"
 pathi=os.path.join("craigbalanced_0601")
 
 
-
-def dictmaker(folderlist, threshold, remove_stopwords=False, remove_punct=False):
+##
+###COUNTING WORDS
+##
+def dictmaker(folderlist, threshold, remove_stopwords=True, remove_punct=True):
+	"""
+	The dictmaker counts the words / items contained in the files found in the folders of folderlist.
+	It returns a dictionary of all words that occur more often than the number threshold. 
+	remove_stopwords used the stopword list defined above to ignore words. 
+	remove_punct works with string.punctuation, cf above. 
+	"""
 	#threshold sets how many times a word needs to occur to be included in the featuredict
 	vocab={}
 	for folder in folderlist:
@@ -93,11 +105,11 @@ def dictmaker(folderlist, threshold, remove_stopwords=False, remove_punct=False)
 	print "This is our featuredict", featuredict
 	return featuredict
 	
-
+##
+###FINDING CATEGORIES
+##this extracts the categories from our files
 def categorymachine(folderlist):
-	##
-	###FINDING CATEGORIES
-	#this just extracts the categories from our files
+
 	print "starting category machine"
 	catdicti={}
 	catnumber=0
@@ -118,12 +130,26 @@ def categorymachine(folderlist):
 				cat=catdicti[ct.tagextractor(inputfile, "category1", fili)]
 	return (catdicti, catnumber)
 
+##
+###BUILDING MATRICES
+##
 def matrixmachine(folderlist, featuredict, testmode, *args):
-	#
-	###BUILDING MATRICES
-	#
-	# args are external categories
-	#matrixmachine takes a list of folders	and of external categories to be included, note that it calls on the category machine 
+
+	"""
+	The matrixmachine creates matrices of word frequencies / item frequencies.
+	It returns 
+	wordmatrix_without_cat, a matrix of word frequencies only. This is fed into clustering.
+	wordmatrix_with_cat, a matrix of word frequencies, where external categories (defined in *args) are added. For later comparison of clusterings. 
+	catdicti, a dictionary that maps categories to numbers used in the wordmatrix_with_cat. Created by the categorymachine(), cf for details. 
+	filedict, a dictioanry that maps file names to rows in the matrix. For later comparison of clusterings. 
+	It takes
+	The folderlist is a collection of folders to iterate over. 
+	The featuredict is a dictionary containing the words to count.
+	If testmode is set to True, a short test run on a fragment of the dataset is conducted to see if this will run all the way. 
+	(Note that the testmode comes all the way from main())
+	The args are a number of external categories, each defined in the categorydicti created by categorymachine(). Here, usually a gender category. 
+	Args will be added to the matrix_with_cat. 
+	"""
 	print "Starting the matrixmachine"
 	print "external categories: ", len(args)
 	print args
@@ -168,12 +194,16 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 	wordmatrix_with_cat=wordmatrix[1:wordmatrix.shape[0],]
 	print "with", np.shape(wordmatrix_with_cat)
 	return (wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedict)
-	
 
+##	
+###CREATING CLUSTERS
+#this makes clusters; takes the dataset (matrix) and the algorithm
 def clustermachine(matrix, distance_metric, clusters=4):
-	#we need a similarity matrix to feed into some of the algos
-	#similarity_matrix=metrics.pairwise.euclidean_distances(matrix)	
-	#meanshift and kmeans take features, others need distance matrixes
+	"""
+	The clustermachine takes a matrix with word freqs and clusters according to the distance_metric. 
+	Clusters sets the input if algorithm needs a pre-determined number of clusters. 
+	Last two will not be used by all algorithms. 
+	"""
 	no_of_clusters=range(clusters)	
 	result=[]
 	t=time.time()
@@ -191,9 +221,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 # 		u=time.time()
 # 		print (u-t)/60
 # 		#
-	###CREATING CLUSTERS
-	#
-	#this makes clusters; takes the dataset (matrix) and the algorithm
+
 
 #	## #2: MeanShift, takes forever @  12600, 42
 #	model=sklearn.cluster.MeanShift()
@@ -335,11 +363,11 @@ def clustermachine(matrix, distance_metric, clusters=4):
 # 	print (u-t)/60
 	
 	return(result)
-	
 
 	#######MAIN#########
-
-
+##
+###MAIN
+##
 	 
 def main(distance_metric, threshold, testmode=True):
 	starttime=time.time()
