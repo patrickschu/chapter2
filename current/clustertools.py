@@ -12,7 +12,7 @@ scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclide
 
 class Clustering(object):
 	"""
-	Collect features of a clustering, compute basic counts.
+	Collect features of a clustering, compute basic features.
 	"""
 
 	def __init__(self, name, labels , centroids=None, actual_centroids=None):
