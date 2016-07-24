@@ -27,10 +27,12 @@ class Clustering(object):
 		return type(self.name), self.name  
 		
 	def _clusterdictmaker(self, matrix_without_cats):
-		# takes a matrix without labels, returns a dictionary with the vectors / cluster
-		# structure: clusterdicti {cluster 0: [[0,1,2], [1,2,2], ...] cluster 1: [], }
-		#in the clusterdicti, we collect for each cluster the data points contained
-		# output is a dictionary with ACTUAL vectors
+		"""
+		takes a matrix without labels, returns a dictionary with the vectors / cluster.
+		structure: clusterdicti {cluster 0: [[0,1,2], [1,2,2], ...] cluster 1: [], }.
+		in the clusterdicti, we collect for each cluster the data points contained.
+		output is a dictionary with ACTUAL vectors.
+		"""
 		iterator=range(self.no_of_clusters)
 		clusterdicti=defaultdict()
 		for cluster in iterator:
@@ -39,8 +41,10 @@ class Clustering(object):
 		return clusterdicti
 
 	def _clustercatdictmaker(self, matrix_with_cats):
-		# takes a matrix with labels, collects the vectors for each label per cluster
-		# structure: { clustercatdicti: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}
+		"""
+		takes a matrix with labels, collects the vectors for each label per cluster.
+		structure: { clustercatdicti: {cat1: ...., cat2:..., cat3:....}, cluster2: {....}.
+		"""
 		iterator=range(self.no_of_clusters)
 		clustercatdicti=defaultdict()
 		for cluster in iterator:
@@ -105,7 +109,7 @@ class Clusteringstats(Clustering):
 # remember that we could use z scores		
 class Centroidstats(Clustering):
 	"""
-	Statistics and calculations with centroids of a clustering.
+	Returns statistics and calculations with centroids of a clustering.
 	"""
 			
 	def __init__(self, matrix_without_cats, name, labels, centroids=None, actual_centroids=None):
@@ -166,8 +170,10 @@ class Centroidstats(Clustering):
 			print err		
 	
 	def _differencemaker(self, dict_of_values):
-		# takes a dictionary, computes differences between each pair of entries 
-		# returns (comparison pair, differences, array of sorted indexes)
+		"""
+		takes a dictionary, computes differences between each pair of entries. 
+		returns (comparison pair, differences, array of sorted indexes).
+		"""
 		sorted=[]
 		for combo in itertools.combinations(dict_of_values.keys(), 2):
 			diff=dict_of_values[combo[0]]-dict_of_values[combo[1]]
@@ -177,8 +183,10 @@ class Centroidstats(Clustering):
 	
 		
 	def cluster_predictors(self, vocab_used_for_feature_extraction):
-		# takes a dictionary of centroids and a dictionary of features to compute features most predictive of each cluster
-		# returns dictionary { cluster: {raw_diff:(word X,difference score), (word Y, difference score) ..., zscores_diff: ()()}, cluster2: {...}}
+		"""
+		takes a dictionary of centroids and a dictionary of features to compute features most predictive of each cluster
+		returns dictionary { cluster: {raw_diff:(word X,difference score), (word Y, difference score) ..., zscores_diff: ()()}, cluster2: {...}}
+		"""
 		try:
 			self._centroid_check()
 			centroiddicti=self._centroiddictmaker()
@@ -213,8 +221,10 @@ class Centroidstats(Clustering):
 			print err
 	
 	def central_documents(self, wordmatrix_with_cats, filedict):
-		# takes a matrix with labels and the dictionary of files ({number: file_location})
-		# returns a sorted list of file_locations with first file closest to centroid
+		"""
+		takes a matrix with labels and the dictionary of files ({number: file_location})
+		returns a sorted list of file_locations with first file closest to centroid
+		"""
 		try:
 			self._centroid_check()
 			centroids=self._centroiddictmaker()
@@ -277,9 +287,11 @@ class Clusteringsimilarity(Clustering):
 		return similaritydict
 
 	def similarity_matrix(self, metric):
-		# this prints out a correlation matrix-style comparison of clusterings. 
-		# metric is the metric to use, e.g. one of the entries in the dictionary
-		# returned by self._partitionsimilarity_dictmaker
+		"""
+		this prints out a correlation matrix-style comparison of clusterings. 
+		metric is the metric to use, e.g. one of the entries in the dictionary.
+		returned by self._partitionsimilarity_dictmaker.
+		"""
 		dict=self._partitionsimilarity_dictmaker()
 		entries=dict.items()
 		column_names=[i[0][0] for i in entries]		
@@ -306,7 +318,9 @@ class Clusteringsimilarity(Clustering):
 
 
 	def clustering_quality(self):
-		# returns Silhouette score for each clustering
+		"""
+		returns Silhouette score for each clustering.
+		"""
 		qualitydict={}
 		for key in self.partitionings.keys():
 			qualitydict[key]=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.partitionings[key].labels)
