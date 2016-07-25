@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 import clustertools as ct
 import sys
@@ -20,6 +21,7 @@ from nltk.corpus import stopwords
 
 
 #moving parts
+chapterdir=os.path.split(os.getcwd())
 #PRONOUNS
 perspronouns=[u'i', u'me', u'we', u'you', u'he', u'him',  u'she', u'her', u'it', u'they', 'them',  u'myself', u'ourselves',  u'yourself', u'yourselves',  u'himself',  u'herself', u'itself', u'themselves', u'who', u'whom', "im"]
 dempronouns=[u'that', u'these', u'those']
@@ -40,15 +42,10 @@ questions=[u'when', u'where', u'why', u'how']
 leftovers=[u'all', u'any', u'both', u'each',u'other', u'some', u'such', u'only', u'own', u'same', u'so', u'just', u'now', u'o', u'y', u'ma']
 
 
-def remover(original_list, to_delete):
-	"""
-	This is to adapt our stopword list.  
-	"""
-	newlist=[s for s in original_list if s not in to_delete]
-	return newlist
+
 	
 stopwords = stopwords.words('english')+["n\'t","\'m", "br/", "'s", "'ll", "'re", "'d", "amp", "'ve","us", "im"]
-stopwords = remover(stopwords, [])
+stopwords = ct.remover(stopwords, [])
 print "stopwords", stopwords, "\n\n"
 
 punctuation= list(string.punctuation)+["''", "``", "br/"]
@@ -61,7 +58,7 @@ print "start"
 print "\n---------------\nSome public service announcements"
 
 
-pathi=os.path.join("craigbalanced_0601")
+pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601"))
 
 
 ##
@@ -93,16 +90,17 @@ def dictmaker(folderlist, threshold, remove_stopwords=True, remove_punct=True):
 				else:
 					vocab[word]=vocab[word]+1
 	print "Our vocab dictionary has {} entries".format(len(vocab))
+	ct.dictwriter(os.path.join("~/", chapterdir[0], "outputfiles", "fulldict_"+time.strftime("%H_%M_%m_%d")), vocab)
 	if remove_stopwords:
 		vocab= {key:value for key, value in vocab.items() if key not in stopwords }
 		print "After stop word removal, dict is {} long".format(len(vocab))
 	if remove_punct:
 		vocab= {key:value for key, value in vocab.items() if key not in punctuation }
 		print "After punctuation removal, dict is {} long".format(len(vocab))
-	#here we set the threshold
 	featuredict= {key:value for key, value in vocab.items() if value > float(threshold) }
 	print "Our feature dictionary has {} entries\n---------------\n".format(len(featuredict))
 	print "This is our featuredict", featuredict
+	ct.dictwriter(os.path.join("~/", chapterdir[0], "outputfiles", "featuredict_"+time.strftime("%H_%M_%m_%d")), featuredict)
 	return featuredict
 	
 ##
@@ -369,7 +367,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 ###MAIN
 ##
 	 
-def main(distance_metric, threshold, testmode=True):
+def main(distance_metric, threshold, testmode=False):
 	starttime=time.time()
 	#make this flexible in case there are no subfolders
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
@@ -377,7 +375,7 @@ def main(distance_metric, threshold, testmode=True):
 	print "Items in folders", ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
 	#folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
-	featuredict=dictmaker(folders, threshold, remove_stopwords=False, remove_punct=True)
+	featuredict=dictmaker(folders, threshold, remove_stopwords=True, remove_punct=True)
 	
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, testmode, "category1")
 	
@@ -463,5 +461,5 @@ def main(distance_metric, threshold, testmode=True):
 
 for thre in [1000]:
 	print "\n\n\n\n\n\n",thre,"\n"
-	main('manhattan', thre, True)
+	main('manhattan', thre, testmode=False)
 
