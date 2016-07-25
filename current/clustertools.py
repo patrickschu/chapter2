@@ -4,6 +4,8 @@ import numpy as np
 import scipy
 import itertools
 import sklearn
+import codecs
+import json
 from collections import defaultdict
 
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']#, 'wminkowski']
@@ -467,3 +469,25 @@ def adtextextractor(text, fili):
     if len(result) != 1:
         print "alarm in adtextextractor", fili, result
     return result[0]
+    
+def remover(original_list, to_delete):
+	"""
+	This is to adapt our stopword list.  
+	"""
+	newlist=[s for s in original_list if s not in to_delete]
+	return newlist
+	
+    
+def dictwriter(file_name, dictionary, sort_dict=True):
+	"""
+	writes out a dictionary to a text file after sorting it.
+	"""
+	#it would be nice if input was just the file name and we add ending according to format
+	#right now, we do ".txt.json"
+	print "Starting the dictionarywriter, sorting is", sort_dict
+	sorteddict=sorted(dictionary.items(), key=lambda x: x[1], reverse=True)
+	with codecs.open(os.path.expanduser(file_name+".txt"), "w", "utf-8") as outputi:
+		outputi.write("\n".join([":".join([i[0],unicode(i[1])]) for i in sorteddict]))
+	with codecs.open(os.path.expanduser(file_name+".json"), "w", "utf-8") as jsonoutputi:
+		json.dump(dictionary, jsonoutputi, ensure_ascii=False)
+	print "Written to",  os.path.join("outputfiles",file_name)
