@@ -1,0 +1,9 @@
+
+curl https://bootstrap.pypa.io/ez_setup.py -O  | python - --user
+python ez_setup.py --user
+
+
+/Users/ps22344/Library/Python/2.7/lib/python/site-packages/setuptools-25.1.0-py2.7.egg
+
+source my_env/bin/activate
+
