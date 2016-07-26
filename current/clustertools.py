@@ -9,7 +9,6 @@ import json
 from collections import defaultdict
 
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']#, 'wminkowski']
-#scipy_distances=['euclidean', 'minkowski', 'manhattan', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis']#, 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']
 
 
 class Clustering(object):
@@ -475,6 +474,7 @@ def remover(original_list, to_delete):
 	This is to adapt our stopword list.  
 	"""
 	newlist=[s for s in original_list if s not in to_delete]
+	print "We deleted {}".format(",".join(to_delete))
 	return newlist
 	
     
