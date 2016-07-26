@@ -475,7 +475,7 @@ def remover(original_list, to_delete):
 	"""
 	newlist=[s for s in original_list if s not in to_delete]
 	print "We deleted {}".format(",".join(to_delete))
-	return newlist
+	return set(newlist)
 	
     
 def dictwriter(file_name, dictionary, sort_dict=True):
