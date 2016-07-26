@@ -9,6 +9,7 @@ import pprint
 import gensim
 from gensim import corpora
 from gensim.models import Word2Vec
+import numpy as np
 
 print "mein freund"
 
@@ -41,25 +42,29 @@ documents = ["Human machine interface for lab abc computer applications",
 # print model.most_similar(positive=["relation"])
 #print model['user']
 
-now=time.time()
-pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601", "1"))
+# now=time.time()
+# pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601", "1"))
+# 
+# filis=[i for i in os.listdir(os.path.join(pathi)) if not i.startswith(".")]
+# 
+# model= Word2Vec(size=2000)
+# 
+# def getgo(filis):
+# 	for f in filis:
+# 		with open(os.path.join(pathi,f), "r") as inputfile:
+# 		 	yield([i.lower() for i in inputfile.read().split()])
+# 
+# model.build_vocab(getgo([i for i in os.listdir(os.path.join(pathi)) if not i.startswith(".")]))
+# #model.syn0 is the entire dictionary
+# print model.syn0.shape
+# 
+# #Note that there is a gensim.models.phrases module
+# 
+# end=time.time()
+# print "this took us freaking {} minutes!".format((end-now)/60)
 
-filis=[i for i in os.listdir(os.path.join(pathi)) if not i.startswith(".")]
-print filis
 
-model= Word2Vec(size=500)
-
-def getgo(filis):
-	for f in filis:
-		with open(os.path.join(pathi,f), "r") as inputfile:
-		 	yield([i.lower() for i in inputfile.read().split()])
-
-model.build_vocab(getgo([i for i in os.listdir(os.path.join(pathi)) if not i.startswith(".")]))
-print model
-print model['i']
-
-print len(model['sex'])
-
-
-end=time.time()
-print "this took us freaking {} minutes!".format((end-now)/60)
+featureVec=np.array([[1.,2,3,4],[22.,33,11,0], [1.,2,3,4]])
+print featureVec
+featureVec = np.divide(featureVec,2)
+print featureVec
