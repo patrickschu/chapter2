@@ -28,8 +28,7 @@ documents = ["Human machine interface for lab abc computer applications",
              "Graph minors IV Widths the of the trees and well quasi ordering",
              "Graph minors A survey"]
 
-# 
-# pprint.pprint(documents)
+pprint.pprint(documents)
 # 
 docs=[[w.lower() for w in doc.split() if len(w) > 1]for doc in documents]
 
