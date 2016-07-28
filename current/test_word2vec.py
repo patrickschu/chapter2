@@ -15,7 +15,9 @@ import codecs
 import re
 from nltk.tokenize import sent_tokenize
 from string import punctuation
-
+from nltk.stem import porter
+import logging
+logging.basicConfig(format='%(asctime)s : (levelname)s : % (message)s', level=logging.INFO)
 
 
 def adtextextractor(text, fili):
@@ -32,13 +34,16 @@ pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601"))
 folderlist=[i for i in os.listdir(pathi) if not i.startswith(".")]
 #folderlist=['3']
 print folderlist
+
+
+stemmer=porter.PorterStemmer()
 #initialize model here
 
 exclude=["<br>", "<br/>", "\n", " "]+list(punctuation)
 print [type(i) for i in exclude]
 #excluderegex=["("+e+")" for e in exclude]
 excluderegex=re.compile("^["+"|\\".join(exclude)+"]+$")
-punctuationregex=re.compile("["+"|\\".join(exclude)+"]+")
+punctuationregex=re.compile("["+"|\\".join(list(punctuation))+"|\d+]+")
 
 
 	
@@ -59,33 +64,23 @@ def sentencefeeder(folder_list):
 			for sent in sents:
 				#print [re.sub(punctuationregex, "assssiAAAA",s) for s in sent.split()]
 				# print [re.sub(excluderegex, "ASSSI", s) for s in sent]
- 				yield([re.sub(punctuationregex, "",s) for s in sent.split()])
+ 				sent=[re.sub(punctuationregex, "",s) for s in sent.split()]
+ 				yield [stemmer.stem(s) for s in sent if s]
 
-model = Word2Vec()
+model = Word2Vec(size=1000, min_count=5, workers=4, sg=1)
 			
 model.build_vocab(sentencefeeder(folderlist))
-
-print model.vocab
-model.save("model_1")
-print model['i']
-
-print model.similarity('woman', 'man')
-
-print model.similarity('woman', 'home')
-
-print model.most_similar(positive=['woman'])
-
-print model.most_similar(positive=['man']
+model.train(sentencefeeder(folderlist))
 
 #save it
-
+model.save("model_1")
 #look at it
+print "model saved"
 
 
 
 
-
-
+#class gensim.models.word2vec.Word2Vec(sentences=None, size=100, alpha=0.025, window=5, min_count=5, max_vocab_size=None, sample=0.001, seed=1, workers=3, min_alpha=0.0001, sg=0, hs=0, negative=5, cbow_mean=1, hashfxn=<built-in function hash>, iter=5, null_word=0, trim_rule=None, sorted_vocab=1, batch_words=10000
 
 
 
@@ -181,4 +176,3 @@ print model.most_similar(positive=['man']
 # gensim.models.phrases 
 # 
 # he methods accept an iterable of sentences
-
