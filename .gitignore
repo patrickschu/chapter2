@@ -98,6 +98,9 @@ docs/_build/
 # PyBuilder
 target/
 
+# Word2Vec files
+*.npy
+
 # IPython Notebook
 .ipynb_checkpoints
 
