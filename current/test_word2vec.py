@@ -1,4 +1,4 @@
-#!/Users/ps22344/Downloads/virtualenv/chapter2/bin/python
+#!/Users/ps22344/Downloads/virtualenv/chapter2_env/bin/python
 
 #make a word2vec
 #is this fun?
@@ -12,39 +12,93 @@ from gensim.models import Word2Vec
 import numpy as np
 import nltk
 import codecs
+import re
+from nltk.tokenize import sent_tokenize
+from string import punctuation
 
 
-print np.prod([ 0.09915783, -0.03299134, -0.01437753,  0.00536732,  0.06406488])
-print np.prod([ 0.08549197, -0.075089,   -0.01246947, -0.04792206, -0.00101304])
-print np.prod([ 0.03188382,  0.0699484,  -0.0095439,  -0.04693603, -0.07593358])
 
-documents = ["Human machine interface for lab abc computer applications",
-             "A survey the of the user opinion of computer the system the response time",
-             "The EPS user interface management system",
-             "the System the and human system engineering testing of EPS",
-             "Relation the of the user perceived response time to error measurement",
-             "The generation the of the random binary unordered trees",
-             "The intersection graph the of the paths in trees",
-             "Graph minors IV Widths the of the trees and well quasi ordering",
-             "Graph minors A survey"]
+def adtextextractor(text, fili):
+    regexstring="<text>(.*?)</text>"
+    result=re.findall(regexstring, text, re.DOTALL)
+    if len(result) != 1:
+        print "alarm in adtextextractor", fili, result
+    return result[0]
 
-pprint.pprint(documents)
+#build a w2v for my data
+#separate into sentences
+now=time.time()
+pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601"))
+folderlist=[i for i in os.listdir(pathi) if not i.startswith(".")]
+print folderlist
+#initialize model here
+
+exclude=set(["<br>", "<br/>"]+list(punctuation))
+print exclude
+#iterate over folder
+# for folder in folderlist:
+# 	filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
+# 	for fili in filis[:10]:
+# 		with codecs.open(os.path.join(pathi, folder,fili), "r", "utf-8") as inputfile:
+# 			ad=adtextextractor(inputfile.read(), fili)
+# 			sents=re.split(r"(<br/>|\n)")
+# 			print sents[:20]
+# 			#sents=[sent_tokenize(s) for s in sents]
+# 			#sents=[s for s in sents if s not in exclude]
+# 			for sent in sents:
+# 				print "XX",sent,"XX"
+			
+
+
+#save it
+
+t=["I love the honey\n bee i do <br/>. mooo"]
+g=re.split(r"(<br/>|\n)", t[0])
+print g
+#look at it
+
+
+
+
+
+
+
+
+
+
+
 # 
-docs=[[w.lower() for w in doc.split() if len(w) > 1]for doc in documents]
-
-model = Word2Vec()
-print model.scan_vocab(docs)#.raw_vocab
-
-model.build_vocab([i for i in docs])
-print "dict length", len(model.vocab), "\n"
-for entry in model.vocab:
-	print "entry '", entry, "'", model.vocab[entry]
-print model.syn0
-model.train(['the','the','the','the','of'])
-print "dict length", len(model.vocab), "\n"
-#print model.vocab['trees']
-for entry in model.vocab:
-	print "entry '", entry, "'", model.vocab[entry]
+# print np.prod([ 0.09915783, -0.03299134, -0.01437753,  0.00536732,  0.06406488])
+# print np.prod([ 0.08549197, -0.075089,   -0.01246947, -0.04792206, -0.00101304])
+# print np.prod([ 0.03188382,  0.0699484,  -0.0095439,  -0.04693603, -0.07593358])
+# 
+# documents = ["Human machine interface for lab abc computer applications",
+#              "A survey the of the user opinion of computer the system the response time",
+#              "The EPS user interface management system",
+#              "the System the and human system engineering testing of EPS",
+#              "Relation the of the user perceived response time to error measurement",
+#              "The generation the of the random binary unordered trees",
+#              "The intersection graph the of the paths in trees",
+#              "Graph minors IV Widths the of the trees and well quasi ordering",
+#              "Graph minors A survey"]
+# 
+# pprint.pprint(documents)
+# # 
+# docs=[[w.lower() for w in doc.split() if len(w) > 1]for doc in documents]
+# 
+# model = Word2Vec()
+# print model.scan_vocab(docs)#.raw_vocab
+# 
+# model.build_vocab([i for i in docs])
+# print "dict length", len(model.vocab), "\n"
+# for entry in model.vocab:
+# 	print "entry '", entry, "'", model.vocab[entry]
+# print model.syn0
+# model.train(['the','the','the','the','of'])
+# print "dict length", len(model.vocab), "\n"
+# #print model.vocab['trees']
+# for entry in model.vocab:
+# 	print "entry '", entry, "'", model.vocab[entry]
 
 
 #print model.syn0
@@ -103,9 +157,4 @@ for entry in model.vocab:
 # gensim.models.phrases 
 # 
 # he methods accept an iterable of sentences
-from nltk.tokenize import word_tokenize
-with codecs.open("positive.txt", "r", "latin-1") as inputfile:
-	text=inputfile.read()
-	
-short_pos_words = word_tokenize(text)	
-print type(short_pos_words)
+
