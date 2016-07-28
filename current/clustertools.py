@@ -87,7 +87,7 @@ class Clusteringstats(Clustering):
 		featuredicti=defaultdict()
 		dict=self._clusterdictmaker(self.matrix_without_cats)
 		zscoredict={k:scipy.stats.mstats.zscore(dict[k], axis=0, ddof = 1) for k in dict.keys()} #setting  "ddof = 1" so we get the same output as in R
-		silhouette=sklearn.metrics.silhouette_samples(matrix_without_cats, self.labels)
+		silhouette=sklearn.metrics.silhouette_samples(self.matrix_without_cats, self.labels)
 		for i in dict:
 			featuredicti[i]={
 			'mean':np.mean(dict[i], axis=0), #mean of column
