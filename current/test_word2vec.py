@@ -33,20 +33,33 @@ folderlist=[i for i in os.listdir(pathi) if not i.startswith(".")]
 print folderlist
 #initialize model here
 
-exclude=set(["<br>", "<br/>"]+list(punctuation))
-print exclude
-#iterate over folder
-# for folder in folderlist:
-# 	filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
-# 	for fili in filis[:10]:
-# 		with codecs.open(os.path.join(pathi, folder,fili), "r", "utf-8") as inputfile:
-# 			ad=adtextextractor(inputfile.read(), fili)
-# 			sents=re.split(r"(<br/>|\n)")
-# 			print sents[:20]
-# 			#sents=[sent_tokenize(s) for s in sents]
-# 			#sents=[s for s in sents if s not in exclude]
-# 			for sent in sents:
-# 				print "XX",sent,"XX"
+exclude=["<br>", "<br/>", "\n", " "]+list(punctuation)
+print [type(i) for i in exclude]
+#excluderegex=["("+e+")" for e in exclude]
+excluderegex=re.compile("^["+"|\\".join(exclude)+"]+$")
+
+
+
+
+for folder in folderlist:
+	filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
+	for fili in filis[:10]:
+		with codecs.open(os.path.join(pathi, folder,fili), "r", "utf-8") as inputfile:
+			ad=adtextextractor(inputfile.read(), fili)
+			sents=sent_tokenize(ad)
+			#sents=[sent_tokenize(s) for s in sents]
+			sents=[s for s in sents if s not in exclude]
+			sents=[re.split(r"(<br/>|\n)", s) for s in sents]
+			#flatten sents
+			sents=[s for longsent in sents for s in longsent]
+			sents=[s.lower() for s in sents if s and not excluderegex.match(s)]
+			print sents
+			
+	# 		for sent in sents:
+# 				print "XXXXX",sent
+# 				if excluderegex.match(sent):
+# 					print sent
+# 					print "HIT",sent,"HIT"
 			
 
 
