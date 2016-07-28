@@ -30,6 +30,7 @@ def adtextextractor(text, fili):
 now=time.time()
 pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601"))
 folderlist=[i for i in os.listdir(pathi) if not i.startswith(".")]
+#folderlist=['3']
 print folderlist
 #initialize model here
 
@@ -38,36 +39,32 @@ print [type(i) for i in exclude]
 #excluderegex=["("+e+")" for e in exclude]
 excluderegex=re.compile("^["+"|\\".join(exclude)+"]+$")
 
-
-
-
-for folder in folderlist:
-	filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
-	for fili in filis[:10]:
-		with codecs.open(os.path.join(pathi, folder,fili), "r", "utf-8") as inputfile:
-			ad=adtextextractor(inputfile.read(), fili)
+	
+def sentencefeeder(folder_list):
+	for folder in folder_list:
+		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
+		for fili in filis:
+			with codecs.open(os.path.join(pathi, folder,fili), "r", "utf-8") as inputfile:
+				ad=adtextextractor(inputfile.read(), fili)
 			sents=sent_tokenize(ad)
+			#print sents, len(sents)
 			#sents=[sent_tokenize(s) for s in sents]
 			sents=[s for s in sents if s not in exclude]
-			sents=[re.split(r"(<br/>|\n)", s) for s in sents]
+			sents=[re.split(r"(<br/>|\n|\.\.+)", s) for s in sents]
 			#flatten sents
 			sents=[s for longsent in sents for s in longsent]
 			sents=[s.lower() for s in sents if s and not excluderegex.match(s)]
-			print sents
-			
-	# 		for sent in sents:
-# 				print "XXXXX",sent
-# 				if excluderegex.match(sent):
-# 					print sent
-# 					print "HIT",sent,"HIT"
-			
+			for s in sents:
+				yield(s)
 
+model = Word2Vec()
+			
+model.build_vocab(sentencefeeder(folderlist))
+
+print model.vocab
 
 #save it
 
-t=["I love the honey\n bee i do <br/>. mooo"]
-g=re.split(r"(<br/>|\n)", t[0])
-print g
 #look at it
 
 
