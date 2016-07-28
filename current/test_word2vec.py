@@ -38,6 +38,8 @@ exclude=["<br>", "<br/>", "\n", " "]+list(punctuation)
 print [type(i) for i in exclude]
 #excluderegex=["("+e+")" for e in exclude]
 excluderegex=re.compile("^["+"|\\".join(exclude)+"]+$")
+punctuationregex=re.compile("["+"|\\".join(exclude)+"]+")
+
 
 	
 def sentencefeeder(folder_list):
@@ -54,14 +56,26 @@ def sentencefeeder(folder_list):
 			#flatten sents
 			sents=[s for longsent in sents for s in longsent]
 			sents=[s.lower() for s in sents if s and not excluderegex.match(s)]
-			for s in sents:
-				yield(s)
+			for sent in sents:
+				#print [re.sub(punctuationregex, "assssiAAAA",s) for s in sent.split()]
+				# print [re.sub(excluderegex, "ASSSI", s) for s in sent]
+ 				yield([re.sub(punctuationregex, "",s) for s in sent.split()])
 
 model = Word2Vec()
 			
 model.build_vocab(sentencefeeder(folderlist))
 
 print model.vocab
+model.save("model_1")
+print model['i']
+
+print model.similarity('woman', 'man')
+
+print model.similarity('woman', 'home')
+
+print model.most_similar(positive=['woman'])
+
+print model.most_similar(positive=['man']
 
 #save it
 
