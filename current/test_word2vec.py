@@ -17,7 +17,7 @@ from nltk.tokenize import sent_tokenize
 from string import punctuation
 from nltk.stem import porter
 import logging
-logging.basicConfig(format='%(asctime)s : (levelname)s : % (message)s', level=logging.INFO)
+#logging.basicConfig(format='%(asctime)s : (levelname)s : % (message)s', level=logging.INFO)
 
 
 def adtextextractor(text, fili):
@@ -65,7 +65,8 @@ def sentencefeeder(folder_list):
 				#print [re.sub(punctuationregex, "assssiAAAA",s) for s in sent.split()]
 				# print [re.sub(excluderegex, "ASSSI", s) for s in sent]
  				sent=[re.sub(punctuationregex, "",s) for s in sent.split()]
- 				yield [stemmer.stem(s) for s in sent if s]
+ 				#yield [stemmer.stem(s) for s in sent if s]
+ 				yield [s for s in sent if s]
 
 model = Word2Vec(size=1000, min_count=5, workers=4, sg=1)
 			
