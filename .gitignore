@@ -2,7 +2,8 @@
 .RHistory
 *(Autosaved).R
 
-
+#my folders
+outputfiles/
 
 *.DS_Store
 .AppleDouble
