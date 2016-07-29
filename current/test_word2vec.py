@@ -33,14 +33,14 @@ now=time.time()
 pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601"))
 folderlist=[i for i in os.listdir(pathi) if not i.startswith(".")]
 #folderlist=['3']
-print folderlist
+print "folders", folderlist
 
 
 stemmer=porter.PorterStemmer()
 #initialize model here
 
 exclude=["<br>", "<br/>", "\n", " "]+list(punctuation)
-print [type(i) for i in exclude]
+#print [type(i) for i in exclude]
 #excluderegex=["("+e+")" for e in exclude]
 excluderegex=re.compile("^["+"|\\".join(exclude)+"]+$")
 punctuationregex=re.compile("["+"|\\".join(list(punctuation))+"|\d+]+")
@@ -68,7 +68,7 @@ def sentencefeeder(folder_list):
  				#yield [stemmer.stem(s) for s in sent if s]
  				yield [s for s in sent if s]
 
-model = Word2Vec(size=1000, min_count=5, workers=4, sg=1)
+model = Word2Vec(size=1000, min_count=20, workers=4, sg=1)
 			
 model.build_vocab(sentencefeeder(folderlist))
 model.train(sentencefeeder(folderlist))
