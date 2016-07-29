@@ -13,7 +13,7 @@ import os
 header="\n\n----\n\n"
 newmod=Word2Vec.load("model_1")
 
-nclusters=[2,4]# 4,8,16,32]:
+nclusters=[2, 4,8,16,32]
 
 for k in nclusters:
 	print "clustering"
@@ -30,14 +30,28 @@ for k in nclusters:
 		clusterdict[item]['indexes']= [i for i, x in enumerate(result.labels_) if x == item]
 		
 		clusterdict[item]['words']=[e for e in newmod.vocab.keys() for i in clusterdict[item]['indexes'] if newmod.vocab[e].__dict__['index']==i]
-		#clusterdict[item]['vectors']=[newmod[k] for k in clusterdict[item]['words']]
-	with codecs.open(os.path.join("outputfiles","clusters_"+unicode(k, 'utf-8')+"_"+time.strftime("%H_%M_%m_%d")+".json"), "w", "utf-8") as outputfile:
+		clusterdict[item]['vectors']=[newmod[e].tolist() for e in clusterdict[item]['words']]
+	with codecs.open(os.path.join("outputfiles","clusters_"+str(k)+"_"+time.strftime("%H_%M_%m_%d")+".json"), "w", "utf-8") as outputfile:
 		json.dump(clusterdict, outputfile)
-	print "output to ", "clusters_"+k+"_"+time.strftime("%H_%M_%m_%d")+".json"
+	print "output to ", "clusters_"+str(k)+"_"+time.strftime("%H_%M_%m_%d")+".json"
 	#matrix_with_cats, matrix_without_cats, name, labels , centroids=None
 
+for k in clusterdict.keys():
+	print type(k),len(clusterdict[k])
 
-newi= newmod.syn0[0]
+
+# t= clusterdict[0]['words'].index('girl')
+# print t
+# print clusterdict[0]['words'][t]
+# print clusterdict[0]['indexes'][t]
+# print clusterdict[0]['vectors'][t]
+# print newmod['girl']
+# print newmod['girl'] == clusterdict[0]['vectors'][t]
+
+
+#newi= newmod.syn0[0]
+
+#tt=json.load('/Users/ps22344/Downloads/chapter2/current/outputfiles/clusters_2_15_38_07_29.json')
 # t= [k for k in newmod.vocab if newmod.vocab[k].__dict__['index']==0]
 # 
 # ii= newmod['i']
