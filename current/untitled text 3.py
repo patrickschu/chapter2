@@ -5,20 +5,36 @@ import gzip
 import sklearn
 from sklearn.cluster import KMeans, MiniBatchKMeans, AgglomerativeClustering
 import clustertools as ct
-
+from collections import defaultdict
+import json
+import codecs
+import time
+import os
 header="\n\n----\n\n"
 newmod=Word2Vec.load("model_1")
-# #newmod=Word2Vec.load_word2vec_format('/Users/ps22344/Downloads/GoogleNews-vectors-negative300.bin.gz', binary=True)
-# print header, "working with ", newmod.syn0.shape, header
 
-# for key  in newmod.vocab:
-# 	print key, newmod.vocab[key].__dict__['index']
-print type(newmod.vocab)
-# for i in range (0, newmod.syn0.shape[0]):
-# 	print i
-words= [k for k in newmod.vocab if newmod.vocab[k].__dict__['index']==i for i in result.labels_]
-# 	wordvector= newmod.syn0[i]
-# 	print wordvector == newmod[word]
+nclusters=[2,4]# 4,8,16,32]:
+
+for k in nclusters:
+	print "clustering"
+# 	#clustering=AgglomerativeClustering(n_clusters=k, affinity='cosine', linkage='complete')
+ 	clustering=KMeans(n_clusters=k, max_iter=1000, n_init=100)
+ 	result=clustering.fit(newmod.syn0)
+ 	clusteringstats=ct.Clusteringstats(newmod.syn0, newmod.syn0, result, result.labels_)
+ 	print clustering
+ 	print clusteringstats.size_of_clusters()
+ 	print "silhouette", clusteringstats.cluster_silhouette('cosine')
+	clusterdict=defaultdict(dict)
+	for item in range(0, k):
+		print item
+		clusterdict[item]['indexes']= [i for i, x in enumerate(result.labels_) if x == item]
+		
+		clusterdict[item]['words']=[e for e in newmod.vocab.keys() for i in clusterdict[item]['indexes'] if newmod.vocab[e].__dict__['index']==i]
+		#clusterdict[item]['vectors']=[newmod[k] for k in clusterdict[item]['words']]
+	with codecs.open(os.path.join("outputfiles","clusters_"+unicode(k, 'utf-8')+"_"+time.strftime("%H_%M_%m_%d")+".json"), "w", "utf-8") as outputfile:
+		json.dump(clusterdict, outputfile)
+	print "output to ", "clusters_"+k+"_"+time.strftime("%H_%M_%m_%d")+".json"
+	#matrix_with_cats, matrix_without_cats, name, labels , centroids=None
 
 
 newi= newmod.syn0[0]
@@ -41,23 +57,5 @@ newi= newmod.syn0[0]
 # print 'guy',newmod.most_similar(positive=['guy'])
 # 
 # print 'gay',newmod.most_similar(positive=['gay'])
-
-
-for k in [2, 4,8,16,32]:
-	print "clustering"
-	#clustering=AgglomerativeClustering(n_clusters=k, affinity='cosine', linkage='complete')
-	clustering=KMeans(n_clusters=k, max_iter=1000, n_init=100)
-	result=clustering.fit(newmod.syn0)
-	clusteringstats=ct.Clusteringstats(newmod.syn0, newmod.syn0, result, result.labels_)
-	print header, k
-	print clustering
-	print clusteringstats.size_of_clusters()
-	print clusteringstats.cluster_silhouette('cosine')
-	words= [k for k in newmod.vocab if newmod.vocab[k].__dict__['index']==i for i in result.labels_]
-	print words
-	#link label to word, group by clusters
-	#matrix_with_cats, matrix_without_cats, name, labels , centroids=None
-
-
-
-
+#print [k for k in newmod.vocab.keys() for i in range(0,newmod.syn0.shape[0]) if newmod.vocab[k].__dict__['index']==i]
+#print newmod.vocab.__dict__
