@@ -72,40 +72,37 @@ def sentencefeeder(folder_list):
 			#print sents
 			for sent in sents:
 				sent=[punctuationregex.sub("",s) for s in sent.split()]
-				#print sent
-				#print [s for s in sent if s]
  				#yield [stemmer.stem(s) for s in sent if s]
  				yield [s for s in sent if s]
 
 
 
  
-for c in [1, 10, 50, 100, 200, 1000]:
-	print header, c 
-	model = Word2Vec(size=100, min_count=c, workers=4, sg=1)
-			
-	model.build_vocab(sentencefeeder(folderlist))
-	model.train(sentencefeeder(folderlist))
-	print model
-	#save it
-	model.save("model_1")
-	#look at it
-	print "model saved"
 
-	newmod=model
-	print "sex", newmod.most_similar(positive=['sex'])
-	print 'woman', newmod.most_similar(positive=['woman'])
-	print 'girl',newmod.most_similar(positive=['girl'])
+model = Word2Vec(size=100, min_count=5, workers=4, window=5, sg=1)
+		
+model.build_vocab(sentencefeeder(folderlist))
+model.train(sentencefeeder(folderlist))
+print model
+#save it
+model.save("model_1")
+#look at it
+print "model saved"
 
-	print 'man',newmod.most_similar(positive=['man'])
-	print 'guy',newmod.most_similar(positive=['guy'])
+newmod=model
+print "sex", newmod.most_similar(positive=['sex'])
+print 'woman', newmod.most_similar(positive=['woman'])
+print 'girl',newmod.most_similar(positive=['girl'])
 
-	print 'gay',newmod.most_similar(positive=['gay'])
+print 'man',newmod.most_similar(positive=['man'])
+print 'guy',newmod.most_similar(positive=['guy'])
 
-	print 'cute',newmod.most_similar(positive=['cute'])
+print 'gay',newmod.most_similar(positive=['gay'])
 
-	print 'love', newmod.most_similar(positive=['love'])
-	print 'love neg', newmod.most_similar(negative=['love']), header
+print 'cute',newmod.most_similar(positive=['cute'])
+
+print 'love', newmod.most_similar(positive=['love'])
+print 'love neg', newmod.most_similar(negative=['love']), header
 
 #class gensim.models.word2vec.Word2Vec(sentences=None, size=100, alpha=0.025, window=5, min_count=5, max_vocab_size=None, sample=0.001, seed=1, workers=3, min_alpha=0.0001, sg=0, hs=0, negative=5, cbow_mean=1, hashfxn=<built-in function hash>, iter=5, null_word=0, trim_rule=None, sorted_vocab=1, batch_words=10000
 
