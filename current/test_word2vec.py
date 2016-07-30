@@ -80,9 +80,9 @@ def sentencefeeder(folder_list):
 
 
  
-for s in [100, 200, 400, 800, 1000, 2000]:
-	print header, s 
-	model = Word2Vec(size=s, min_count=10, workers=4, sg=1)
+for c in [1, 10, 50, 100, 200, 1000]:
+	print header, c 
+	model = Word2Vec(size=100, min_count=c, workers=4, sg=1)
 			
 	model.build_vocab(sentencefeeder(folderlist))
 	model.train(sentencefeeder(folderlist))
