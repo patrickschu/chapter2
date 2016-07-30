@@ -18,7 +18,7 @@ from string import punctuation
 from nltk.stem import porter
 import logging
 #logging.basicConfig(format='%(asctime)s : (levelname)s : % (message)s', level=logging.INFO)
-
+header="\n\n\n-------\n"
 
 def adtextextractor(text, fili):
     regexstring="<text>(.*?)</text>"
@@ -46,7 +46,7 @@ exclude=["<br>", "<br/>", "\n", " "]+list(punctuation)
 #excluderegex=["("+e+")" for e in exclude]
 excluderegex=re.compile("^["+"|\\".join(exclude)+"]+$")
 punctuationregex=re.compile("["+"|\\".join(list(punctuation))+"|\d+]+")
-
+stopregex=re.compile(r"([\.|\?|\!]+)(\w)")
 
 	
 def sentencefeeder(folder_list):
@@ -55,38 +55,56 @@ def sentencefeeder(folder_list):
 		for fili in filis:
 			with codecs.open(os.path.join(pathi, folder,fili), "r", "utf-8") as inputfile:
 				ad=adtextextractor(inputfile.read(), fili)
-			sents=sent_tokenize(ad)
-			#print sents, len(sents)
-			#sents=[sent_tokenize(s) for s in sents]
+			#ad a space after punctiation between words
+			sents=r=stopregex.sub(r"\g<1> \g<2>", ad)
+			if len(sents) != len(ad):
+				print "old\n", ad
+				print "new\n", sents
+			sents=sent_tokenize(sents)
 			sents=[s for s in sents if s not in exclude]
 			sents=[re.split(r"(<br/>|\n|\.\.+)", s) for s in sents]
 			#flatten sents
 			sents=[s for longsent in sents for s in longsent]
 			sents=[s.lower() for s in sents if s and not excluderegex.match(s)]
 			for sent in sents:
-				sent=[re.sub(punctuationregex, "",s) for s in sent.split()]
+				sent=[punctuationregex.sub("",s) for s in sent.split()]
  				#yield [stemmer.stem(s) for s in sent if s]
+ 				if 'personi' in sent:
+ 					print fili, sent
+ 			# 	if 'womeni' in sent:
+#  					print sent
+#  				if 'chic' in sent:
+#  					print sent
+#  				if 'femm' in sent:
+#  					print sent
  				yield [s for s in sent if s]
 
-model = Word2Vec(size=300, min_count=20, workers=4, sg=1)
+for s in [100]:#, 200, 400, 800, 1000, 2000]:
+	print header, s 
+	model = Word2Vec(size=s, min_count=10, workers=4, sg=1)
 			
-model.build_vocab(sentencefeeder(folderlist))
-model.train(sentencefeeder(folderlist))
+	model.build_vocab(sentencefeeder(folderlist))
+	model.train(sentencefeeder(folderlist))
+	print model
+	#save it
+	model.save("model_1")
+	#look at it
+	print "model saved"
 
-#save it
-model.save("model_1")
-#look at it
-print "model saved"
+	newmod=model
+	print "sex", newmod.most_similar(positive=['sex'])
+	print 'woman', newmod.most_similar(positive=['woman'])
+	print 'girl',newmod.most_similar(positive=['girl'])
 
-newmod=model
-print "sex", newmod.most_similar(positive=['sex'])
-print 'woman', newmod.most_similar(positive=['woman'])
-print 'girl',newmod.most_similar(positive=['girl'])
+	print 'man',newmod.most_similar(positive=['man'])
+	print 'guy',newmod.most_similar(positive=['guy'])
 
-print 'man',newmod.most_similar(positive=['man'])
-print 'guy',newmod.most_similar(positive=['guy'])
+	print 'gay',newmod.most_similar(positive=['gay'])
 
-print 'gay',newmod.most_similar(positive=['gay'])
+	print 'cute',newmod.most_similar(positive=['cute'])
+
+	print 'love', newmod.most_similar(positive=['love'])
+	print 'love neg', newmod.most_similar(negative=['love']), header
 
 #class gensim.models.word2vec.Word2Vec(sentences=None, size=100, alpha=0.025, window=5, min_count=5, max_vocab_size=None, sample=0.001, seed=1, workers=3, min_alpha=0.0001, sg=0, hs=0, negative=5, cbow_mean=1, hashfxn=<built-in function hash>, iter=5, null_word=0, trim_rule=None, sorted_vocab=1, batch_words=10000
 
