@@ -29,10 +29,10 @@ class Clustering(object):
 		
 	def _clusterdictmaker(self, matrix_without_cats):
 		"""
-		takes a matrix without labels, returns a dictionary with the vectors / cluster.
-		structure: clusterdicti {cluster 0: [[0,1,2], [1,2,2], ...] cluster 1: [], }.
-		in the clusterdicti, we collect for each cluster the data points contained.
-		output is a dictionary with ACTUAL vectors.
+		Takes a matrix without labels, returns a dictionary with the vectors / cluster.
+		Structure: clusterdicti {cluster 0: [[0,1,2], [1,2,2], ...] cluster 1: [], }.
+		In the clusterdicti, we collect for each cluster the data points contained.
+		Output is a dictionary with ACTUAL vectors.
 		"""
 		iterator=range(self.no_of_clusters)
 		clusterdicti=defaultdict()
@@ -59,7 +59,10 @@ class Clustering(object):
 
 class Clusteringstats(Clustering):
 	"""
-	Compute basic statistics of a clustering.
+	Compute basic statistics of a clustering:
+	Size of each cluster in items.
+	How many external categories contained in each cluster.
+	Means, Stdevs, etc for each cluster.
 	"""
 	
 	def __init__(self, matrix_with_cats, matrix_without_cats, name, labels , centroids=None, actual_centroids=None): 
@@ -491,3 +494,21 @@ def dictwriter(file_name, dictionary, sort_dict=True):
 	with codecs.open(os.path.expanduser(file_name+".json"), "w", "utf-8") as jsonoutputi:
 		json.dump(dictionary, jsonoutputi, ensure_ascii=False)
 	print "Written to",  os.path.join("outputfiles",file_name)
+
+
+def adcleaner(text, replace_linebreak=False, remove_html=False):
+	"""
+	The adcleaner processes ads to get them ready for sentence or word tokenization. 
+	In this order:
+	It adds whitespace after punctuation right before a word. 
+	If replace_linebreak, it replaces every <br/> with a full stop, which is good for the sentence tokenizer. 
+	If remove_html is True, removes everything "<>".
+	It does not remove punctuation cause the word_tokenizer likes it.  
+	It does not lowercase because the word_tokenizer likes that. 
+	"""
+	if replace_linebreak:
+		text=linebreakregex.sub(".", text)
+	text=stopregex.sub(r"\g<1> \g<2>", text)
+	if remove_html:
+		text=htmlregex.sub(" ", text)
+	return text
