@@ -46,40 +46,41 @@ exclude=["<br>", "<br/>", "\n", " "]+list(punctuation)
 #excluderegex=["("+e+")" for e in exclude]
 excluderegex=re.compile("^["+"|\\".join(exclude)+"]+$")
 punctuationregex=re.compile("["+"|\\".join(list(punctuation))+"|\d+]+")
-stopregex=re.compile(r"([\.|\?|\!]+)(\w)")
+stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
 
 	
 def sentencefeeder(folder_list):
 	for folder in folder_list:
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
-		for fili in filis:
+		for fili in filis :
 			with codecs.open(os.path.join(pathi, folder,fili), "r", "utf-8") as inputfile:
 				ad=adtextextractor(inputfile.read(), fili)
+			#print ad
 			#ad a space after punctiation between words
 			sents=r=stopregex.sub(r"\g<1> \g<2>", ad)
-			if len(sents) != len(ad):
-				print "old\n", ad
-				print "new\n", sents
+			#print sents
 			sents=sent_tokenize(sents)
+			#print sents
 			sents=[s for s in sents if s not in exclude]
+			#print sents
 			sents=[re.split(r"(<br/>|\n|\.\.+)", s) for s in sents]
+			#print sents
 			#flatten sents
 			sents=[s for longsent in sents for s in longsent]
+			#print sents
 			sents=[s.lower() for s in sents if s and not excluderegex.match(s)]
+			#print sents
 			for sent in sents:
 				sent=[punctuationregex.sub("",s) for s in sent.split()]
+				#print sent
+				#print [s for s in sent if s]
  				#yield [stemmer.stem(s) for s in sent if s]
- 				if 'personi' in sent:
- 					print fili, sent
- 			# 	if 'womeni' in sent:
-#  					print sent
-#  				if 'chic' in sent:
-#  					print sent
-#  				if 'femm' in sent:
-#  					print sent
  				yield [s for s in sent if s]
 
-for s in [100]:#, 200, 400, 800, 1000, 2000]:
+
+
+ 
+for s in [100, 200, 400, 800, 1000, 2000]:
 	print header, s 
 	model = Word2Vec(size=s, min_count=10, workers=4, sg=1)
 			
