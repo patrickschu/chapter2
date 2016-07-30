@@ -81,10 +81,14 @@ def dictmaker(folderlist, threshold, remove_stopwords=True, remove_punct=True):
 		for fili in filis:
 			inputfile=codecs.open(os.path.join(pathi, folder, fili), "r", "utf-8").read()
 			inputtext=ct.adtextextractor(inputfile, fili)
-			splittext=nltk.word_tokenize(inputtext)
-			splittextlo=[i.lower() for i in splittext]
+			#pre-processing here
+			inputtext=adcleaner(inputtext ,replace_linebreak=True, remove_html=False)
+			splittext=word_tokenize(inputtext)
+			splittextlo=[i.lower() for i in splittext]	
+			finaltext=[punctuationregex.sub("",i) for i in splittextlo]
+			finaltext=[i for i in finaltext if i and i not in ['br']]	
 			#do we want to lemmatize or things like that
-			for word in splittextlo:
+			for word in finaltext:
 				if word not in vocab:
 					vocab[word]=1
 				else:
