@@ -9,7 +9,7 @@ import json
 from collections import defaultdict
 
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']#, 'wminkowski']
-
+linebreakregex=re.compile(r"(<br>|<br\/>)")
 
 class Clustering(object):
 	"""
