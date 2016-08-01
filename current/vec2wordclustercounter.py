@@ -7,10 +7,11 @@ from collections import defaultdict
 import clustertools as ct
 from nltk import word_tokenize
 from string import punctuation
+import time
 
 pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601"))
 punctuationregex=re.compile("(["+"|\\".join(list(punctuation))+"|\d+]+)")
-
+chapterdir=os.path.split(os.getcwd())
 
 folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
 print folders
@@ -58,13 +59,14 @@ def vec2wordclustercounter(folderlist, cluster_dictionary):
 				else:
 					result[cluster[0]]=result[cluster[0]]+1
 	print "Our vocab dictionary has {} entries".format(len(result))
-	ct.dictwriter(os.path.join("~/", chapterdir[0], "outputfiles", "fulldict_"+time.strftime("%H_%M_%m_%d")), vocab)
+	ct.dictwriter(os.path.join("~/", chapterdir[0], "outputfiles", "fulldict_"+time.strftime("%H_%M_%m_%d")), result)
 # 	featuredict= {key:value for key, value in vocab.items() if value > float(threshold) }
 # 	print "Our feature dictionary has {} entries\n---------------\n".format(len(featuredict))
 # 	print "This is our featuredict", featuredict
 # 	ct.dictwriter(os.path.join("~/", chapterdir[0], "outputfiles", "featuredict_"+time.strftime("%H_%M_%m_%d")), featuredict)
-	print "misses", len(misses)
+	print "misses", len(misses), misses
 	print result
-	return featuredict
+	return result
+
 	
 vec2wordclustercounter(folders, '/Users/ps22344/Downloads/chapter2/current/clusters_74_19_45_07_31.json')
