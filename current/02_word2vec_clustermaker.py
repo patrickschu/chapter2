@@ -11,9 +11,9 @@ import codecs
 import time
 import os
 header="\n\n----\n\n"
-newmod=Word2Vec.load("model_1")
+newmod=Word2Vec.load("model_final_1")
 
-nclusters=[16,32, 54]
+nclusters=[200]
 
 
 def word2vecclustermaker(model, no_clusters, distance_metric):
