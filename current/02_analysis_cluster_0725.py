@@ -178,6 +178,7 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 			count=count+1
 			filedict[count]=os.path.join(pathi, folder, fili)
 			#note that punctuation is still in here
+			#ARE WE READING IN THE ENTIRE AD HERE? NOT JUST THE TEXT?
 			splittext=nltk.word_tokenize(inputfile)
 			splittextlo=[i.lower() for i in splittext]
 			wordcount=float(len(splittextlo))
