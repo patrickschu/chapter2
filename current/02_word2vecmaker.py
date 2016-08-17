@@ -57,7 +57,7 @@ def sentencefeeder(folder_list):
 				ad=adtextextractor(inputfile.read(), fili)
 			#print ad
 			#ad a space after punctiation between words
-			sents=r=stopregex.sub(r"\g<1> \g<2>", ad)
+			sents=stopregex.sub(r"\g<1> \g<2>", ad)
 			#print sents
 			sents=sent_tokenize(sents)
 			#print sents
