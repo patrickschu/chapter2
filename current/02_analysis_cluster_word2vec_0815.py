@@ -3,6 +3,7 @@
 import clustertools as ct
 import sys
 import os
+import json
 import re 
 import shutil
 import string
@@ -19,37 +20,22 @@ from collections import defaultdict
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
+stopwords = stopwords.words('english')+["n\'t","\'m", "br/", "'s", "'ll", "'re", "'d", "amp", "'ve","us", "im"]
 
 #moving parts
 chapterdir=os.path.split(os.getcwd())
-#PRONOUNS
-perspronouns=[u'i', u'me', u'we', u'you', u'he', u'him',  u'she', u'her', u'it', u'they', 'them',  u'myself', u'ourselves',  u'yourself', u'yourselves',  u'himself',  u'herself', u'itself', u'themselves', u'who', u'whom', "im"]
-dempronouns=[u'that', u'these', u'those']
-pospronouns=[u'my', u'our', u'ours', u'your', u'yours', u'his', u'her', u'hers',u'its',  u'their', u'theirs' ]
-#VERBS
-beverb=[u'am', u'is', u'are', u'was', u'were', u'be', u'been', u'being', u'isn', u'wasn', u'weren', u'won', u'ain', u'aren', u're', u'm', u's', "\'m", "'s", "'re", "im"]
-haveverb=[u'have', u'has', u'had', u'having', u'hadn', u'hasn', u'haven', u've', u'd', "'d", "'ve"]
-doverb=[u'do', u'does', u'did', u'doing', u'didn', u'doesn', u'don']
-modals=[u'mightn', u'mustn', u'needn', u'shan', u'shouldn',  u'wouldn',  u'couldn', u'should',u'can']
-negation=[u'mightn', u'mustn', u'needn', u'shan', u'shouldn',  u'wouldn',  u'couldn', u'no', u'nor', u'not', u't', "n\'t"]
-aux=[u'll', u'will', "'ll"]
-#MISC
-prepsandarts=[u'of', u'at', u'by', u'for', u'with', u'about', u'against', u'between', u'into', u'through', u'during', u'before', u'after', u'above', u'below', u'to', u'from', u'up', u'down', u'in', u'out', u'on', u'off', u'over', u'under', u'a', u'an', u'the']
-conjuncts=[u'and', u'but', u'if', u'or', u'because', u'as', u'until', u'while']
-adverbsandadjects=['again', u'further', u'then', u'once', u'here', u'there',u'when', u'where', u'why', u'how', u'all', u'any', u'what', u'which',  u'this'] 
-intensifiers=[u'few', u'more', u'most', u'too', u'very', u'than']
-questions=[u'when', u'where', u'why', u'how']
-leftovers=[u'all', u'any', u'both', u'each',u'other', u'some', u'such', u'only', u'own', u'same', u'so', u'just', u'now', u'o', u'y', u'ma']
-
-
-
-	
-stopwords = stopwords.words('english')+["n\'t","\'m", "br/", "'s", "'ll", "'re", "'d", "amp", "'ve","us", "im"]
-stopwords = ct.remover(stopwords, [])
-print "stopwords", stopwords, "\n\n"
-
 punctuation= list(string.punctuation)+["''", "``", "br/"]
 print "punctuation", punctuation, "\n\n"
+
+
+#we copy these items from the word2vecmaker
+exclude=["<br>", "<br/>", "\n", " "]+list(punctuation)
+excluderegex=re.compile("^["+"|\\".join(exclude)+"]+$")
+punctuationregex=re.compile("["+"|\\".join(list(punctuation))+"|\d+]+")
+stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
+
+
+
 
 metriclist=[['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan'],['braycurtis', 'canberra', 'chebyshev', 'correlation', 'dice', 'hamming', 'jaccard', 'kulsinski', 'mahalanobis', 'matching', 'minkowski', 'rogerstanimoto', 'russellrao', 'seuclidean', 'sokalmichener', 'sokalsneath', 'sqeuclidean', 'yule']]
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath', 'wminkowski']
@@ -58,9 +44,10 @@ print "start"
 print "\n---------------\nSome public service announcements"
 
 
-pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601"))
-pathi=os.path.expanduser(os.path.join("E:", "cygwin", "home",  "craigbalanced_0601"))
-
+#pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601"))
+#pathi=os.path.expanduser(os.path.join("E:", "cygwin", "home",  "craigbalanced_0601"))
+#pathi="/cygdrive/f/downloads/craigbalanced_0606 (1)/craigbalanced_0601"
+pathi="craig_0208"
 #read in the word2vec clusters
 #then compare word to set(cluster)
 #make sure to split words as in word2vec
@@ -124,7 +111,8 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 	count=0
 	catdicti=categorymachine(folderlist)[0]
 	filedict={}
-	featuredict=featuredict.keys()
+	featuredict={k:featuredict[k]['words'] for k in featuredict.keys()}
+	featuredict={k:set([i for i in featuredict[k] if not i in stopwords]) for k in featuredict.keys()}
 	for folder in folderlist:
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
 		if testmode == True:
@@ -133,29 +121,29 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 		print "Building matrices: we have {} files in folder {}".format(len(filis), folder)
 		for fili in filis:
 			inputfile=codecs.open(os.path.join(pathi, folder, fili), "r", "utf-8").read()
-			inputfile=ct.adtextextractor(inputfile, fili)
+			inputad=ct.adtextextractor(inputfile, fili)
 			#establish category
 			for external_cat in args:
 				cat=catdicti[ct.tagextractor(inputfile, external_cat, fili)]
 			count=count+1
 			filedict[count]=os.path.join(pathi, folder, fili)
-			#we copy these items from the word2vecmaker
-			exclude=["<br>", "<br/>", "\n", " "]+list(punctuation)
-			excluderegex=re.compile("^["+"|\\".join(exclude)+"]+$")
-			punctuationregex=re.compile("["+"|\\".join(list(punctuation))+"|\d+]+")
-			stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
-			addspace=stopregex.sub(r"\g<1> \g<2>", ad)
-			splittext=nltk.word_tokenize(inputfile)
+			addspace=stopregex.sub(r"\g<1> \g<2>", inputad)
+			splittext=nltk.word_tokenize(addspace)
 			splittext=[s for s in splittext if s not in exclude]
 			splittextlo=[s.lower() for s in splittext if s and not excluderegex.match(s)]
-			print splittextlo[:200]
-			
 			wordcount=float(len(splittextlo))
-			print wordcount
 			#for each word2vec cluster: cluster/total words
 			# this is a per word frequency
-			wordvector=np.array([float(cat)]+[float(count)]+[float(splittextlo.count(i))/wordcount for i in featuredict])
-			#print wordvector
+			#for t in featuredict:
+				#print "\n", t#featuredict[t]
+				#print [splittextlo.count(i) for i in featuredict[t]]
+				#if sum ([splittextlo.count(i) for i in set(featuredict[t])]) > 10:
+				#	print [i for i in splittextlo if i in featuredict[t]]
+			#addict={k:[i for i in v] for k,v in featuredict.items()} 
+			addict={k:sum([float(splittextlo.count(i))for i in v]) for k,v in featuredict.items()}
+			addict={k:v/wordcount for k,v in addict.items()}
+			#print addict
+			wordvector=np.array([float(cat)]+[float(count)]+addict.values())
 			#we append it to the matrix
 			wordmatrix=np.append(wordmatrix, [wordvector], axis=0)
 	print "Features of word matrix: shape {}, dtype {}".format(np.shape(wordmatrix), wordmatrix.dtype)
@@ -183,17 +171,17 @@ def clustermachine(matrix, distance_metric, clusters=4):
 	t=time.time()
 	
 	## # 1: kmeans
-# 	for x in [2,4,6,8,10]:
-# 		model=sklearn.cluster.KMeans(x,tol=0)
-# 		clustering=model.fit(matrix)
-# 		centroids=clustering.cluster_centers_
-# 		labels=clustering.labels_
-# 		inertia=clustering.inertia_
-# 		kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
-# 		result.append(kmeans)
-# 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
-# 		u=time.time()
-# 		print (u-t)/60
+	for x in [2,4,6]:
+ 		model=sklearn.cluster.KMeans(x,tol=0)
+ 		clustering=model.fit(matrix)
+ 		centroids=clustering.cluster_centers_
+ 		labels=clustering.labels_
+ 		inertia=clustering.inertia_
+ 		kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+ 		result.append(kmeans)
+ 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+ 		u=time.time()
+ 		print (u-t)/60
 # 		#
 
 
@@ -293,18 +281,18 @@ def clustermachine(matrix, distance_metric, clusters=4):
 	#These are essentially trees; maybe need a different approach. They are kinda predictive
 	
 # 	## #7: Agglomerative 
-	for x in [4]:
-		model=sklearn.cluster.AgglomerativeClustering(affinity=distance_metric, n_clusters=x, linkage='complete')
-		clustering=model.fit(matrix)
-		labels=clustering.labels_
-		leaves=clustering.n_leaves_
-		children=clustering.children_
-		components=clustering.n_components_
-		ward= ct.Clustering(model, clustering.labels_)
-		result.append(ward)
-		u=time.time()
-		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
-		print (u-t)/60
+	# for x in [4]:
+		# model=sklearn.cluster.AgglomerativeClustering(affinity=distance_metric, n_clusters=x, linkage='complete')
+		# clustering=model.fit(matrix)
+		# labels=clustering.labels_
+		# leaves=clustering.n_leaves_
+		# children=clustering.children_
+		# components=clustering.n_components_
+		# ward= ct.Clustering(model, clustering.labels_)
+		# result.append(ward)
+		# u=time.time()
+		# print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+		# print (u-t)/60
 # # 	
 # 
 # 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
@@ -345,19 +333,20 @@ def clustermachine(matrix, distance_metric, clusters=4):
 	 
 def main(distance_metric, threshold, testmode=False):
 	starttime=time.time()
+	with codecs.open('clusterskmeans_54_19_10_07_30.json', 'r', 'utf-8') as jsoninput:
+		wordtovecclusters=json.load(jsoninput)
 	#make this flexible in case there are no subfolders
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
 	print ", ".join(folders)
 	print "Items in folders", ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
 	#folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
-	featuredict=dictmaker(folders, threshold, remove_stopwords=True, remove_punct=True)
 	
-	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, featuredict, testmode, "category1")
+	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, wordtovecclusters, testmode, "category1")
 	
-	wordmatrix_without_cat, wordmatrix_with_cat=ct.matrixstats(wordmatrix_without_cat, wordmatrix_with_cat, distance_metric, zscores=False, outlier_removal=True, outlier_threshold = 2, median_metric='median')
-	#apply to wordmatrix with cats
-	
+	wordmatrix_without_cat, wordmatrix_with_cat=ct.matrixstats(wordmatrix_without_cat, wordmatrix_with_cat, distance_metric, zscores=False, outlier_removal=False, outlier_threshold = 2, median_metric='median')
+	#np.savetxt('wordmatrix_without_cat.gz',wordmatrix_without_cat )
+	#np.savetxt('wordmatrix_with_cat.gz', wordmatrix_with_cat)
 	x=clustermachine(wordmatrix_without_cat,distance_metric,4)
 	#print [(i.name, i.no_of_clusters) for i in x]
 	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
@@ -391,7 +380,7 @@ def main(distance_metric, threshold, testmode=False):
 
 		#PREDICTIVE FEATURES
 		print headline, "Strongly predictive features are"
-		cents=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids).cluster_predictors(featuredict)
+		cents=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids).cluster_predictors(wordtovecclusters)
 		if cents:
 			for diff in cents:
 				print "\nRaw Scores"
@@ -437,5 +426,5 @@ def main(distance_metric, threshold, testmode=False):
 
 for thre in [1000]:
 	print "\n\n\n\n\n\n",thre,"\n"
-	main('manhattan', thre, testmode=False)
+	main('euclidean', thre, testmode=False)
 
