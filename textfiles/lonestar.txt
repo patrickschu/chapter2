@@ -53,3 +53,7 @@ sbatch dbscan.slurm
 sbatch dirichlet.slurm
 sbatch gauss.slurm
 sbatch hierarchical.slurm
+
+
+launcher_creator.py -n cluster_kmeans -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python 02_analysis_cluster_word2vec_0815.py > output_kmeans_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
+
