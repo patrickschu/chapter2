@@ -24,12 +24,11 @@ print folders
 
 def vec2wordclustercounter(folderlist, cluster_dictionary):
 	"""
-	
 	This is stolen from the cluster_analysis dictmaker. 
 	The dictmaker counts the words / items contained in the files found in the folders of folderlist.
-	It returns a dictionary of all words that occur more often than the number threshold. 
-	remove_stopwords used the stopword list defined above to ignore words. 
+	remove_stopwords uses the stopword list defined above to ignore words. 
 	remove_punct works with string.punctuation, cf above. 
+	This was mainly used to test how well the counting in the word2vec analysis works.
 	"""
 	with codecs.open(cluster_dictionary, "r", "utf-8") as inputjson:
 		clusterdict=json.load(inputjson)
@@ -69,4 +68,4 @@ def vec2wordclustercounter(folderlist, cluster_dictionary):
 	return result
 
 	
-vec2wordclustercounter(folders, '/Users/ps22344/Downloads/chapter2/current/clusters_74_19_45_07_31.json')
+vec2wordclustercounter(folders, '/Users/ps22344/Downloads/chapter2/current/clusters_54_19_45_07_30.json')
