@@ -64,7 +64,7 @@ def vec2wordclustercounter(folderlist, cluster_dictionary):
 # 	print "Our feature dictionary has {} entries\n---------------\n".format(len(featuredict))
 # 	print "This is our featuredict", featuredict
 # 	ct.dictwriter(os.path.join("~/", chapterdir[0], "outputfiles", "featuredict_"+time.strftime("%H_%M_%m_%d")), featuredict)
-	print "misses", len(misses), misses
+	print "misses", len(misses), set(misses)
 	print result
 	return result
 
