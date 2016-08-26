@@ -44,10 +44,10 @@ print "start"
 print "\n---------------\nSome public service announcements"
 
 
-#pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601"))
+pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601"))
 #pathi=os.path.expanduser(os.path.join("E:", "cygwin", "home",  "craigbalanced_0601"))
 #pathi="/cygdrive/f/downloads/craigbalanced_0606 (1)/craigbalanced_0601"
-pathi="craig_0208"
+#pathi="craig_0208"
 #read in the word2vec clusters
 #then compare word to set(cluster)
 #make sure to split words as in word2vec
@@ -86,7 +86,7 @@ def categorymachine(folderlist):
 def matrixmachine(folderlist, featuredict, testmode, *args):
 
 	"""
-	The matrixmachine creates matrices of word frequencies / item frequencies.
+	The matrixmachine creates matrices of word frequencies.
 	It returns 
 	wordmatrix_without_cat, a matrix of word frequencies only. This is fed into clustering.
 	wordmatrix_with_cat, a matrix of word frequencies, where external categories (defined in *args) are added. For later comparison of clusterings. 
@@ -172,17 +172,17 @@ def clustermachine(matrix, distance_metric, clusters=4):
 	
 	## # 1: kmeans
 	for x in [2,4,6]:
- 		model=sklearn.cluster.KMeans(x,tol=0)
- 		clustering=model.fit(matrix)
- 		centroids=clustering.cluster_centers_
- 		labels=clustering.labels_
- 		inertia=clustering.inertia_
- 		kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
- 		result.append(kmeans)
- 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
- 		u=time.time()
- 		print (u-t)/60
-# 		#
+		model=sklearn.cluster.KMeans(x,tol=0)
+		clustering=model.fit(matrix)
+		centroids=clustering.cluster_centers_
+		labels=clustering.labels_
+		inertia=clustering.inertia_
+		kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+		result.append(kmeans)
+		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+		u=time.time()
+		print (u-t)/60
+#		#
 
 
 #	## #2: MeanShift, takes forever @  12600, 42
@@ -345,8 +345,8 @@ def main(distance_metric, threshold, testmode=False):
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, wordtovecclusters, testmode, "category1")
 	
 	wordmatrix_without_cat, wordmatrix_with_cat=ct.matrixstats(wordmatrix_without_cat, wordmatrix_with_cat, distance_metric, zscores=False, outlier_removal=False, outlier_threshold = 2, median_metric='median')
-	#np.savetxt('wordmatrix_without_cat.gz',wordmatrix_without_cat )
-	#np.savetxt('wordmatrix_with_cat.gz', wordmatrix_with_cat)
+	np.savetxt('wordmatrix_without_cat.gz',wordmatrix_without_cat )
+	np.savetxt('wordmatrix_with_cat.gz', wordmatrix_with_cat)
 	x=clustermachine(wordmatrix_without_cat,distance_metric,4)
 	#print [(i.name, i.no_of_clusters) for i in x]
 	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
@@ -358,8 +358,9 @@ def main(distance_metric, threshold, testmode=False):
 	#CROSS CLUSTERING COMPARISON
 	for clustering in [c for c in x if c.no_of_clusters > 1]:
 		cati=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels)
+		print "Categorystats established"
 		sili=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cluster_silhouette(distance_metric)
-	
+		print "Clusteringstats established"
 		#GENERAL STATS
 		print headline, headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[1], clustering.no_of_clusters)
 		print "Its silhouette score is {}".format(str(sili))
@@ -426,5 +427,5 @@ def main(distance_metric, threshold, testmode=False):
 
 for thre in [1000]:
 	print "\n\n\n\n\n\n",thre,"\n"
-	main('euclidean', thre, testmode=False)
+	main('euclidean', thre, testmode=True)
 
