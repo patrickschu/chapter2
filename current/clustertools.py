@@ -416,7 +416,9 @@ def matrixstats(matrix, matrix_with_cats, distance_metric, zscores=False, outlie
 	print "\nInput statistics"
 	inputstats=basicstatsmaker(matrix)
 	for entry in inputstats:
-		print entry, "\n", inputstats[entry]
+		print entry, "\n"
+		for thing in inputstats[entry]:
+			print thing
 	print "\n"
 
 	# here we remove outliers
