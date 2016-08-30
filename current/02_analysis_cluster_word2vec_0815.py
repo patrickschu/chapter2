@@ -115,7 +115,7 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 	featuredict={k:set([i for i in featuredict[k] if not i in stopwords]) for k in featuredict.keys()}
 	for folder in folderlist:
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
-		if testmode == True:
+		if testmode:
 			print "\n\nRUNNING\nIN\nTEST\nMODE\n"
 			filis=filis[:200]
 		print "Building matrices: we have {} files in folder {}".format(len(filis), folder)
@@ -335,6 +335,9 @@ def main(distance_metric, threshold, testmode=False):
 	starttime=time.time()
 	with codecs.open('clusterskmeans_54_19_10_07_30.json', 'r', 'utf-8') as jsoninput:
 		wordtovecclusters=json.load(jsoninput)
+	print "pre length", len(wordtovecclusters)
+	wordtovecclusters={k:v for k,v in wordtovecclusters.items() if k not in ['1','25','30','37','49']}
+	print "post length", len(wordtovecclusters)
 	#make this flexible in case there are no subfolders
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
 	print ", ".join(folders)
