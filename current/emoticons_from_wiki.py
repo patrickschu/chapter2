@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
-#read the emoticons from Wikipedia page
+"""
+reads the emoticons from Wikipedia page.
+reads in html file, outputs emoticons to txt file based on user input (Yes/No).
+manullay then create files for character based versus graphics based emoticons.
+"""
+
 
 import codecs
 from bs4 import BeautifulSoup
