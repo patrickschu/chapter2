@@ -3,6 +3,7 @@
 #data is based on table on pg 25 in chapter 2
 #in the future, 'seq_along' might be a good R funcion to use
 
+setwd("~/Desktop/rplots")
 #last entry is expected value
 cluster0=c(62, 29, 62, 55, 52)
 cluster1=c(26, 12, 26, 23, 22)
@@ -20,8 +21,9 @@ clusterplotter = function(dataframe)
 #we need to subtract 1 because of Python counting
 no_of_clusters=c(0:(length(colnames(dataframe))-1));
 print (no_of_clusters);
-count=0;	
-plot(c(100, 250), ylim=c(-250, 250), xlim=c(0, length(colnames(dataframe))-1), ylab="Distance in percent", xlab= "Cluster", type="n", axes=FALSE);
+count=0;
+postscript("cluster.eps", width = 960, height = 960)
+plot(c(100, 250), ylim=c(-250, 250), xlim=c(0, length(colnames(dataframe))-1), ylab="Distance to expected value (red) in percent", xlab= "Cluster", type="n", axes=FALSE);
 axis(side=1,seq(0, length(colnames(dataframe))-1, by=1));
 axis(side=2, seq(-250, 250, by=50))
 
@@ -33,7 +35,7 @@ for (c in colnames(dataframe))
 	subseti=data.frame(dataframe[[c]]);
 	rownames(subseti) = rownames(dataframe);
 	#add label for expected value
-	text (x=count, y=0, as.character(subseti['mean',]), cex=2, col='red');	
+	text (x=count, y=0, as.character(subseti['mean',]), cex=1.5, col='red');	
 	#compute percentages
 	cat ("subseti");
 	print (subseti);
@@ -52,7 +54,7 @@ for (c in colnames(dataframe))
 	
 	count=count+1
 	}
-	
+dev.off()	
 }
 
 clusterplotter(clustering)
