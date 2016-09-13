@@ -21,8 +21,9 @@ clusterplotter = function(dataframe)
 no_of_clusters=c(0:(length(colnames(dataframe))-1));
 print (no_of_clusters);
 count=0;	
-plot(c(100, 200), ylim=c(-100, 100), xlim=c(0, length(colnames(dataframe))-1), type="n");
-
+plot(c(100, 250), ylim=c(-250, 250), xlim=c(0, length(colnames(dataframe))-1), ylab="Distance in percent", xlab= "Cluster", type="n", axes=FALSE);
+axis(side=1,seq(0, length(colnames(dataframe))-1, by=1));
+axis(side=2, seq(-250, 250, by=50))
 
 for (c in colnames(dataframe))
 	{
@@ -32,13 +33,23 @@ for (c in colnames(dataframe))
 	subseti=data.frame(dataframe[[c]]);
 	rownames(subseti) = rownames(dataframe);
 	#add label for expected value
-	text (x=count, y=0, as.character(subseti['mean',]));	
+	text (x=count, y=0, as.character(subseti['mean',]), cex=2, col='red');	
 	#compute percentages
 	cat ("subseti");
 	print (subseti);
 	print((subseti-subseti['mean',])/(subseti['mean',]/100));
+	percentageframe=(subseti-subseti['mean',])/(subseti['mean',]/100);
+	print ("rownames");
+	print (rownames(percentageframe))
+	for (row in rownames(percentageframe))
+	{
+		if (row != 'mean')
+		{
+			print (row);
+			text(x=count, y=percentageframe[row,], as.character(row))
+		}
+	}
 	
-	#text (c(count, 0), as.character(c));
 	count=count+1
 	}
 	
