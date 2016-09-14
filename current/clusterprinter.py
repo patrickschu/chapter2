@@ -21,7 +21,7 @@ from nltk.corpus import stopwords
 
 header="\n---------------\n"
 
-with codecs.open('clusters_74_19_45_07_31.json', 'r', 'utf-8') as jsoninput:
+with codecs.open('/Users/ps22344/Downloads/chapter2/current/clusterskmeans_54_19_10_07_30.json', 'r', 'utf-8') as jsoninput:
 	wordtovecclusters=json.load(jsoninput)
 
 wordtovecclusters={int(k):v for k,v in wordtovecclusters.items()}
