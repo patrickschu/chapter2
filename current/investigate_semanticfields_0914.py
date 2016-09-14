@@ -8,13 +8,14 @@ from collections import defaultdict
 import clustertools as ct
 import re
 import nltk
+import time
+from nltk.corpus import stopwords
 
 #moving parts
 
 #we copy these items from the word2vecmaker
 stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
-
-
+stopwords = stopwords.words('english')+["n\'t","\'m", "br/", "'s", "'ll", "'re", "'d", "amp", "'ve","us", "im", "wo", "wan"]
 #the script counts the occurence of specific words within certain clusters from word2vec.
 #these clusters are contained in /Users/ps22344/Downloads/chapter2/current/clusterskmeans_54_19_10_07_30.json
 #we need to look at clusters [50, 6, 22, 39, 24, 48, 1]
@@ -34,28 +35,35 @@ def folderreader(directory):
 		output=output+filis
 		if len(output) != len (set(output)):
 			print "Alarm \n --- duplicates in filelist --- \n"
-	return (set(output))
+	return (output)
 	
 #folderreader('~/Downloads/craig_0208')
 
-def wordcounter (list_of_clusters):
+def wordcounter (folder, list_of_clusters):
 	with codecs.open('/Users/ps22344/Downloads/chapter2/current/clusterskmeans_54_19_10_07_30.json', 'r', 'utf-8') as jsoninput:
 		wordtovecclusters=json.load(jsoninput)
-	wordtovecclusters={int(k):v['words'] for k,v in wordtovecclusters.items() if int(k) in list_of_clusters}
+	wordtovecclusters={int(k):set(v['words']) for k,v in wordtovecclusters.items() if int(k) in list_of_clusters}
 	for key in wordtovecclusters:
+		start=time.time()
+		print key
 		wordcount={i:0 for i in wordtovecclusters[key]}
-		filis=folderreader('~/Downloads/craig_0208')
+		filis=folderreader(folder)
 		print "we have {} files to work with".format(len(filis))
 		for fili in filis:
 			with codecs.open(fili, "r", "utf-8") as inputfile:
 				inputad=ct.adtextextractor(inputfile.read(), fili)
 			addspace=stopregex.sub(r"\g<1> \g<2>", inputad)
 			splittext=nltk.word_tokenize(addspace)
-			#splittext=[s for s in splittext if s not in exclude]
 			splittextlo=[s.lower() for s in splittext if s]
+			splittextlo=[s for s in splittextlo if not s in stopwords]
+			if "wan" in splittextlo:
+				print splittextlo
+				print inputad
 			for w in wordcount.keys():
 				wordcount[w]=wordcount[w] + splittextlo.count(w)
+		end=time.time()
+		print "Aha this took us {} minutes".format((end-start)/60)
 		print "\n", key
 		print [(k,wordcount[k]) for k in sorted(wordcount, key=wordcount.get, reverse=True)]
 	
-wordcounter([1,2,3])
+wordcounter('/Users/ps22344/Downloads/craigbalanced_0601', [50, 6, 22, 39, 24, 48, 1])
