@@ -21,6 +21,8 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
 stopwords = stopwords.words('english')+["n\'t","\'m", "br/", "'s", "'ll", "'re", "'d", "amp", "'ve","us", "im", "wo", "wan"]
+cluster_stopwords = stopwords.words('english')+["n\'t","\'m", "br/", "'s", "'ll", "'re", "'d", "amp", "'ve","us", "im", "wo", "wan", "nice", "looking", "playing", "someone", "going"]
+
 
 #moving parts
 chapterdir=os.path.split(os.getcwd())
@@ -112,7 +114,7 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 	catdicti=categorymachine(folderlist)[0]
 	filedict={}
 	featuredict={k:featuredict[k]['words'] for k in featuredict.keys()}
-	featuredict={k:set([i for i in featuredict[k] if not i in stopwords]) for k in featuredict.keys()}
+	featuredict={k:set([i for i in featuredict[k] if not i in cluster_stopwords]) for k in featuredict.keys()}
 	for folder in folderlist:
 		filis=[i for i in os.listdir(os.path.join(pathi, folder)) if not i.startswith(".")]
 		if testmode:
