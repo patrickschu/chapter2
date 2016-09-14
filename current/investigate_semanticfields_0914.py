@@ -15,10 +15,10 @@ from nltk.corpus import stopwords
 
 #we copy these items from the word2vecmaker
 stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
-stopwords = stopwords.words('english')+["n\'t","\'m", "br/", "'s", "'ll", "'re", "'d", "amp", "'ve","us", "im", "wo", "wan"]
+cluster_stopwords = stopwords.words('english')+["n\'t","\'m", "br/", "'s", "'ll", "'re", "'d", "amp", "'ve","us", "im", "wo", "wan", "nice", "looking", "playing", "someone", "going"]
 #the script counts the occurence of specific words within certain clusters from word2vec.
 #these clusters are contained in /Users/ps22344/Downloads/chapter2/current/clusterskmeans_54_19_10_07_30.json
-#we need to look at clusters [50, 6, 22, 39, 24, 48, 1]
+#we need to look at clusters [50, 6, 22, 39, 24, 48, 51]
 #for each cluster, we need a dict that counts occureence of a word in the files in /Users/ps22344/Downloads/craig_0208
 #if needed, these should be broken down by category
 
@@ -55,7 +55,7 @@ def wordcounter (folder, list_of_clusters):
 			addspace=stopregex.sub(r"\g<1> \g<2>", inputad)
 			splittext=nltk.word_tokenize(addspace)
 			splittextlo=[s.lower() for s in splittext if s]
-			splittextlo=[s for s in splittextlo if not s in stopwords]
+			splittextlo=[s for s in splittextlo if not s in cluster_stopwords]
 			if "wan" in splittextlo:
 				print splittextlo
 				print inputad
@@ -66,4 +66,4 @@ def wordcounter (folder, list_of_clusters):
 		print "\n", key
 		print [(k,wordcount[k]) for k in sorted(wordcount, key=wordcount.get, reverse=True)]
 	
-wordcounter('/Users/ps22344/Downloads/craigbalanced_0601', [50, 6, 22, 39, 24, 48, 1])
+wordcounter('/Users/ps22344/Downloads/craigbalanced_0601', [50, 6, 22, 39, 24, 48, 51])
