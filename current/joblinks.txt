@@ -5,3 +5,5 @@ http://allstate.jobs/ShowJob/Id/958701/Data%20Scientist%20Intern
 https://jobs.lever.co/knewton/79090e31-dc2c-4445-b443-88aed9c68f3e
 https://jobs.groupon.com/jobs/R11050
 https://equifax.wd5.myworkdayjobs.com/en-US/External/job/USA---Georgia---Alpharetta---30005/Graduate-Intern---Data-and-Analytics_J00033285-6?source=indeed
+Rapidminer:
+http://www.indeed.com/viewjob?jk=059d18df5f0df9c1&q=(%22data+science%22+or+%22data+scientist%22+or+%22data+analysis%22+or+%22social+media+analysis%22+or+linguist+or+%22language+processing%22)&l=TX&tk=1aspcbber1d8oac9&from=ja&alid=57d30feb0cf25b8f2144d781&utm_source=jobseeker_emails&utm_medium=email&utm_campaign=job_alerts
