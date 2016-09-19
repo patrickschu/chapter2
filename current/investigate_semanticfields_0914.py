@@ -66,4 +66,4 @@ def wordcounter (folder, list_of_clusters):
 		print "\n", key
 		print [(k,wordcount[k]) for k in sorted(wordcount, key=wordcount.get, reverse=True)]
 	
-wordcounter('/Users/ps22344/Downloads/craigbalanced_0601', [50, 6, 22, 39, 24, 48, 51])
+wordcounter('/Users/ps22344/Downloads/craigbalanced_0601', [24,13])
