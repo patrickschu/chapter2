@@ -41,9 +41,11 @@ stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
 
 metriclist=[['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan'],['braycurtis', 'canberra', 'chebyshev', 'correlation', 'dice', 'hamming', 'jaccard', 'kulsinski', 'mahalanobis', 'matching', 'minkowski', 'rogerstanimoto', 'russellrao', 'seuclidean', 'sokalmichener', 'sokalsneath', 'sqeuclidean', 'yule']]
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath', 'wminkowski']
+header="\n---------------\n"
+
 
 print "start"
-print "\n---------------\nSome public service announcements"
+print header, "Some public service announcements"
 
 
 pathi=os.path.expanduser(os.path.join("~/", "Downloads", "craigbalanced_0601"))
@@ -141,10 +143,11 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 				#print [splittextlo.count(i) for i in featuredict[t]]
 				#if sum ([splittextlo.count(i) for i in set(featuredict[t])]) > 10:
 				#	print [i for i in splittextlo if i in featuredict[t]]
-			#addict={k:[i for i in v] for k,v in featuredict.items()} 
-			addict={k:sum([float(splittextlo.count(i))for i in v]) for k,v in featuredict.items()}
+			#not controlling for cluster size
+			#addict={k:sum([float(splittextlo.count(i))for i in v]) for k,v in featuredict.items()}
+			#controlling for cluster size
+			addict={k:(sum([float(splittextlo.count(i))for i in v]))/len(v) for k,v in featuredict.items()}
 			addict={k:v/wordcount for k,v in addict.items()}
-			#print addict
 			wordvector=np.array([float(cat)]+[float(count)]+addict.values())
 			#we append it to the matrix
 			wordmatrix=np.append(wordmatrix, [wordvector], axis=0)
@@ -166,7 +169,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 	"""
 	The clustermachine takes a matrix with word freqs and clusters according to the distance_metric. 
 	Clusters sets the input if algorithm needs a pre-determined number of clusters. 
-	Last two will not be used by all algorithms. 
+	Last two inputs will not be used by all algorithms. 
 	"""
 	no_of_clusters=range(clusters)	
 	result=[]
