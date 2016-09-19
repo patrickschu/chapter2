@@ -11,7 +11,9 @@ jsons=[i for i in os.listdir(dir) if not i.startswith(".")]
 
 
 def clustertester(filelist):
-	#read in json file, print out content of each cluster
+	"""
+	the clustertester reads in json file, prints out content of each cluster.
+	"""
 	for fili in filelist:
 		print "!!!", fili, "!!!"
 		with codecs.open(os.path.join(dir, fili), "r", "utf-8") as jsoninput:
