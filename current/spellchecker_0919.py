@@ -1,9 +1,9 @@
 #!/Users/ps22344/Downloads/virtualenv/chapter2_env/bin/python
 
 
-##Doing a spellchecker
+## Doing a spellchecker
 ## With pyenchant
-##This needs to run in virtual env
+## This needs to run in virtual env
 
 import time
 import enchant
@@ -48,6 +48,7 @@ def nonstandardcounter(filelist):
 	Splits according to the same rules as the matrixmachine.
 	Checks status of each word in PyEnchant (en_US plus mydictwords.txt) and counts how many are "False".
 	Counts theses, returns dictionary of counts per word.
+	It outputs the results as a JSON w/ the file name including year, month, and day.
 	"""	
 	
 	count=0
@@ -61,6 +62,7 @@ def nonstandardcounter(filelist):
 		count=count+1
 		filedict[count]=os.path.join(pathi,  fili)
 		addspace=stopregex.sub(r"\g<1> \g<2>", inputad)
+		addspace=re.sub("<.*?>", " ", addspace)
 		splittext=nltk.word_tokenize(addspace)
 		#splittext=[s for s in splittext if s not in exclude]
 		splittextlo=[s for s in splittext if s]
@@ -72,8 +74,9 @@ def nonstandardcounter(filelist):
 
 filis=[[os.path.join(i, x) for x in os.listdir(os.path.join(pathi,i)) if not x.startswith(".")] for i in os.listdir(pathi) if not i.startswith(".")]
 print len(filis)
-#the miracle of flattening
-#for each item in sublist, replace the sublist with this item
+
+#flattening a list: for each item in sublist, replace the sublist with this item
+#you can look this up here: http://stackoverflow.com/questions/406121/flattening-a-shallow-list-in-python
 filis=[fili for fililist in filis for fili in fililist]
 print "We have {} files".format(len(filis))
 
