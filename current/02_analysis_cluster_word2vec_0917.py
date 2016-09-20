@@ -136,13 +136,6 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 			splittext=[s for s in splittext if s not in exclude]
 			splittextlo=[s.lower() for s in splittext if s and not excluderegex.match(s)]
 			wordcount=float(len(splittextlo))
-			#for each word2vec cluster: cluster/total words
-			# this is a per word frequency
-			#for t in featuredict:
-				#print "\n", t#featuredict[t]
-				#print [splittextlo.count(i) for i in featuredict[t]]
-				#if sum ([splittextlo.count(i) for i in set(featuredict[t])]) > 10:
-				#	print [i for i in splittextlo if i in featuredict[t]]
 			#not controlling for cluster size
 			#addict={k:sum([float(splittextlo.count(i))for i in v]) for k,v in featuredict.items()}
 			#controlling for cluster size
