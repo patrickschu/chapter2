@@ -26,10 +26,10 @@ pathi='/Users/ps22344/Downloads/craigbalanced_0601'
 
 
 
-spelldicti=enchant.Dict("en_US")
+#spelldicti=enchant.Dict("en_US")
 
 #for personal word list, do this:
-#d2 = enchant.DictWithPWL("en_US","mywords.txt")
+spelldicti = enchant.DictWithPWL("en_US","mydictwords.txt")
 
 
 #it comes with a tokenizer
