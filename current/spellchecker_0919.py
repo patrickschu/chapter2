@@ -22,7 +22,7 @@ excluderegex=re.compile("^["+"|\\".join(exclude)+"]+$")
 punctuationregex=re.compile("["+"|\\".join(list(punctuation))+"|\d+]+")
 stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
 
-pathi='/Users/ps22344/Downloads/craigbalanced_0601'
+pathi='/Users/ps22344/Downloads/craig_0208'
 
 
 
@@ -43,6 +43,13 @@ spelldicti = enchant.DictWithPWL("en_US","mydictwords.txt")
 
 
 def nonstandardcounter(filelist):
+	"""
+	The nonstandardcounter takes a list of files, then iterates over them. 
+	Splits according to the same rules as the matrixmachine.
+	Checks status of each word in PyEnchant (en_US plus mydictwords.txt) and counts how many are "False".
+	Counts theses, returns dictionary of counts per word.
+	"""	
+	
 	count=0
 	filedict={}
 	typodict=defaultdict(float)
@@ -58,6 +65,8 @@ def nonstandardcounter(filelist):
 		#splittext=[s for s in splittext if s not in exclude]
 		splittextlo=[s for s in splittext if s]
 		for word in [w for w in splittextlo if not spelldicti.check(w) and w not in list(punctuation)]:
+			if word == "nofollow":
+				print splittextlo
 			typodict[word]=typodict[word]+1
 	return (typodict)
 
@@ -77,3 +86,4 @@ with codecs.open("typodict_"+time.strftime("%Y%m%d")+".json", "w", "utf-8") as o
 	
 for entry in sorti:
 	print entry
+
