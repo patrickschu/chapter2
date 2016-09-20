@@ -11,3 +11,8 @@ install theano
 easy_install virtual_env
 source my_env/bin/activate
 
+
+
+##FOR ME 
+source chapter2_env/bin/activate
+
