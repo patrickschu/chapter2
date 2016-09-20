@@ -14,7 +14,7 @@ COPY
 from ls to local:
 scp -r ps22344@ls5.tacc.utexas.edu:temp ~/Desktop
 all txt files:
-Downloads ps22344$ scp ps22344@ls5.tacc.utexas.edu:/work/01644/ps22344/lonestar/*.txt ~/Desktop/.
+scp ps22344@ls5.tacc.utexas.edu:/work/01644/ps22344/lonestar/*.txt ~/Desktop/.
 
 
 
