@@ -7,6 +7,7 @@ import sklearn
 import codecs
 import json
 from collections import defaultdict
+import nltk
 
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']#, 'wminkowski']
 linebreakregex=re.compile(r"(<br>|<br\/>)")
@@ -515,3 +516,16 @@ def adcleaner(text, replace_linebreak=False, remove_html=False):
 	if remove_html:
 		text=htmlregex.sub(" ", text)
 	return text
+	
+#this is used to add spaces between stops and the following word
+stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
+
+def tokenizer(input_string):
+	"""
+	The tokenizer takes a string of words.
+	It fixes quirky punctuation that trips us the NLTK Word Tokenizer. 
+	Then it runs nltk.word_tokenize() to return a list of words>
+	"""
+	addspace=stopregex.sub(r"\g<1> \g<2>", input_string)
+	splittext=nltk.word_tokenize(addspace)
+	return splittext
