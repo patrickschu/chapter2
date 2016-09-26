@@ -34,7 +34,7 @@ print "punctuation", punctuation, "\n\n"
 exclude=["<br>", "<br/>", "\n", " "]+list(punctuation)
 excluderegex=re.compile("^["+"|\\".join(exclude)+"]+$")
 punctuationregex=re.compile("["+"|\\".join(list(punctuation))+"|\d+]+")
-stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
+#stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
 
 
 
@@ -131,8 +131,7 @@ def matrixmachine(folderlist, featuredict, testmode, *args):
 				cat=catdicti[ct.tagextractor(inputfile, external_cat, fili)]
 			count=count+1
 			filedict[count]=os.path.join(pathi, folder, fili)
-			addspace=stopregex.sub(r"\g<1> \g<2>", inputad)
-			splittext=nltk.word_tokenize(addspace)
+			splittext=ct.tokenizer(inputad)
 			splittext=[s for s in splittext if s not in exclude]
 			splittextlo=[s.lower() for s in splittext if s and not excluderegex.match(s)]
 			wordcount=float(len(splittextlo))
