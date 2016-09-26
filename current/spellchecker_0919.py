@@ -72,8 +72,11 @@ def nonstandardcounter(filelist):
 			typodict[word]=typodict[word]+1
 	return (typodict)
 
+
+
+#MAIN
 filis=[[os.path.join(i, x) for x in os.listdir(os.path.join(pathi,i)) if not x.startswith(".")] for i in os.listdir(pathi) if not i.startswith(".")]
-print len(filis)
+print "We have {} folders".format(len(filis))
 
 #flattening a list: for each item in sublist, replace the sublist with this item
 #you can look this up here: http://stackoverflow.com/questions/406121/flattening-a-shallow-list-in-python
