@@ -470,6 +470,9 @@ def tagextractor(text, tag, fili):
     return result[0]
     
 def adtextextractor(text, fili):
+    """"
+    adtextextractor takes a read file and extracts the text enclosed by <text>, </text>.
+    """
     regexstring="<text>(.*?)</text>"
     result=re.findall(regexstring, text, re.DOTALL)
     if len(result) != 1:
