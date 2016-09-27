@@ -330,6 +330,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 	 
 def main(distance_metric, threshold, testmode=False):
 	starttime=time.time()
+	#here we read in the featuredict
 	with codecs.open('clusterskmeans_54_19_10_07_30.json', 'r', 'utf-8') as jsoninput:
 		wordtovecclusters=json.load(jsoninput)
 	print "pre length", len(wordtovecclusters)
@@ -339,9 +340,8 @@ def main(distance_metric, threshold, testmode=False):
 	folders=[i for i in os.listdir(pathi) if not i.startswith(".")]
 	print ", ".join(folders)
 	print "Items in folders", ", ".join([str(len(os.listdir(os.path.join(pathi,f)))) for f in folders])
-	#folders=['files9_output_0102']#, 'files9_output_0102', 'files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102','files9_output_0102', 'files9_output_0102', 'files9_output_0102'] 
 	print "We have {} folders".format(len(folders))
-	
+	#here we input the featuredict
 	wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedicti = matrixmachine(folders, wordtovecclusters, testmode, "category1")
 	
 	wordmatrix_without_cat, wordmatrix_with_cat=ct.matrixstats(wordmatrix_without_cat, wordmatrix_with_cat, distance_metric, zscores=False, outlier_removal=False, outlier_threshold = 2, median_metric='median')
