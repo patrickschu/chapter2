@@ -1,4 +1,12 @@
 #FINISHED PRODUCT
+
+
+
+"""
+The punctuationcounter uses string.punctuation to create a dictionary of regexes.
+These are used to identify non-Standard usage of punctuation. 
+The returned punctuationdict= {regex_object: count_of_matches, regex_object_2: count_of_matches,}
+""""
 punctuationdict={
 re.compile(r"(?:\s|\w)(!\?|\?!)(?:\s|\w)"):0
 }
