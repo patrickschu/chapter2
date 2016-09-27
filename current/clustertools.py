@@ -214,7 +214,7 @@ class Centroidstats(Clustering):
 				#sort by index, reverse so largest values are first
 				sorted_diffs=tup[1][index][::-1]
 				sorted_vocab=arrayed_vocab[index][::-1]
-				raw_dist=zip(sorted_diffs, sorted_vocab)
+				raw_dist=zip(sorted_vocab, sorted_diffs)
 				predictdicti[tup[0]]['raw_diff']=raw_dist
 			for tup in sorted_zscores:
 				index=tup[2]
