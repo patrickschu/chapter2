@@ -42,20 +42,6 @@ re.compile(r"4+$"):0
 for f in numbersdict:
 	print f.pattern
 
-	
-testi=" I am 459 va lonely soul .. deep ?? but 4 you <<<<<<<!! !? what the heck ?!! so.... **haha here i lie:4 5'11'' is some # ## punctuation @@ . "
-#words=ct.tokenizer(testi)
-#print words
-# 
-# 
-# for i in numbersdict:
-# 	result=i.findall(testi)
-# 	if result:
-# 		print i.pattern
-# 		print result
-# 	numbersdict[i]=len(result)
-# 
-# print numbersdict
 
 
 topic="4"
@@ -75,7 +61,7 @@ for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 	this looks over the keys of a dictionary that are regex patterns. 
 	it outputs findings in the corpus given in "dir" with context.
 	dir needs to have subfolders. 
-	ADD: collocation counter
+	the twodict counts words with a distance of 2, the onedict counts words with a distance of 1.
 	"""
 	print pati
 	for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
@@ -85,17 +71,18 @@ for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 		words=[w.lower() for w in words]
 		#specific words processing for numbers: introduce space between number immediately followed by word-character
 		if [w for w in words if any(k.match(w) for k in numbersdict.keys())]:
-			#try:
 			if words.index(w) not in [0, 1, len(words) -1, len(words)-2]:
-				less2=words[words.index(w)-2]
-				plus2=words[words.index(w)+2]
-				twodict[less2]=twodict[less2]+1
-				twodict[plus2]=twodict[plus2]+1
+			# 	less2=words[words.index(w)-2]
+# 				print less2, type(less2)
+# 				plus2=words[words.index(w)+2]
+# 				print plus2, type(plus2)
+				twodict[words[words.index(w)-2]]=twodict[words[words.index(w)-2]]+1
+				twodict[words[words.index(w)+2]]=twodict[words[words.index(w)+2]]+1
 			if words.index(w) not in [0, len(words)-1]:
-				less1=words[words.index(w)-1]
-				plus1=words[words.index(w)+1]
-				onedict[less1]=onedict[less1]+1
-				onedict[plus1]=onedict[plus1]+1
+				#less1=words[words.index(w)-1]
+				#plus1=words[words.index(w)+1]
+				onedict[words[words.index(w)-1]]=onedict[words[words.index(w)-1]]+1
+				onedict[words[words.index(w)+1]]=onedict[words[words.index(w)+1]]+1
 				#print [(words[words.index(w)-2], words[words.index(w)-1],w, words[words.index(w)+1], words[words.index(w)+2]) for w in words if any(k.match(w) for k in numbersdict.keys()) and words.index(w) not in [0, 1, len(words)-1, len(words)-2]]
 				outifile.write("\n".join([" ".join([words[words.index(w)-2], words[words.index(w)-1],w, words[words.index(w)+1], words[words.index(w)+2]]) for w in words if any(k.match(w) for k in numbersdict.keys()) and words.index(w) not in [0, 1, len(words)-1, len(words)-2]]))
 			else:
@@ -104,15 +91,15 @@ for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 			
 			
 			
-			#except IndexError:
-			#	print words
-			
+
 		# for entry in numbersdict:
 # 			t=entry.findall(inputad)
 # 			print "regex findall\n", t, "\n\n"
 		#print [(words[words.index(w)-2], words[words.index(w)-1], w, words[words.index(w)+1], words[words.index(w)+2])  for w in words if any(k.match(w) for k in numbersdict.keys())]
 
-print numbersdict
+print "our numbersdict", numbersdict
+
+
 print "\n\ndistance of 2"
 print "\n".join([": ".join([k, unicode(twodict[k])]) for k in sorted(twodict, key=twodict.get, reverse=True)])
 
