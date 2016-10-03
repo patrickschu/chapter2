@@ -1,119 +1,16 @@
-import numpy as np
-from string import punctuation
 import re
-import clustertools as ct
-import time
-import os
-import codecs
-from collections import defaultdict
-import json 
-#how to use numpy unicode in join
-
-
-x=np.array([U'word', U'assi', 12])
-#print type(x[0])
-#print "++++".join(x)
 
 
 
-one=[['a','b'], [2,1000]]
-print "XXXX".join([":".join([unicode(i) for i in x]) for x in one])
+fes=['we', 'are', 'together', 'to', 'be', 'free']
+fes=['we', 'are', 'together']
+print len(fes)
+print fes.index('are')
+print fes[3]
+print fes.index('are')+1
 
+context=[-1,0,1]
 
-#typography={
-#emoticons={':)':0, ':(':0 ,...},
-#counstruct out of string.puncutation
+print [fes[fes.index('together')+t] for t in context]
 
-#punctuation={re.compile("\.\.+":0, ",,+":0
-
-
-
-
-#FINISHED PRODUCT
-numbersdict={
-re.compile(r"\d+"):0
-}
-for f in numbersdict:
-	print f.pattern
-	
-numbersdict={
-re.compile(r"4+$"):0
-}
-for f in numbersdict:
-	print f.pattern
-
-
-
-topic="4"
-#dataset
-dir='/Users/ps22344/Downloads/craig_0208/'#adfiles_output_0116'
-
-outifile=codecs.open(topic+"words.txt", "a", "utf-8")
-onedict=defaultdict(int)
-twodict=defaultdict(int)
-
-
-#check if we find items
-starttime=time.time()
-
-for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
-	"""
-	this looks over the keys of a dictionary that are regex patterns. 
-	it outputs findings in the corpus given in "dir" with context.
-	dir needs to have subfolders. 
-	the twodict counts words with a distance of 2, the onedict counts words with a distance of 1.
-	"""
-	print pati
-	for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
-		fili=codecs.open(os.path.join(dir, pati, fili), "r", "utf-8")
-		inputad=ct.adtextextractor(fili.read(), fili)
-		words=ct.tokenizer(inputad)
-		words=[w.lower() for w in words]
-		#specific words processing for numbers: introduce space between number immediately followed by word-character
-		if [w for w in words if any(k.match(w) for k in numbersdict.keys())]:
-			if words.index(w) not in [0, 1, len(words) -1, len(words)-2]:
-			# 	less2=words[words.index(w)-2]
-# 				print less2, type(less2)
-# 				plus2=words[words.index(w)+2]
-# 				print plus2, type(plus2)
-				twodict[words[words.index(w)-2]]=twodict[words[words.index(w)-2]]+1
-				twodict[words[words.index(w)+2]]=twodict[words[words.index(w)+2]]+1
-			if words.index(w) not in [0, len(words)-1]:
-				#less1=words[words.index(w)-1]
-				#plus1=words[words.index(w)+1]
-				onedict[words[words.index(w)-1]]=onedict[words[words.index(w)-1]]+1
-				onedict[words[words.index(w)+1]]=onedict[words[words.index(w)+1]]+1
-				#print [(words[words.index(w)-2], words[words.index(w)-1],w, words[words.index(w)+1], words[words.index(w)+2]) for w in words if any(k.match(w) for k in numbersdict.keys()) and words.index(w) not in [0, 1, len(words)-1, len(words)-2]]
-				outifile.write("\n".join([" ".join([words[words.index(w)-2], words[words.index(w)-1],w, words[words.index(w)+1], words[words.index(w)+2]]) for w in words if any(k.match(w) for k in numbersdict.keys()) and words.index(w) not in [0, 1, len(words)-1, len(words)-2]]))
-			else:
-				pass
-				#print words
-			
-			
-			
-
-		# for entry in numbersdict:
-# 			t=entry.findall(inputad)
-# 			print "regex findall\n", t, "\n\n"
-		#print [(words[words.index(w)-2], words[words.index(w)-1], w, words[words.index(w)+1], words[words.index(w)+2])  for w in words if any(k.match(w) for k in numbersdict.keys())]
-
-print "our numbersdict", numbersdict
-
-
-print "\n\ndistance of 2"
-print "\n".join([": ".join([k, unicode(twodict[k])]) for k in sorted(twodict, key=twodict.get, reverse=True)])
-
-print "\n\ndistance of 1"
-print "\n\ndistance of 1"
-print "\n".join([": ".join([k, unicode(onedict[k])]) for k in sorted(onedict, key=onedict.get, reverse=True)])
-
-outifile.close()
-with codecs.open(topic+"_onedict.json", "w", "utf-8") as oneout:
-	json.dump(onedict, oneout)
-
-with codecs.open(topic+"_twodict.json", "w", "utf-8") as twoout:
-	json.dump(twodict, twoout)
-
-endtime=time.time()
-
-print "This took us {} minutes".format((endtime-starttime)/60)
+print fes[-1]
