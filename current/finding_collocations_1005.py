@@ -19,7 +19,7 @@ import json
 
 #these are the features we are investigating	
 numbersdict={
-re.compile(r"4$"):0
+re.compile(r".*2fake.*"):0
 }
 for f in numbersdict:
 	print f.pattern
