@@ -57,10 +57,12 @@ for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 		context=[-3,-2,-1,0, 1,2, 3]
 		for matched in hits:
 			if [i for i in context if words.index(matched) + i > len(words) -1 ] and search_term in words:
-				print fil, "too long"
+				print "too long"
+				print [words[words.index(matched)+t] for t in [c for c in context if c <1 ]]
 			elif hits and not [i for i in context if words.index(matched) + i > len(words) -1 ] and search_term in [words[words.index(matched)+t] for t in [-1,1]] :
+				print fil
 				print [words[words.index(matched)+t] for t in context]
-				print words
+				#print words
 				
 		
 # 			print [words[words.index(w)+i] for i in [-2,-1,0,+1,+2]]
