@@ -29,7 +29,7 @@ for f in numbersdict:
 
 numbersdict={}
 
-for numba in [0,1,2,3,5,6,7,8,9]:
+for numba in [4]:
 	numbersdict[re.compile(".{,20}\W+"+unicode(numba)+"\W+.{,20}")]=0
 	
 #numbersdict={re.compile(".*5sunshyne.*"):0}
