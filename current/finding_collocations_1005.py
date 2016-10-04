@@ -16,13 +16,6 @@ import json
 
 #punctuation={re.compile("\.\.+":0, ",,+":0
 
-#FINISHED PRODUCT
-numbersdict={
-re.compile(r"\d+"):0
-}
-for f in numbersdict:
-	print f.pattern
-
 
 #these are the features we are investigating	
 numbersdict={
@@ -36,10 +29,9 @@ print numbersdict.keys()
 #search term - the collocation we're looking for
 search_term="i"
 
-topic="4"
 #dataset
 dir='/Users/ps22344/Downloads/craig_0208/'#adfiles_output_0116'
-
+tagregex=re.compile(r"<.*?>")
 
 
 #check if we find items
@@ -53,24 +45,22 @@ for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 	the twodict counts words with a distance of 2, the onedict counts words with a distance of 1.
 	"""
 	print pati
-	for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
-		fili=codecs.open(os.path.join(dir, pati, fili), "r", "utf-8")
+	for fil in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
+		fili=codecs.open(os.path.join(dir, pati, fil), "r", "utf-8")
 		inputad=ct.adtextextractor(fili.read(), fili)
+		inputad=tagregex.sub(" ", inputad)
 		words=ct.tokenizer(inputad)
 		words=[w.lower() for w in words]
 		#specific words processing for numbers: introduce space between number immediately followed by word-character
 		hits=[w for w in words if any(k.match(w) for k in numbersdict.keys())]
 		#determines length of context extracted
-		#done for the day
-		#
-		context=[-2,-1,0, 1,2]
-		if hits:
-			for matched in hits:
-				if [i for i in context if words.index(matched) + i > len(words) -1 ]:
-					print "too long"
-				else:
-					print words.index(matched)
-					print [words[words.index(matched)+t] for t in context]
+		context=[-3,-2,-1,0, 1,2, 3]
+		for matched in hits:
+			if [i for i in context if words.index(matched) + i > len(words) -1 ] and search_term in words:
+				print fil, "too long"
+			elif hits and not [i for i in context if words.index(matched) + i > len(words) -1 ] and search_term in [words[words.index(matched)+t] for t in [-1,1]] :
+				print [words[words.index(matched)+t] for t in context]
+				print words
 				
 		
 # 			print [words[words.index(w)+i] for i in [-2,-1,0,+1,+2]]
