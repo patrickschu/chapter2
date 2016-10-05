@@ -10,27 +10,31 @@ import json
 
 
 
-#typography={
-#emoticons={':)':0, ':(':0 ,...},
-#counstruct out of string.puncutation
 
-#punctuation={re.compile("\.\.+":0, ",,+":0
+with codecs.open("/Users/ps22344/Downloads/chapter2/current/2words_topwords.txt", "r", "utf-8") as inputfile:
+	inputlist=inputfile.read().split("\n")
 
-
+print inputlist
 #these are the features we are investigating	
-numbersdict={
-re.compile(r".*2fake.*"):0
-}
+numbersdict={}
+
+for item in inputlist:
+	try:
+		numbersdict[re.compile(r".*"+item+".*")]=0
+	except:
+		print 'ITEM', item, "DID NOT MAKE IT"
+
 for f in numbersdict:
 	print f.pattern
 
-print numbersdict.keys()
 
 #search term - the collocation we're looking for
-search_term="i"
+#okay this is mis-named -- this is the main word, number we're investigating
+search_term="2"
 
 #dataset
 dir='/Users/ps22344/Downloads/craig_0208/'#adfiles_output_0116'
+#this is just to remove html
 tagregex=re.compile(r"<.*?>")
 
 
