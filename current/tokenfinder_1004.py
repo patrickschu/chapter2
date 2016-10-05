@@ -12,7 +12,7 @@ import json
 #dataset
 dir='/Users/ps22344/Downloads/craig_0208/'
 #search terms
-search_terms=['3some']
+search_terms=['\si 4+\s']
 
 
 def tokenfinder(input_list, input_path):

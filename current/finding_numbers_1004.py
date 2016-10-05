@@ -20,20 +20,19 @@ import json
 numbersdict={
 re.compile(r"\d+"):0
 }
-for f in numbersdict:
-	print f.pattern
+
 
 
 #these are the features we are investigating	
-numbersdict={
-re.compile(r"x4+$"):0
-}
+
+for numba in [4]:
+	numbersdict[re.compile(r"\s+"+unicode(numba)+"+\s+")]=0
+
 for f in numbersdict:
 	print f.pattern
 
 
-
-topic="\w4"
+topic="2words"
 #dataset
 dir='/Users/ps22344/Downloads/craig_0208/'#adfiles_output_0116'
 
@@ -71,18 +70,23 @@ for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 				pass
 
 
-
+outifile.close()
 print "our numbersdict", numbersdict
 
 
-print "\n\ndistance of 2"
-print "\n".join([": ".join([k, unicode(twodict[k])]) for k in sorted(twodict, key=twodict.get, reverse=True)])
+#print "\n\ndistance of 2"
+#print "\n".join([": ".join([k, unicode(twodict[k])]) for k in sorted(twodict, key=twodict.get, reverse=True)])
 
 print "\n\ndistance of 1"
 print "\n\ndistance of 1"
 print "\n".join([": ".join([k, unicode(onedict[k])]) for k in sorted(onedict, key=onedict.get, reverse=True)])
 
-outifile.close()
+#this file collects the collocations occuring more than 50 times
+with codecs.open(topic+"_topwords.txt", "w", "utf-8") as topwords:
+	topwords.write("\n".join([k for k in sorted(onedict, key=onedict.get, reverse=True) if onedict[k] > 50]))
+
+
+
 with codecs.open(topic+"_onedict.json", "w", "utf-8") as oneout:
 	json.dump(onedict, oneout)
 
