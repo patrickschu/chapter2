@@ -48,9 +48,10 @@ def dictbuilder(input_path):
 			inputad=ct.adtextextractor(fili.read(), fil)
 			inputad=inputad.lower()
 			tokenized=ct.tokenizer(inputad)
-			for token in tokenized:
+			tokenized=[re.sub("\W","", i) for i in tokenized]
+			for token in [i for i in tokenized if i]:
 				worddict[token]=worddict[token]+1
-	print worddict
+	print ("\n".join([":".join((k, unicode(worddict[k]))) for k in sorted(worddict, key=worddict.get, reverse=True) if worddict[k] > 50]))
 			
 			
 			
