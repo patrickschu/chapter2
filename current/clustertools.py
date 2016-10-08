@@ -12,6 +12,7 @@ import nltk
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']#, 'wminkowski']
 linebreakregex=re.compile(r"(<br>|<br\/>)")
 stopregex=re.compile(r"([\.|\?|\!]+)(\w)")
+htmlregex=re.compile(r"<.*?>")
 
 class Clustering(object):
 	"""
@@ -527,8 +528,10 @@ def tokenizer(input_string):
 	"""
 	The tokenizer takes a string of words.
 	It fixes quirky punctuation that trips us the NLTK Word Tokenizer. 
+	Removes html.
 	Then it runs nltk.word_tokenize() to return a list of words>
 	"""
-	addspace=stopregex.sub(r"\g<1> \g<2>", input_string)
+	no_html=htmlregex.sub(" ", input_string)
+	addspace=stopregex.sub(r"\g<1> \g<2>", no_html)
 	splittext=nltk.word_tokenize(addspace)
 	return splittext
