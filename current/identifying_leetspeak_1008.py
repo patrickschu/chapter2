@@ -30,7 +30,7 @@ leetdict={
 "o":0
 }
 
-
+t=re.compile("ss")
 #dirs
 dir='/Users/ps22344/Downloads/craig_0208/'
 dir='/Users/ps22344/Downloads/craigbalanced_0601'
@@ -53,12 +53,37 @@ def dictbuilder(input_path, output_file):
 				worddict[token]=worddict[token]+1
 	print ("\n".join([":".join((k, unicode(worddict[k]))) for k in sorted(worddict, key=worddict.get, reverse=True) if worddict[k] > 50]))
 	print "We created a dictionary of {} total words with {} types".format(sum(worddict.values()), len(worddict.keys()))		
-	if output:
+	if output_file:
 		with codecs.open(output_file, "w", "utf-8") as outputfile:
 			json.dump(worddict, outputfile)	
 			print "Dict written to ", outputfile
+
+def leetfinder(word_dictionary, leet_dictionary):
+	"""
+	The leetfinder takes a dictionary of words as a json.
+	It identifies any words that vary only in the use of features in leet_dictionary, which is hardcoded above.
+	
+	"""
+	with codecs.open(word_dictionary, "r", "utf-8") as worddictionary:
+		worddictionary=json.load(worddictionary)
+		print type(worddictionary)
+	for leetkey in leet_dictionary.keys():
+		characterregex=re.compile(unicode(leetkey))
+		number=unicode(leet_dictionary[leetkey])
+		print "We're looking at {} being replaced with {}".format(characterregex.pattern, number)
+		print characterregex.sub(number, leetkey)
+		result=[(w, characterregex.sub(number, w)) for w in worddictionary.keys() if worddictionary.get(characterregex.sub(number, w), None)]
+		#print result
+
+
 			
-dictbuilder(dir, "worddict.json")
+#dictbuilder(dir, "worddict.json")
+leetfinder("worddict.json", leetdict)
+
+
+
+			
+
 			
 			
 			
