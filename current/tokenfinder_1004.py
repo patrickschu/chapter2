@@ -12,7 +12,8 @@ import json
 #dataset
 dir='/Users/ps22344/Downloads/craig_0208/'
 #search terms
-search_terms=['\si 4+\s']
+search_terms=['o1']
+print "search term is ", search_terms
 
 
 def tokenfinder(input_list, input_path):
