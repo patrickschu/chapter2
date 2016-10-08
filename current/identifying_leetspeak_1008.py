@@ -28,8 +28,8 @@ leetdict={
 #"b":[8],
 #"g":[9, 6],
 "o":[0,8],
-"l":[1]
-#"s":[5]
+"l":[1],
+"s":["$"]#[5]
 }
 
 t=re.compile("ss")
@@ -86,7 +86,7 @@ def leetfinder(word_dictionary, leet_dictionary, excluded_words):
 
 			
 #dictbuilder(dir, "worddict_full.json")
-leetfinder("worddict_full.json", leetdict, ['outi','toi','tio','dip','jessi','ami', 'oi', 'wi','rl','psl', 'mel', 'al','dl','fl','xbl','ala','uop','rot','lotr','ko','qi','fi','mei','di','ki','ri','ai','a7', 'of', "a7x", 'wb', 'ob', 'tob', 'sixe', 'ine', 'donte', 'de', 'ore', 'me2', 'qe', 'fore', 'looke', 'ae', 'ice', 'wo'])
+leetfinder("worddict_full.json", leetdict, ['weho','ase','toe','fined','bfe','ve','te', 'talke','withe','reali', 'muchi', 'ani','outi','toi','tio','dip','jessi','ami', 'oi', 'wi','rl','psl', 'mel', 'al','dl','fl','xbl','ala','uop','rot','lotr','ko','qi','fi','mei','di','ki','ri','ai','a7', 'of', "a7x", 'wb', 'ob', 'tob', 'sixe', 'ine', 'donte', 'de', 'ore', 'me2', 'qe', 'fore', 'looke', 'ae', 'ice', 'wo'])
 
 
 
