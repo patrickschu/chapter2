@@ -20,14 +20,16 @@ import json
 starttime=time.time()
 
 leetdict={
-"i":1,
-"r":2,
-"e":3,
-#"a":4,
-"t":7,
-"b":8,
-"g":9,
-"o":0
+"i":[1],
+"r":[2],
+"e":[3],
+"a":["@"],
+"t":[7],
+"b":[8],
+"g":[9, 6],
+"o":[0,8],
+"l":[1],
+"s":[5]
 }
 
 t=re.compile("ss")
@@ -69,22 +71,22 @@ def leetfinder(word_dictionary, leet_dictionary, excluded_words):
 	"""
 	with codecs.open(word_dictionary, "r", "utf-8") as worddictionary:
 		worddictionary=json.load(worddictionary)
-	worddictionary={k:v for k,v in worddictionary.items() if not k in excluded_words}
+	worddictionary={k:v for k,v in worddictionary.items() if not k in excluded_words and worddictionary[k] > 1}
+	worddictionary['sex']
 	for leetkey in leet_dictionary.keys():
 		#leetkey is a letter: a,e,i
-		#print leetkey
 		characterregex=re.compile(leetkey)
-		number=unicode(leet_dictionary[leetkey])
-		print "We're looking at {} being replaced with {}".format(leetkey, number)
-		#replacement characters come first
-		#print characterregex.sub(number, "assssssssi")
-		result=[(w, characterregex.sub(number, w)) for w in worddictionary.keys() if worddictionary.get(characterregex.sub(number, w), None) and leetkey in w]
-		print result
+		for number  in leet_dictionary[leetkey]:
+			number=unicode(number)
+			print "We're looking at {} being replaced with {}".format(characterregex.pattern, number)
+			#replacement characters come first
+			result=[(w, characterregex.sub(number, w), worddictionary[characterregex.sub(number, w)]) for w in worddictionary.keys() if worddictionary.get(characterregex.sub(number, w), None) and leetkey in w]
+			print result
 
 
 			
 dictbuilder(dir, "worddict_full.json")
-leetfinder("worddict_full.json", leetdict, ["a7x"])
+leetfinder("worddict_full.json", leetdict, ["a7x", 'wb', 'ob', 'tob', 'sixe', 'ine', 'donte', 'de', 'ore', 'me2', 'que', 'looke', 'ae', 'ice'])
 
 
 
