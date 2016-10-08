@@ -23,7 +23,7 @@ leetdict={
 "i":1,
 "r":2,
 "e":3,
-"a":4,
+#"a":4,
 "t":7,
 "b":8,
 "g":9,
@@ -33,12 +33,13 @@ leetdict={
 t=re.compile("ss")
 #dirs
 dir='/Users/ps22344/Downloads/craig_0208/'
-dir='/Users/ps22344/Downloads/craigbalanced_0601'
+#dir='/Users/ps22344/Downloads/craigbalanced_0601'
 
 def dictbuilder(input_path, output_file):
 	"""
 	reads files in input_path	
 	input_path needs to have subfolders. 
+	removes numbers.
 	"""
 	worddict=defaultdict(int)
 	for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
@@ -49,6 +50,7 @@ def dictbuilder(input_path, output_file):
 			inputad=inputad.lower()
 			tokenized=ct.tokenizer(inputad)
 			tokenized=[re.sub("\W","", i) for i in tokenized]
+			tokenized=[i for i in tokenized if not re.match("\d+", i)]
 			for token in [i for i in tokenized if i]:
 				worddict[token]=worddict[token]+1
 	print ("\n".join([":".join((k, unicode(worddict[k]))) for k in sorted(worddict, key=worddict.get, reverse=True) if worddict[k] > 50]))
@@ -58,27 +60,31 @@ def dictbuilder(input_path, output_file):
 			json.dump(worddict, outputfile)	
 			print "Dict written to ", outputfile
 
-def leetfinder(word_dictionary, leet_dictionary):
+def leetfinder(word_dictionary, leet_dictionary, excluded_words):
 	"""
 	The leetfinder takes a dictionary of words as a json.
 	It identifies any words that vary only in the use of features in leet_dictionary, which is hardcoded above.
+	List of excluded_words has all the items to be ignored in the word_dictionary. 
 	
 	"""
 	with codecs.open(word_dictionary, "r", "utf-8") as worddictionary:
 		worddictionary=json.load(worddictionary)
-		print type(worddictionary)
+	worddictionary={k:v for k,v in worddictionary.items() if not k in excluded_words}
 	for leetkey in leet_dictionary.keys():
-		characterregex=re.compile(unicode(leetkey))
+		#leetkey is a letter: a,e,i
+		#print leetkey
+		characterregex=re.compile(leetkey)
 		number=unicode(leet_dictionary[leetkey])
-		print "We're looking at {} being replaced with {}".format(characterregex.pattern, number)
-		print characterregex.sub(number, leetkey)
-		result=[(w, characterregex.sub(number, w)) for w in worddictionary.keys() if worddictionary.get(characterregex.sub(number, w), None)]
-		#print result
+		print "We're looking at {} being replaced with {}".format(leetkey, number)
+		#replacement characters come first
+		#print characterregex.sub(number, "assssssssi")
+		result=[(w, characterregex.sub(number, w)) for w in worddictionary.keys() if worddictionary.get(characterregex.sub(number, w), None) and leetkey in w]
+		print result
 
 
 			
-#dictbuilder(dir, "worddict.json")
-leetfinder("worddict.json", leetdict)
+dictbuilder(dir, "worddict_full.json")
+leetfinder("worddict_full.json", leetdict, ["a7x"])
 
 
 
