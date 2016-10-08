@@ -35,7 +35,7 @@ leetdict={
 dir='/Users/ps22344/Downloads/craig_0208/'
 dir='/Users/ps22344/Downloads/craigbalanced_0601'
 
-def dictbuilder(input_path):
+def dictbuilder(input_path, output_file):
 	"""
 	reads files in input_path	
 	input_path needs to have subfolders. 
@@ -52,10 +52,13 @@ def dictbuilder(input_path):
 			for token in [i for i in tokenized if i]:
 				worddict[token]=worddict[token]+1
 	print ("\n".join([":".join((k, unicode(worddict[k]))) for k in sorted(worddict, key=worddict.get, reverse=True) if worddict[k] > 50]))
+	print "We created a dictionary of {} total words with {} types".format(sum(worddict.values()), len(worddict.keys()))		
+	if output:
+		with codecs.open(output_file, "w", "utf-8") as outputfile:
+			json.dump(worddict, outputfile)	
+			print "Dict written to ", outputfile
 			
-			
-			
-dictbuilder(dir)
+dictbuilder(dir, "worddict.json")
 			
 			
 			
