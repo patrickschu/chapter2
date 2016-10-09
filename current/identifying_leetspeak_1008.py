@@ -9,12 +9,6 @@ from collections import defaultdict
 import json 
 
 
-
-
-#identify words that differ in a number vs letter only
-#take text, tokenize
-#check with dict
-
 #conversions from http://www.gamehouse.com/blog/leet-speak-cheat-sheet/
 
 starttime=time.time()
@@ -32,35 +26,11 @@ leetdict={
 "s":["$"]#[5]
 }
 
-t=re.compile("ss")
+
 #dirs
 dir='/Users/ps22344/Downloads/craig_0208/'
 #dir='/Users/ps22344/Downloads/craigbalanced_0601'
 
-def dictbuilder(input_path, output_file):
-	"""
-	reads files in input_path	
-	input_path needs to have subfolders. 
-	removes numbers.
-	"""
-	worddict=defaultdict(int)
-	for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
-		print pati
-		for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
-			fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
-			inputad=ct.adtextextractor(fili.read(), fil)
-			inputad=inputad.lower()
-			tokenized=ct.tokenizer(inputad)
-			tokenized=[re.sub("\W","", i) for i in tokenized]
-			tokenized=[i for i in tokenized if not re.match("\d+", i)]
-			for token in [i for i in tokenized if i]:
-				worddict[token]=worddict[token]+1
-	print ("\n".join([":".join((k, unicode(worddict[k]))) for k in sorted(worddict, key=worddict.get, reverse=True) if worddict[k] > 50]))
-	print "We created a dictionary of {} total words with {} types".format(sum(worddict.values()), len(worddict.keys()))		
-	if output_file:
-		with codecs.open(output_file, "w", "utf-8") as outputfile:
-			json.dump(worddict, outputfile)	
-			print "Dict written to ", outputfile
 
 def leetfinder(word_dictionary, leet_dictionary, excluded_words):
 	"""
@@ -90,7 +60,6 @@ def leetfinder(word_dictionary, leet_dictionary, excluded_words):
 
 
 			
-#dictbuilder(dir, "worddict_full.json")
 leetfinder("worddict_full.json", leetdict, ['wl','ftl','tol','xl','jo','lo','thoe','yo','aso', 'zerofive', 'fond', 'ano', 'xo','astro','ando','do','poc','ao','ho','mo', 'so','mayo','amo','ol','el','bul','woudl','weho','ase','toe','fined','bfe','ve','te', 'talke','withe','reali', 'muchi', 'ani','outi','toi','tio','dip','jessi','ami', 'oi', 'wi','rl','psl', 'mel', 'al','dl','fl','xbl','ala','uop','rot','lotr','ko','qi','fi','mei','di','ki','ri','ai','a7', 'of', "a7x", 'wb', 'ob', 'tob', 'sixe', 'ine', 'donte', 'de', 'ore', 'me2', 'qe', 'fore', 'looke', 'ae', 'ice', 'wo'])
 
 
