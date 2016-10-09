@@ -86,7 +86,7 @@ def leetfinder(word_dictionary, leet_dictionary, excluded_words):
 
 			
 #dictbuilder(dir, "worddict_full.json")
-leetfinder("worddict_full.json", leetdict, ['weho','ase','toe','fined','bfe','ve','te', 'talke','withe','reali', 'muchi', 'ani','outi','toi','tio','dip','jessi','ami', 'oi', 'wi','rl','psl', 'mel', 'al','dl','fl','xbl','ala','uop','rot','lotr','ko','qi','fi','mei','di','ki','ri','ai','a7', 'of', "a7x", 'wb', 'ob', 'tob', 'sixe', 'ine', 'donte', 'de', 'ore', 'me2', 'qe', 'fore', 'looke', 'ae', 'ice', 'wo'])
+leetfinder("worddict_full.json", leetdict, ['fond', 'ano', 'xo','astro','ando','do','poc','ao','ho','mo', 'so','mayo','amo','ol','el','bul','woudl','weho','ase','toe','fined','bfe','ve','te', 'talke','withe','reali', 'muchi', 'ani','outi','toi','tio','dip','jessi','ami', 'oi', 'wi','rl','psl', 'mel', 'al','dl','fl','xbl','ala','uop','rot','lotr','ko','qi','fi','mei','di','ki','ri','ai','a7', 'of', "a7x", 'wb', 'ob', 'tob', 'sixe', 'ine', 'donte', 'de', 'ore', 'me2', 'qe', 'fore', 'looke', 'ae', 'ice', 'wo'])
 
 
 
