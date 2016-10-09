@@ -73,6 +73,7 @@ def leetfinder(word_dictionary, leet_dictionary, excluded_words):
 		worddictionary=json.load(worddictionary)
 	originalworddictonary=worddictionary
 	worddictionary={k:v for k,v in worddictionary.items() if not k in excluded_words and worddictionary[k] > 1}
+	totalhits=[]
 	for leetkey in leet_dictionary.keys():
 		#leetkey is a letter: a,e,i
 		characterregex=re.compile(leetkey)
@@ -82,11 +83,15 @@ def leetfinder(word_dictionary, leet_dictionary, excluded_words):
 			#replacement characters come first
 			result=[(w, characterregex.sub(number, w), originalworddictonary[characterregex.sub(number, w)]) for w in worddictionary.keys() if originalworddictonary.get(characterregex.sub(number, w), None) and leetkey in w]
 			print result
+			print "Total results", sum([count for word,subword,count in result])
+			totalhits.append(sum([count for word,subword,count in result]))
+	print "All told, that makes {} hits in a {} word corpus".format(sum(totalhits), sum(originalworddictonary.values()))
+			
 
 
 			
 #dictbuilder(dir, "worddict_full.json")
-leetfinder("worddict_full.json", leetdict, ['fond', 'ano', 'xo','astro','ando','do','poc','ao','ho','mo', 'so','mayo','amo','ol','el','bul','woudl','weho','ase','toe','fined','bfe','ve','te', 'talke','withe','reali', 'muchi', 'ani','outi','toi','tio','dip','jessi','ami', 'oi', 'wi','rl','psl', 'mel', 'al','dl','fl','xbl','ala','uop','rot','lotr','ko','qi','fi','mei','di','ki','ri','ai','a7', 'of', "a7x", 'wb', 'ob', 'tob', 'sixe', 'ine', 'donte', 'de', 'ore', 'me2', 'qe', 'fore', 'looke', 'ae', 'ice', 'wo'])
+leetfinder("worddict_full.json", leetdict, ['wl','ftl','tol','xl','jo','lo','thoe','yo','aso', 'zerofive', 'fond', 'ano', 'xo','astro','ando','do','poc','ao','ho','mo', 'so','mayo','amo','ol','el','bul','woudl','weho','ase','toe','fined','bfe','ve','te', 'talke','withe','reali', 'muchi', 'ani','outi','toi','tio','dip','jessi','ami', 'oi', 'wi','rl','psl', 'mel', 'al','dl','fl','xbl','ala','uop','rot','lotr','ko','qi','fi','mei','di','ki','ri','ai','a7', 'of', "a7x", 'wb', 'ob', 'tob', 'sixe', 'ine', 'donte', 'de', 'ore', 'me2', 'qe', 'fore', 'looke', 'ae', 'ice', 'wo'])
 
 
 
