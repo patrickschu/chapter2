@@ -12,7 +12,7 @@ import json
 #dataset
 dir='/Users/ps22344/Downloads/craig_0208/'
 #search terms
-search_terms=['o1']
+search_terms=['killed 9 people']
 print "search term is ", search_terms
 
 
