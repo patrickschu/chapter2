@@ -55,8 +55,8 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
 				#this weeds out all the phonenumbers. 
 				if hits:
-					for hit in hits:#[h for h in hits if h[0] not in pre_context and h[2] not in post_context]:
-						if hit[0]:
+					for hit in [h for h in hits if h[0] not in good_pre_context]:
+						if hit[0]:#=="have":
 							print hit
 							h0dict[hit[0]]=h0dict[hit[0]]+1
 							h2dict[hit[2]]=h2dict[hit[2]]+1
@@ -66,8 +66,12 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 		#print "\n".join([": ".join([k, unicode(h2dict[k])]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
 #think these thru for each number. not that we accidentally exclude good things
 #
-pre_context=["with", "than","of","have", "for","a" ]
-post_context=["jobs", "to", "is", "are", "but", "or", "inch", "ft", "feet", "kids", "emails","of", "for", "weeks", "months", "years", "with", "and","cars", "children", "dogs", "tattos","things"]
+good_pre_context=["friend", "looking","lookin", "pic", "picture", "pix", "pics"]
+good_post_context=["trade", "tonight"]
+
+##4: 'a' is def bad pretext, 'the' also, and 'for'; "have" can be legit for 2
+##2: 'to' is not cool as pretext
+
 			
 rebusfinder(dir, "worddict_full.json", numberdict, "b")
 
