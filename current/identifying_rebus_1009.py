@@ -4,6 +4,7 @@ import json
 import re
 import os
 import clustertools as ct
+from collections import defauldict
 
 starttime=time.time()
 
@@ -18,7 +19,7 @@ for number in numbers:
 #written numbers for quality control
 writtennumberdict={}
 
-writtennumbers=["one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen"]	
+writtennumbers=["one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen", "twenty", "thirty", "fourty", "fifty", "sixty"]	
 
 for writtennumber in writtennumbers:
 	writtennumberdict[writtennumber]=0
@@ -40,8 +41,10 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 		worddictionary=json.load(worddictionary)
 	worddictionary={k:v for k,v in worddictionary.items() if not k in excluded_words and worddictionary[k] > 1}
 	for number in number_dictionary.keys():
-		numberregex=re.compile("\W(\w+) ("+unicode(number)+") (\w+)\W")
-		
+		numberregex=re.compile("\W([a-z]+) ("+unicode(number)+") ([a-z]+)\W")
+		#just for now
+		h0dict=defaultdict(int)
+		h1dict=defaultdict(int)
 		print numberregex.pattern
 		print numberregex.findall("i see 4 you str8 i hate that")
 		for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
@@ -49,18 +52,17 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 				fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
 				inputad=ct.adtextextractor(fili.read(), fil)
 				inputad=inputad.lower()
-				if numberregex.findall(inputad):
-					print "\n\nbefore"
-					print numberregex.findall(inputad)
-					hits=numberregex.findall(inputad)
-					print "after"
-					print [h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
-# 					for g in hits:
-# 						if g[0] in writtennumberdict:
-# 							print "\n",g[0], "\n"
-						
+				hits=numberregex.findall(inputad)
+				if [h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]:
+					print hits
+				for h in hits:
+					h0dict[h]=h0dict[h]+1
+					h1dict[h]=h1dict[h]+1
+		h0dict={k:v for k,v in h0dict.items() if v > 50}
+		print "\n".join([": ".join([k, unicode(h0dict[k])]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
 
-
+pre_context=[]
+post_context=["kids", "emails"]
 			
 rebusfinder(dir, "worddict_full.json", numberdict, "b")
 
