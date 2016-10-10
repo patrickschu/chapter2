@@ -41,7 +41,7 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 	#	worddictionary=json.load(worddictionary)
 	#worddictionary={k:v for k,v in worddictionary.items() if not k in excluded_words and worddictionary[k] > 1}
 	for number in number_dictionary.keys():
-		numberregex=re.compile("\W([a-z]+) ("+unicode(number)+") ([a-z]+)\W")
+		numberregex=re.compile("\W([a-z]+)\s+("+unicode(number)+")\s+([a-z]+)\W")
 		#just for now
 		h0dict=defaultdict(int)
 		h2dict=defaultdict(int)
@@ -69,7 +69,7 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 good_pre_context=[]#["friend", "looking","lookin", "pic", "picture", "pix", "pics"]
 good_post_context=[]#["trade", "tonight"]
 
-exclude_post_context=["year", "years", "yr", "days", "wheelers", "times", "or", "and", "months", "in", "kids", "weeks"]
+exclude_post_context=["dogs","tattoos", "emails", "foot", "feet", "children", "guy", "just", "of", "to", "i", "year", "years", "yr", "yrs", "days", "wheeler", "wheelers", "wheeling", "times", "or", "and", "months", "in", "kids", "weeks", "day", "days"]
 
 ##4: 'a' is def bad pretext, 'the' also, and 'for'; "have" can be legit for 2
 ##2: 'to' is not cool as pretext
