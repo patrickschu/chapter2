@@ -37,8 +37,9 @@ exclude_pre_context= ["our", "on", "sleep","thanks","bedroom", "fine","before","
 def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 	"""
  	This finds words that are represented as numbers. 
- 	How is this going to happen?
- 	IdK
+ 	All combinations \W([a-z]+)\s+("+unicode(number)+")\s+([a-z]+)\W for the number put in are identified.
+ 	The lists exclude_pre and exclude_post word for negative contexts in 4.
+ 	It print the results and give type and token counts. 
 	
 	"""
 	#with codecs.open(word_dictionary, "r", "utf-8") as worddictionary:
