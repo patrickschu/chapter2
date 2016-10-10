@@ -29,6 +29,10 @@ print writtennumberdict
 #dir='/Users/ps22344/Downloads/craig_0208/'
 dir='/Users/ps22344/Downloads/craigbalanced_0601'
 
+exclude_post_context=["s", "am", "a.m.", "figures", "pm", "p.m.","dogs","tattoos", "emails", "foot", "feet", "ft", "children", "guy", "just", "of", "to", "i", "year", "years", "yr", "yrs", "days", "wheeler", "wheelers", "wheeling", "times", "or", "and", "months", "in", "kids", "weeks", "day", "days"]
+exclude_pre_context= ["sleep","thanks","bedroom", "fine","before","had","except", "acres", "no", "in", "b", "with", "size", "a", "to","have", "of", "or", "the", "for", "feet", "foot", "ft", "my", "your"]
+
+
 
 def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 	"""
@@ -55,24 +59,29 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
 				#this weeds out all the phonenumbers. 
 				if hits:
-					for hit in [h for h in hits if h[2] not in exclude_post_context]:
+					for hit in [h for h in hits if h[0] not in exclude_pre_context and h[2] not in exclude_post_context]:
 						if hit[2]:#:=="days":
 							print hit
 							h0dict[hit[0]]=h0dict[hit[0]]+1
 							h2dict[hit[2]]=h2dict[hit[2]]+1
+		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 0}
 		print "\n\n", number, "\n\npretext here be the results\n\n"
-		#print "\n".join([": ".join([k, unicode(h0dict[k])]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
-		print "\n".join([": ".join([k, unicode(h2dict[k])]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
+		print "\n".join([": ".join([k, unicode(h0dict[k])]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
+		#print "\n".join([": ".join([k, unicode(h2dict[k])]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
+
+		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
+
+
+
+##4: 'a' is def bad pretext, 'the' also, and 'for'; "have" can be legit for 2
+##2: 'to' is not cool as pretext
+
+
 #think these thru for each number. not that we accidentally exclude good things
 #
 good_pre_context=[]#["friend", "looking","lookin", "pic", "picture", "pix", "pics"]
 good_post_context=[]#["trade", "tonight"]
-
-exclude_post_context=["dogs","tattoos", "emails", "foot", "feet", "children", "guy", "just", "of", "to", "i", "year", "years", "yr", "yrs", "days", "wheeler", "wheelers", "wheeling", "times", "or", "and", "months", "in", "kids", "weeks", "day", "days"]
-
-##4: 'a' is def bad pretext, 'the' also, and 'for'; "have" can be legit for 2
-##2: 'to' is not cool as pretext
 
 			
 rebusfinder(dir, "worddict_full.json", numberdict, "b")
