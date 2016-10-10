@@ -55,19 +55,21 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
 				#this weeds out all the phonenumbers. 
 				if hits:
-					for hit in [h for h in hits if h[0] not in good_pre_context]:
-						if hit[0]:#=="have":
+					for hit in [h for h in hits if h[2] not in exclude_post_context]:
+						if hit[2]:#:=="days":
 							print hit
 							h0dict[hit[0]]=h0dict[hit[0]]+1
 							h2dict[hit[2]]=h2dict[hit[2]]+1
 		h0dict={k:v for k,v in h0dict.items() if v > 0}
 		print "\n\n", number, "\n\npretext here be the results\n\n"
-		print "\n".join([": ".join([k, unicode(h0dict[k])]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
-		#print "\n".join([": ".join([k, unicode(h2dict[k])]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
+		#print "\n".join([": ".join([k, unicode(h0dict[k])]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
+		print "\n".join([": ".join([k, unicode(h2dict[k])]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
 #think these thru for each number. not that we accidentally exclude good things
 #
-good_pre_context=["friend", "looking","lookin", "pic", "picture", "pix", "pics"]
-good_post_context=["trade", "tonight"]
+good_pre_context=[]#["friend", "looking","lookin", "pic", "picture", "pix", "pics"]
+good_post_context=[]#["trade", "tonight"]
+
+exclude_post_context=["year", "years", "yr", "days", "wheelers", "times", "or", "and", "months", "in", "kids", "weeks"]
 
 ##4: 'a' is def bad pretext, 'the' also, and 'for'; "have" can be legit for 2
 ##2: 'to' is not cool as pretext
