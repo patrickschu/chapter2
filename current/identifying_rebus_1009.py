@@ -26,13 +26,14 @@ for writtennumber in writtennumbers:
 
 print writtennumberdict
 #dirs
-#dir='/Users/ps22344/Downloads/craig_0208/'
-dir='/Users/ps22344/Downloads/craigbalanced_0601'
+dir='/Users/ps22344/Downloads/craig_0208/'
+#dir='/Users/ps22344/Downloads/craigbalanced_0601'
 
 exclude_post_context=["s", "am", "a.m.", "figures", "pm", "p.m.","dogs","tattoos", "emails", "foot", "feet", "ft", "children", "guy", "just", "of", "to", "i", "year", "years", "yr", "yrs", "days", "wheeler", "wheelers", "wheeling", "times", "or", "and", "months", "in", "kids", "weeks", "day", "days"]
 exclude_pre_context= ["our", "on", "sleep","thanks","bedroom", "fine","before","had","except", "acres", "no", "in", "b", "with", "size", "a", "to","have", "of", "or", "the", "for", "feet", "foot", "ft", "my", "your"]+["young","incredable","friendly","very","eiight","every","servicing","like","quick","sev","our","giving","stage","last","son","speak","use","top","least","until","survived","than","those","is","buffy","im","at","after","know"]
 
-
+include_pre_context=["looking", "lookin", "pic"]
+include_post_context=["the", "a"]
 
 def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 	"""
@@ -57,14 +58,16 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 				inputad=ct.adtextextractor(fili.read(), fil)
 				inputad=inputad.lower()
 				hits=numberregex.findall(inputad)
-				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
 				#this weeds out all the phonenumbers. 
-				if hits:
-					for hit in [h for h in hits if h[0] not in exclude_pre_context and h[2] not in exclude_post_context]:
-						if hit[2]:#:=="days":
-							print hit
-							h0dict[hit[0]]=h0dict[hit[0]]+1
-							h2dict[hit[2]]=h2dict[hit[2]]+1
+				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
+				for h in hits:
+					if h[0] in include_pre_context or h[2] in include_post_context:
+						print h
+					elif h[0] not in exclude_pre_context and h[2] not in exclude_post_context:
+						if h[2]:#:=="days":
+							#print h
+							h0dict[h[0]]=h0dict[h[0]]+1
+							h2dict[h[2]]=h2dict[h[2]]+1
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 0}
 		print "\n\n", number, "\n\npretext here be the results\n\n"
