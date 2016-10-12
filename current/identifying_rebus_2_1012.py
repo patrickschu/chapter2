@@ -77,8 +77,15 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 				for h in hits:
 					tagged=pos_tag(h)
 					if tagged[0][1] == "DT":
+						"trash"
+					if tagged[0][1]=="JJR":
+						"50:50, few tokens"
+					if tagged[0][1]=="JJS":
+						"this is all trash"
+					if tagged[0][1]=="IN":
 						print h, tagged
 					
+										
 					if h[0] in include_pre_context or h[2] in include_post_context:
 					#	print h
 						h0dict[h[0]]=h0dict[h[0]]+1
