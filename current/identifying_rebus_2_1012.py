@@ -5,6 +5,7 @@ import re
 import os
 import clustertools as ct
 from collections import defaultdict
+from nltk import pos_tag
 
 starttime=time.time()
 
@@ -74,20 +75,24 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 				#this weeds out all the phonenumbers. 
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
 				for h in hits:
+					tagged=pos_tag(h)
+					if tagged[0][1] == "DT":
+						print h, tagged
+					
 					if h[0] in include_pre_context or h[2] in include_post_context:
-						print h
+					#	print h
 						h0dict[h[0]]=h0dict[h[0]]+1
 						h2dict[h[2]]=h2dict[h[2]]+1
 					elif h[0] not in exclude_pre_context and h[2] not in exclude_post_context:
 						if h[2]:#:=="days":
-							print h
+					#		print h
 							h0dict[h[0]]=h0dict[h[0]]+1
 							h2dict[h[2]]=h2dict[h[2]]+1
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 0}
 		print "\n\n", number, "\n\pretext here be the results\n\n"
-		print "\n".join([": ".join([k, unicode(h0dict[k]), ".".join(word2vecwordfinder([k], '/Users/ps22344/Downloads/chapter2/current/clusterskmeans_54_19_10_07_30.json'))]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
-		#print "\n".join([": ".join([k, unicode(h2dict[k]), ".".join(word2vecwordfinder([k], '/Users/ps22344/Downloads/chapter2/current/clusterskmeans_54_19_10_07_30.json'))]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
+		print "\n".join([": ".join([k, unicode(h0dict[k]), ".".join(word2vecwordfinder([k], '/Users/ps22344/Downloads/chapter2/current/clusters_74_19_45_07_31.json'))]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
+		#print "\n".join([": ".join([k, unicode(h2dict[k]), ".".join(word2vecwordfinder([k], '/Users/ps22344/Downloads/chapter2/current/clusters_74_19_45_07_31.json'))]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
 
 		print "We have {} post items with a token count of {}".format(len(h2dict.keys()), sum(h2dict.values()))
 		print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
