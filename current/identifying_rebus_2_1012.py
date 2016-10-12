@@ -44,7 +44,8 @@ dir='/Users/ps22344/Downloads/craig_0208/'
 #dir='/Users/ps22344/Downloads/craigbalanced_0601'
 
 
-exclude_post_context=["years?", "months?", "weeks?", "days?", "times?", "peoples?", "friends?", "kids?", "jobs?", "things?", "(p|a)\.?m\.?", "to", "or" ]
+#do we need the to, do ect in post_context
+exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "friends?", "kids?", "boys?", "dogs?", "jobs?", "things?", "(p|a)\.?m\.?", "to", "or" ]
 exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
 def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
@@ -76,6 +77,8 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 					
 					if not any (regex.match(h[2]) for regex in exclude_post_context):
 						tagged=pos_tag(h)
+						#print tagged
+						#pretext
 						if tagged[0][1] == "DT":
 							"trash"
 						if tagged[0][1]=="JJR":
@@ -83,10 +86,17 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 						if tagged[0][1]=="JJS":
 							"this is all trash"
 						#remember to re-visit per notes
-						if tagged[0][1]=="IN" and tagged[0][0] =="like":#not in ["de", "that", "beyond", "until", "upon", "up", "within", "between", "past", "at", "as", "by", "if", "than", "after", "in", "of", "for", "with", "about", "over", "from"]:
-							"keep quiet for now"
+						if tagged[0][1]=="IN" and tagged[0][0] not in ["de", "that", "beyond", "until", "upon", "up", "within", "between", "past", "at", "as", "by", "if", "than", "after", "in", "of", "for", "with", "about", "over", "from"]:
+							#print h, tagged
+							"we still need to go over problem cases from notes"
+						
+						
+						
+						#posttext
+						if tagged[2][1]=="CC" and tagged[2][0] not in ["and", "but", "less", "plus"]:
+							"this is good except for but which needs to be re-visited"
+						elif tagged[2][1]=="IN" and tagged[2][0] =="as":#not in ["for", "at", "on", "with", "of", "in", "off"]:
 							print h, tagged
-					
 										
 						if h[0]:
 					#	print h
@@ -99,7 +109,7 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 								h2dict[h[2]]=h2dict[h[2]]+1
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 0}
-		print "\n\n", number, "\n\posttext here be the results\n\n"
+		print "\n\n", number, "\nposttext here be the results\n\n"
 		#print "\n".join([": ".join([k, unicode(h0dict[k]), ".".join(word2vecwordfinder([k], '/Users/ps22344/Downloads/chapter2/current/clusters_74_19_45_07_31.json'))]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
 		print "\n".join([": ".join([k, unicode(h2dict[k]), ".".join(word2vecwordfinder([k], '/Users/ps22344/Downloads/chapter2/current/clusters_74_19_45_07_31.json'))]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
 
