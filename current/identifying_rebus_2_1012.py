@@ -82,7 +82,8 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 						"50:50, few tokens"
 					if tagged[0][1]=="JJS":
 						"this is all trash"
-					if tagged[0][1]=="IN":
+					#remember to re-visit per notes
+					if tagged[0][1]=="IN" and tagged[0][0] =="up":#not in ["on", "within", "between", "past", "at", "as", "by", "if", "than", "after", "in", "of", "like", "out", "for", "with", "about", "over", "from"]:
 						print h, tagged
 					
 										
