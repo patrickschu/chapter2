@@ -50,7 +50,7 @@ exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?"
 
 exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
-exclude_pre_context=["ops", "till?"]
+exclude_pre_context=["ops", "till?", "or"]
 exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
 
 def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
@@ -82,82 +82,46 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 					#print  h
 					if not any (regex.match(h[2]) for regex in exclude_post_context) and not any (regex.match(h[0]) for regex in exclude_pre_context):
 						tagged=pos_tag(h)
-						#pretext
-						if (tagged[0][1] in ["DT", "JJS", "TO", "PRP$"]) or
-
-							"these are all trash"
+						#taking out trash
+						if (
+							(tagged[0][1] in ["DT", "JJS", "TO", "PRP$"]) 
+							or
+							(tagged[0][1]=="IN" and h[0] not in ["out", "like"])
+							or
+							(tagged[0][1] in ["VBG"] and h[0] not in ["talking", "responding", "waiting", "getting","looking", "going", "trying"])
+							or
+							(tagged[0][1] in ["VB", "VBD", "VBP", "VBZ"] and tagged[2][1] in ["JJ"])
+							or
+							(tagged[2][1] in ["NNS"] and h[2] not in ["chat", "kiss", "go", "know", "find", "do", "c", "knees"])
+							or
+							(tagged[2][1]=="IN")
+							or
+							(tagged[2][1]=="CC" and h[2] not in ["but"])
+							):
+							#print "killed",tagged, "\n"
+							pass
 						
-
-						
-						(tagged[0][1] in ["VB", "VBD", "VBP", "VBZ"] and tagged[2][1] in ["JJ"]):
-							print "hooked the if"
-							"more is so ambigous, same is younger, older --> comparatives out"
-							"Verb + JJ is trash"
-	# 						
-# 						if tagged[2][1] in ["DT", "CD", "EX"]:
-# # 							"these are all good"
-# 						if tagged[2][1] in ["NNS"] and h[2] not in ["chat", "kiss", "go", "know", "find", "do", "c", "knees"]:
-# 							"these are trash"
-# 							x=0
-# 						if tagged[2][1] in ["VB"]:
-# 							"we keep all these"
-# 							pass
-# 						if tagged[2][1]=="IN" and tagged[2][0] not in ["through", "ago", "from", "without", "since", "about", "before", "if", "that", "after", "during", "as", "for", "at", "on", "with", "of", "in", "off"]:
-# 							"these are all trash"
-# 							pass
-# 						if tagged[2][1]=="CC" and h[2] not in ["but"]:
-# 							"this is trash"
-# 		
-# 						if tagged[0][1] in ["VBG"] and h[0] not in ["talking", "responding", "waiting", "getting","looking", "going", "trying"]:
-# 							"we disregard the matches"
-# 						
-# 						if tagged[0][1]=="IN" and h[0] not in ["out", "like"]:# and tagged[0][0] not in ["de", "that", "beyond", "until", "upon", "up", "within", "between", "past", "at", "as", "by", "if", "than", "after", "in", "of", "for", "with", "about", "over", "from"]:
-# 							"this is trash"
+						#finding the good
+						elif (
+							(tagged[2][1] in ["DT", "CD", "EX"])
+							or
+							(tagged[2][1] in ["VB"])
+							or 
+							(h[0] == "love")
+						):
+							#print "hooked the plusloop", tagged
+							#print "kept", tagged, "\n"
+							pass
 						else:
-							print "elseloop", tagged
+							if h[0] == "have":
+								print h, tagged
+								#print "elseloop", tagged
 							h0dict[h[0]]=h0dict[h[0]]+1
 							h2dict[h[2]]=h2dict[h[2]]+1
 						
-						
-					# 	if tagged[0][1]=="JJR":
-# 							"50:50, few tokens"
-				
-						#remember to re-visit per notes
-						
-# 						if tagged[0][1]=="JJ":
-# 							"these are almost all mistagged"
-# 						if tagged[0][1]=="MD":
-# 							"few tokens and most suck: mis-tagged month, random numbers"
-# 						if tagged[0][1]=="PDT":
-# 							"these dont exist"	
-# 						if tagged[0][1]=="POS":
-# 							"NA"	
-# 						if tagged[0][1]=="PRP":
-# 							"mostly trash but 2 prosper"	
-# 						if tagged[0][1]=="PRP$":
-# 							"all trash"						
-# 						if tagged[0][1]=="RB":
-# 							"this is a random collection of stuff"						
-# 						if tagged[0][1] in ["RBR", "RBS"]:
-# 							"3 tokens fro RBR 2 + 1 -"
-# 						if tagged[0][1] in ["RP"]:
-# 							"NA"
-# 
-# 						if tagged[0][1] in ["SYM", "UH", "WP$"]:
-# 							"THESE DONT EXIST"
-# 						if tagged[0][1] in ["VBG"]:
-# 							"LOTS OF VERBS, NOT GETTING INTP THAT RIGHT NOW"
-# 						if tagged[0][1] in ["WDT", "WP"]:
-# 							"2 results make sense"
-# 						if tagged[0][1] in ["WRB"]:
-# 							"where is out, when is in, how is in"
-# 
-# 						if tagged[0][1] in ["FW", "EX"]:
-# 							"NA"
+
 									
-						#posttext
-						if tagged[2][1]=="CC" and tagged[2][0] not in ["and", "but", "less", "plus"]:
-							"this is good except for but which needs to be re-visited"
+	
 
 						
 						#else:
