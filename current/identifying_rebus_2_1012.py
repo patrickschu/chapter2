@@ -45,7 +45,9 @@ dir='/Users/ps22344/Downloads/craig_0208/'
 
 
 #do we need the to, do ect in post_context
-exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "friends?", "kids?", "boys?", "dogs?", "jobs?", "things?", "(p|a)\.?m\.?", "to", "or" ]
+#exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "daughters?", "(boy|girl)?friends?", "girls?", "kids?", "boys?", "children", "dogs?", "jobs?", "things?", "(p|a)\.?m\.?", "to", "or" ]
+exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or" ]
+
 exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
 exclude_pre_context=["ops", "till?"]
@@ -77,17 +79,26 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 				#this weeds out all the phonenumbers. 
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
 				for h in hits:
-					print  h
-					if not any (regex.match(h[2]) for regex in exclude_post_context) and not any (regex.match(h[0]) for regex in exclude_post_context):
+					#print  h
+					if not any (regex.match(h[2]) for regex in exclude_post_context) and not any (regex.match(h[0]) for regex in exclude_pre_context):
 						tagged=pos_tag(h)
-						#print tagged
 						#pretext
 						if tagged[0][1] in ["DT", "JJS", "TO"]:
 							#print "skip", tagged
 							pass
-						elif tagged [2][1] in ["DT", "CD", "EX"]:
+						elif tagged[2][1] in ["DT", "CD", "EX"]:
+							pass
+						elif tagged[2][1] in ["NNS"] and h[2] not in ["chat", "kiss", "go", "know", "find", "do", "c", "knees"]:
+							pass
+						elif tagged[0][1] in ["VB", "VBD", "VBP", "VBZ"] and tagged[2][1] in ["JJ"]:
+							"more is so ambigous, same is younger, older"
+							"have + JJ"
 							print tagged
-					
+							#print tagged
+							h0dict[h[0]]=h0dict[h[0]]+1
+							h2dict[h[2]]=h2dict[h[2]]+1
+						
+						
 					# 	if tagged[0][1]=="JJR":
 # 							"50:50, few tokens"
 				
@@ -137,11 +148,11 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 					#	print h
 						#		h0dict[h[0]]=h0dict[h[0]]+1
 						#		h2dict[h[2]]=h2dict[h[2]]+1
-						else:
-							if h[2]:#:=="days":
-								#print tagged
-								h0dict[h[0]]=h0dict[h[0]]+1
-								h2dict[h[2]]=h2dict[h[2]]+1
+						#else:
+						#	if h[2]:#:=="days":
+						#		#print tagged
+						#		h0dict[h[0]]=h0dict[h[0]]+1
+						#		h2dict[h[2]]=h2dict[h[2]]+1
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 0}
 		print "\n\n", number, "\nposttext here be the results\n\n"
