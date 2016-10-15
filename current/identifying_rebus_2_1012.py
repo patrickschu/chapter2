@@ -33,7 +33,7 @@ for number in numbers:
 #written numbers for quality control
 writtennumberdict={}
 
-writtennumbers=["zero", "one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen", "twenty", "thirty", "fourty", "fifty", "sixty"]	
+writtennumbers=["zero", "one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen", "twenty", "thirty", "fourty", "fifty", "sixty", "fivefivefive"]	
 
 for writtennumber in writtennumbers:
 	writtennumberdict[writtennumber]=0
@@ -83,18 +83,38 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 					if not any (regex.match(h[2]) for regex in exclude_post_context) and not any (regex.match(h[0]) for regex in exclude_pre_context):
 						tagged=pos_tag(h)
 						#pretext
-						if tagged[0][1] in ["DT", "JJS", "TO"]:
-							#print "skip", tagged
-							pass
-						elif tagged[2][1] in ["DT", "CD", "EX"]:
-							pass
-						elif tagged[2][1] in ["NNS"] and h[2] not in ["chat", "kiss", "go", "know", "find", "do", "c", "knees"]:
-							pass
-						elif tagged[0][1] in ["VB", "VBD", "VBP", "VBZ"] and tagged[2][1] in ["JJ"]:
-							"more is so ambigous, same is younger, older"
-							"have + JJ"
-							print tagged
-							#print tagged
+						if (tagged[0][1] in ["DT", "JJS", "TO", "PRP$"]) or
+
+							"these are all trash"
+						
+
+						
+						(tagged[0][1] in ["VB", "VBD", "VBP", "VBZ"] and tagged[2][1] in ["JJ"]):
+							print "hooked the if"
+							"more is so ambigous, same is younger, older --> comparatives out"
+							"Verb + JJ is trash"
+	# 						
+# 						if tagged[2][1] in ["DT", "CD", "EX"]:
+# # 							"these are all good"
+# 						if tagged[2][1] in ["NNS"] and h[2] not in ["chat", "kiss", "go", "know", "find", "do", "c", "knees"]:
+# 							"these are trash"
+# 							x=0
+# 						if tagged[2][1] in ["VB"]:
+# 							"we keep all these"
+# 							pass
+# 						if tagged[2][1]=="IN" and tagged[2][0] not in ["through", "ago", "from", "without", "since", "about", "before", "if", "that", "after", "during", "as", "for", "at", "on", "with", "of", "in", "off"]:
+# 							"these are all trash"
+# 							pass
+# 						if tagged[2][1]=="CC" and h[2] not in ["but"]:
+# 							"this is trash"
+# 		
+# 						if tagged[0][1] in ["VBG"] and h[0] not in ["talking", "responding", "waiting", "getting","looking", "going", "trying"]:
+# 							"we disregard the matches"
+# 						
+# 						if tagged[0][1]=="IN" and h[0] not in ["out", "like"]:# and tagged[0][0] not in ["de", "that", "beyond", "until", "upon", "up", "within", "between", "past", "at", "as", "by", "if", "than", "after", "in", "of", "for", "with", "about", "over", "from"]:
+# 							"this is trash"
+						else:
+							print "elseloop", tagged
 							h0dict[h[0]]=h0dict[h[0]]+1
 							h2dict[h[2]]=h2dict[h[2]]+1
 						
@@ -103,8 +123,7 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 # 							"50:50, few tokens"
 				
 						#remember to re-visit per notes
-						# if tagged[0][1]=="IN":# and tagged[0][0] not in ["de", "that", "beyond", "until", "upon", "up", "within", "between", "past", "at", "as", "by", "if", "than", "after", "in", "of", "for", "with", "about", "over", "from"]:
-# 							"we still need to go over problem cases from notes"
+						
 # 						if tagged[0][1]=="JJ":
 # 							"these are almost all mistagged"
 # 						if tagged[0][1]=="MD":
@@ -139,8 +158,7 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 						#posttext
 						if tagged[2][1]=="CC" and tagged[2][0] not in ["and", "but", "less", "plus"]:
 							"this is good except for but which needs to be re-visited"
-						if tagged[2][1]=="IN" and tagged[2][0] not in ["through", "ago", "from", "without", "since", "about", "before", "if", "that", "after", "during", "as", "for", "at", "on", "with", "of", "in", "off"]:
-							"these are all trash"
+
 						
 						#else:
 						#	print h
@@ -155,8 +173,9 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 						#		h2dict[h[2]]=h2dict[h[2]]+1
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 0}
+		print "\n\n", number, "\npretext here be the results\n\n"
+		print "\n".join([": ".join([k, unicode(h0dict[k]), ".".join(word2vecwordfinder([k], '/Users/ps22344/Downloads/chapter2/current/clusters_74_19_45_07_31.json'))]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
 		print "\n\n", number, "\nposttext here be the results\n\n"
-		#print "\n".join([": ".join([k, unicode(h0dict[k]), ".".join(word2vecwordfinder([k], '/Users/ps22344/Downloads/chapter2/current/clusters_74_19_45_07_31.json'))]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
 		print "\n".join([": ".join([k, unicode(h2dict[k]), ".".join(word2vecwordfinder([k], '/Users/ps22344/Downloads/chapter2/current/clusters_74_19_45_07_31.json'))]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
 
 		print "We have {} post items with a token count of {}".format(len(h2dict.keys()), sum(h2dict.values()))
