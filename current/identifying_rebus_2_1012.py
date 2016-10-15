@@ -48,6 +48,9 @@ dir='/Users/ps22344/Downloads/craig_0208/'
 exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "friends?", "kids?", "boys?", "dogs?", "jobs?", "things?", "(p|a)\.?m\.?", "to", "or" ]
 exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
+exclude_pre_context=["ops", "till?"]
+exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
+
 def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 	"""
  	This finds words that are represented as numbers. 
@@ -74,51 +77,53 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 				#this weeds out all the phonenumbers. 
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
 				for h in hits:
-					
-					if not any (regex.match(h[2]) for regex in exclude_post_context):
+					print  h
+					if not any (regex.match(h[2]) for regex in exclude_post_context) and not any (regex.match(h[0]) for regex in exclude_post_context):
 						tagged=pos_tag(h)
 						#print tagged
 						#pretext
 						if tagged[0][1] in ["DT", "JJS", "TO"]:
-							print "skip", tagged
+							#print "skip", tagged
 							pass
+						elif tagged [2][1] in ["DT", "CD", "EX"]:
+							print tagged
 					
-						if tagged[0][1]=="JJR":
-							"50:50, few tokens"
+					# 	if tagged[0][1]=="JJR":
+# 							"50:50, few tokens"
 				
 						#remember to re-visit per notes
-						if tagged[0][1]=="IN":# and tagged[0][0] not in ["de", "that", "beyond", "until", "upon", "up", "within", "between", "past", "at", "as", "by", "if", "than", "after", "in", "of", "for", "with", "about", "over", "from"]:
-							"we still need to go over problem cases from notes"
-						if tagged[0][1]=="JJ":
-							"these are almost all mistagged"
-						if tagged[0][1]=="MD":
-							"few tokens and most suck: mis-tagged month, random numbers"
-						if tagged[0][1]=="PDT":
-							"these dont exist"	
-						if tagged[0][1]=="POS":
-							"NA"	
-						if tagged[0][1]=="PRP":
-							"mostly trash but 2 prosper"	
-						if tagged[0][1]=="PRP$":
-							"all trash"						
-						if tagged[0][1]=="RB":
-							"this is a random collection of stuff"						
-						if tagged[0][1] in ["RBR", "RBS"]:
-							"3 tokens fro RBR 2 + 1 -"
-						if tagged[0][1] in ["RP"]:
-							"NA"
-
-						if tagged[0][1] in ["SYM", "UH", "WP$"]:
-							"THESE DONT EXIST"
-						if tagged[0][1] in ["VBG"]:
-							"LOTS OF VERBS, NOT GETTING INTP THAT RIGHT NOW"
-						if tagged[0][1] in ["WDT", "WP"]:
-							"2 results make sense"
-						if tagged[0][1] in ["WRB"]:
-							"where is out, when is in, how is in"
-
-						if tagged[0][1] in ["FW", "EX"]:
-							"NA"
+						# if tagged[0][1]=="IN":# and tagged[0][0] not in ["de", "that", "beyond", "until", "upon", "up", "within", "between", "past", "at", "as", "by", "if", "than", "after", "in", "of", "for", "with", "about", "over", "from"]:
+# 							"we still need to go over problem cases from notes"
+# 						if tagged[0][1]=="JJ":
+# 							"these are almost all mistagged"
+# 						if tagged[0][1]=="MD":
+# 							"few tokens and most suck: mis-tagged month, random numbers"
+# 						if tagged[0][1]=="PDT":
+# 							"these dont exist"	
+# 						if tagged[0][1]=="POS":
+# 							"NA"	
+# 						if tagged[0][1]=="PRP":
+# 							"mostly trash but 2 prosper"	
+# 						if tagged[0][1]=="PRP$":
+# 							"all trash"						
+# 						if tagged[0][1]=="RB":
+# 							"this is a random collection of stuff"						
+# 						if tagged[0][1] in ["RBR", "RBS"]:
+# 							"3 tokens fro RBR 2 + 1 -"
+# 						if tagged[0][1] in ["RP"]:
+# 							"NA"
+# 
+# 						if tagged[0][1] in ["SYM", "UH", "WP$"]:
+# 							"THESE DONT EXIST"
+# 						if tagged[0][1] in ["VBG"]:
+# 							"LOTS OF VERBS, NOT GETTING INTP THAT RIGHT NOW"
+# 						if tagged[0][1] in ["WDT", "WP"]:
+# 							"2 results make sense"
+# 						if tagged[0][1] in ["WRB"]:
+# 							"where is out, when is in, how is in"
+# 
+# 						if tagged[0][1] in ["FW", "EX"]:
+# 							"NA"
 									
 						#posttext
 						if tagged[2][1]=="CC" and tagged[2][0] not in ["and", "but", "less", "plus"]:
@@ -134,7 +139,7 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 						#		h2dict[h[2]]=h2dict[h[2]]+1
 						else:
 							if h[2]:#:=="days":
-								print tagged
+								#print tagged
 								h0dict[h[0]]=h0dict[h[0]]+1
 								h2dict[h[2]]=h2dict[h[2]]+1
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
