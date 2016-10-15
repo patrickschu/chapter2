@@ -46,11 +46,11 @@ dir='/Users/ps22344/Downloads/craig_0208/'
 
 #do we need the to, do ect in post_context
 #exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "daughters?", "(boy|girl)?friends?", "girls?", "kids?", "boys?", "children", "dogs?", "jobs?", "things?", "(p|a)\.?m\.?", "to", "or" ]
-exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or" ]
+exclude_post_context=["tattoos", "years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or" ]
 
 exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
-exclude_pre_context=["ops", "till?", "or"]
+exclude_pre_context=["ops", "till?", "or", "and"]
 exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
 
 def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
@@ -107,14 +107,20 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							or
 							(tagged[2][1] in ["VB"])
 							or 
-							(h[0] == "love")
+							(h[0] in ["love", "ready"]+["talking", "responding", "waiting", "getting","looking", "going", "trying"])
+							or
+							(h[2] in ["her", "hear"])
+							or 
+							(h[0] == "have" and h[2] in ["browse", "force", "go", "send", "talk"])
+							or
+							(h[0]== "like" and h[2] not in ["furry", "cuz", "straight"])
 						):
 							#print "hooked the plusloop", tagged
 							#print "kept", tagged, "\n"
 							pass
 						else:
-							if h[0] == "have":
-								print h, tagged
+							if h[2] =="hear":#not in ["have", "and", "like"]:
+								print tagged
 								#print "elseloop", tagged
 							h0dict[h[0]]=h0dict[h[0]]+1
 							h2dict[h[2]]=h2dict[h[2]]+1
