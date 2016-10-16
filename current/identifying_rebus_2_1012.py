@@ -50,7 +50,7 @@ exclude_post_context=["tattoos", "years?", "months?", "weeks?", "days?", "hours?
 
 exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
-exclude_pre_context=["ops", "till?", "or", "and"]
+exclude_pre_context=["ops", "till?", "or", "and", "just"]
 exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
 
 def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
@@ -107,23 +107,25 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							or
 							(tagged[2][1] in ["VB"])
 							or 
-							(h[0] in ["love", "ready"]+["talking", "responding", "waiting", "getting","looking", "going", "trying"])
+							(h[0] in ["woman", "down", "love", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "going", "trying"])
 							or
 							(h[2] in ["her", "hear"])
 							or 
 							(h[0] == "have" and h[2] in ["browse", "force", "go", "send", "talk"])
 							or
-							(h[0]== "like" and h[2] not in ["furry", "cuz", "straight"])
-						):
+							(h[0] == "like" and h[2] not in ["furry", "cuz", "straight"])
+							or
+							(h[0] == "need" and tagged[2][1] not in ["JJ", "JJR"])
+							):
 							#print "hooked the plusloop", tagged
 							#print "kept", tagged, "\n"
 							pass
 						else:
-							if h[2] =="hear":#not in ["have", "and", "like"]:
+							if h[0] in ["me"]:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
 								print tagged
 								#print "elseloop", tagged
-							h0dict[h[0]]=h0dict[h[0]]+1
-							h2dict[h[2]]=h2dict[h[2]]+1
+								h0dict[h[0]]=h0dict[h[0]]+1
+								h2dict[h[2]]=h2dict[h[2]]+1
 						
 
 									
