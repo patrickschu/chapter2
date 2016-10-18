@@ -46,7 +46,7 @@ dir='/Users/ps22344/Downloads/craig_0208/'
 
 #do we need the to, do ect in post_context
 #exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "daughters?", "(boy|girl)?friends?", "girls?", "kids?", "boys?", "children", "dogs?", "jobs?", "things?", "(p|a)\.?m\.?", "to", "or" ]
-exclude_post_context=["i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or" ]
+exclude_post_context=["i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or", "full" ]
 
 exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
@@ -110,9 +110,9 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							or
 							(tagged[2][1] in ["VB"])
 							or 
-							(h[0] in ["hope", "able", "someone", "man", "woman", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "going", "trying"])
+							(h[0] in ["hope", "able", "someone", "man", "woman", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "lookin", "going", "trying"])
 							or
-							(h[2] in ["her", "hear", "me", "my", "b", "know", "play"])
+							(h[2] in ["her", "hear", "me", "my", "b", "know", "play", "do", "suck", "go", "get"])
 							or 
 							(h[0] == "have" and h[2] in ["browse", "force", "go", "send", "talk"])
 							or
@@ -126,7 +126,7 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							#print "kept", tagged, "\n"
 							pass
 						else:
-							if h[0]=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
+							if h[0]:#=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
 								print tagged
 								#print "elseloop", tagged
 								h0dict[h[0]]=h0dict[h[0]]+1
