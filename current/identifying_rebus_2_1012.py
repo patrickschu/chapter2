@@ -46,7 +46,7 @@ dir='/Users/ps22344/Downloads/craig_0208/'
 
 #do we need the to, do ect in post_context
 #exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "daughters?", "(boy|girl)?friends?", "girls?", "kids?", "boys?", "children", "dogs?", "jobs?", "things?", "(p|a)\.?m\.?", "to", "or" ]
-exclude_post_context=["i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or", "full" ]
+exclude_post_context=["i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or", "full", "wana" ]
 
 exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
@@ -92,6 +92,7 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							or
 							(tagged[0][1] in ["VB", "VBD", "VBP", "VBZ"] and tagged[2][1] in ["JJ"])
 							or
+							#this is where we screw up
 							(tagged[2][1] in ["NNS"] and h[2] not in ["chat", "kiss", "go", "know", "find", "do", "c", "knees"])
 							or
 							(tagged[2][1]=="IN")
@@ -100,7 +101,9 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							or
 							#we don't need this if we are to just ignore whatever goes thru all of it
 							#TEMPTEMPTEMP
-							(h[0] in ["are", "send", "only", "have", "go"])
+							(h[0] in ["got", "are", "send", "only", "have", "go", "is", "bedroom", "but", "beuatiful", "nice"])
+							or
+							(h[2] in ["out", "story", "yr", "looking", "more", "but", "hrs"])
 							):
 							#print "killed",tagged, "\n"
 							pass
@@ -111,10 +114,6 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							or
 							(tagged[2][1] in ["VB"])
 							or 
-							(h[0] in ["hope", "able", "someone", "man", "woman", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "lookin", "going", "trying"])
-							or
-							(h[2] in ["her", "hear", "me", "my", "b", "know", "play", "do", "suck", "go", "get"])
-							or 
 							(h[0] == "have" and h[2] in ["browse", "force", "go", "send", "talk"])
 							or
 							(h[0] == "like" and h[2] not in ["furry", "cuz", "straight"])
@@ -124,12 +123,16 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							#really what we are exluding here is anything non-Verb or Noun
 							# we can consider replacing this with a regex
 							(h[0] in ["need", "me", "pics"] and tagged[2][1] not in ["JJ", "JJR", "MD"])
+							or 
+							(h[0] in ["nice", "how", "free", "hard", "hope", "able", "someone", "man", "woman", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "lookin", "going", "trying"])
+							or
+							(h[2] in ["find", "chat", "show", "u", "meet", "her", "hear", "me", "my", "b", "know", "play", "do", "suck", "go", "get"])
 							):
 							#print "hooked the plusloop", tagged
 							#print "kept", tagged, "\n"
 							pass
 						else:
-							if h[0]=="here":#=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
+							if h[0]:#=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
 								print tagged
 								#print "elseloop", tagged
 								h0dict[h[0]]=h0dict[h[0]]+1
