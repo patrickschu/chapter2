@@ -99,7 +99,8 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							(tagged[2][1]=="CC" and h[2] not in ["but"])
 							or
 							#we don't need this if we are to just ignore whatever goes thru all of it
-							(h[0] in ["are"])
+							#TEMPTEMPTEMP
+							(h[0] in ["are", "send", "only", "have", "go"])
 							):
 							#print "killed",tagged, "\n"
 							pass
@@ -118,6 +119,8 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							or
 							(h[0] == "like" and h[2] not in ["furry", "cuz", "straight"])
 							or
+							(h[0] in ["here"] and tagged[2][1] in ["NN", "NNS"])
+							or
 							#really what we are exluding here is anything non-Verb or Noun
 							# we can consider replacing this with a regex
 							(h[0] in ["need", "me", "pics"] and tagged[2][1] not in ["JJ", "JJR", "MD"])
@@ -126,7 +129,7 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							#print "kept", tagged, "\n"
 							pass
 						else:
-							if h[0]:#=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
+							if h[0]=="here":#=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
 								print tagged
 								#print "elseloop", tagged
 								h0dict[h[0]]=h0dict[h[0]]+1
