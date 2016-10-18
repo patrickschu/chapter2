@@ -46,7 +46,7 @@ dir='/Users/ps22344/Downloads/craig_0208/'
 
 #do we need the to, do ect in post_context
 #exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "daughters?", "(boy|girl)?friends?", "girls?", "kids?", "boys?", "children", "dogs?", "jobs?", "things?", "(p|a)\.?m\.?", "to", "or" ]
-exclude_post_context=["i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or", "full", "wana" ]
+exclude_post_context=["nd", "i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or", "full", "wana" ]
 
 exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
@@ -101,9 +101,9 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							or
 							#we don't need this if we are to just ignore whatever goes thru all of it
 							#TEMPTEMPTEMP
-							(h[0] in ["got", "are", "send", "only", "have", "go", "is", "bedroom", "but", "beuatiful", "nice"])
+							(h[0] in ["s", "type", "was", "work", "im", "baths", "you", "maybe", "big", "day", "o", "round", "ride", "avengers", "kids", "had", "number", "have", "like", "here", "size", "got", "are", "send", "only", "have", "go", "is", "bedroom", "but", "beautiful", "nice"])
 							or
-							(h[2] in ["out", "story", "yr", "looking", "more", "but", "hrs"])
+							(h[2] in ["br", "step", "start", "so", "out", "story", "bdrm", "other", "out", "story", "yr", "looking", "more", "but", "hrs", "bedroom"])
 							):
 							#print "killed",tagged, "\n"
 							pass
@@ -124,9 +124,9 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							# we can consider replacing this with a regex
 							(h[0] in ["need", "me", "pics"] and tagged[2][1] not in ["JJ", "JJR", "MD"])
 							or 
-							(h[0] in ["nice", "how", "free", "hard", "hope", "able", "someone", "man", "woman", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "lookin", "going", "trying"])
+							(h[0] in ["due", "tryin", "line", "has", "close", "interested", "alot", "oral", "talk", "new", "girl", "up", "scared", "willing", "cam", "loves", "cock", "out", "u", "nice", "how", "free", "hard", "hope", "able", "someone", "man", "woman", "male", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "lookin", "going", "trying"])
 							or
-							(h[2] in ["find", "chat", "show", "u", "meet", "her", "hear", "me", "my", "b", "know", "play", "do", "suck", "go", "get"])
+							(h[2] in ["please", "run", "host","kno", "talk", "just", "add", "text", "chill", "hang", "date", "find", "chat", "show", "u", "meet", "her", "hear", "me", "my", "b", "know", "play", "do", "suck", "go", "get"])
 							):
 							#print "hooked the plusloop", tagged
 							#print "kept", tagged, "\n"
