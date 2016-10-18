@@ -50,7 +50,7 @@ exclude_post_context=["i", "sec", "stepping", "asap", "tattoos", "years?", "yrs"
 
 exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
-exclude_pre_context=["chicago", "c?ops?", "till?", "or", "and", "just"]
+exclude_pre_context=["chicago", "c?ops?", "till?", "or", "and", "just", "f(oo|ee)?t", "last", "own", "hsv"]
 exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
 
 def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
@@ -97,6 +97,9 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							(tagged[2][1]=="IN")
 							or
 							(tagged[2][1]=="CC" and h[2] not in ["but"])
+							or
+							#we don't need this if we are to just ignore whatever goes thru all of it
+							(h[0] in ["are"])
 							):
 							#print "killed",tagged, "\n"
 							pass
@@ -107,21 +110,23 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							or
 							(tagged[2][1] in ["VB"])
 							or 
-							(h[0] in ["man", "woman", "down", "love", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "going", "trying"])
+							(h[0] in ["hope", "able", "someone", "man", "woman", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "going", "trying"])
 							or
-							(h[2] in ["her", "hear", "me", "my", "b", "know"])
+							(h[2] in ["her", "hear", "me", "my", "b", "know", "play"])
 							or 
 							(h[0] == "have" and h[2] in ["browse", "force", "go", "send", "talk"])
 							or
 							(h[0] == "like" and h[2] not in ["furry", "cuz", "straight"])
 							or
-							(h[0] in ["need", "me"] and tagged[2][1] not in ["JJ", "JJR"])
+							#really what we are exluding here is anything non-Verb or Noun
+							# we can consider replacing this with a regex
+							(h[0] in ["need", "me", "pics"] and tagged[2][1] not in ["JJ", "JJR", "MD"])
 							):
 							#print "hooked the plusloop", tagged
 							#print "kept", tagged, "\n"
 							pass
 						else:
-							if h[2] in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
+							if h[0]=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
 								print tagged
 								#print "elseloop", tagged
 								h0dict[h[0]]=h0dict[h[0]]+1
