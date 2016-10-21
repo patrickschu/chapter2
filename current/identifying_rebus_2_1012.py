@@ -70,6 +70,7 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 		h0dict=defaultdict(int)
 		h2dict=defaultdict(int)
 		print numberregex.pattern
+		results=[]
 		for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
 			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
 				fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
@@ -128,36 +129,27 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							# we can consider replacing this with a regex
 							(h[0] in ["need", "me", "pics"] and tagged[2][1] not in ["JJ", "JJR", "MD"])
 							or 
-							(h[0] in ["women", "delighted", "tryn", "respond", "travel", "veldkum", "happness", "pool", "lots", "bbw", "willin", "luvz", "place", "time", "married", "pixs", "boy", "pictures", "brickz", "somebody", "memphis", "cell", "fear", "hoop", "open", "goes", "afraid", "speak", "lady", "needs", "attracted", "doms", "bottom", "head", "apply", "drive", "pic", "newer", "pinned", "luvs", "sumbody", "face", "due", "tryin", "line", "has", "close", "interested", "alot", "oral", "talk", "new", "girl", "up", "scared", "willing", "cam", "loves", "cock", "out", "u", "nice", "how", "free", "hard", "hope", "able", "someone", "man", "woman", "male", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "lookin", "going", "trying"])
+							(h[0] in ["momma", "women", "delighted", "tryn", "respond", "travel", "veldkum", "happness", "pool", "lots", "bbw", "willin", "luvz", "place", "time", "married", "pixs", "boy", "pictures", "brickz", "somebody", "memphis", "cell", "fear", "hoop", "open", "goes", "afraid", "speak", "lady", "needs", "attracted", "doms", "bottom", "head", "apply", "drive", "pic", "newer", "pinned", "luvs", "sumbody", "face", "due", "tryin", "line", "has", "close", "interested", "alot", "oral", "talk", "new", "girl", "up", "scared", "willing", "cam", "loves", "cock", "out", "u", "nice", "how", "free", "hard", "hope", "able", "someone", "man", "woman", "male", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "lookin", "going", "trying"])
 							or
 							(h[2] in ["survive", "brag", "blow", "grab", "feel", "send", "connect", "hearing", "say", "read", "contact", "please", "run", "host","kno", "talk", "just", "add", "text", "chill", "hang", "date", "find", "chat", "show", "u", "meet", "her", "hear", "me", "my", "b", "know", "play", "do", "suck", "go", "get", "fuck"])
 							):
 							#print "hooked the plusloop", tagged
-							#print "kept", tagged, "\n"
-							pass
+							print tagged
+							results.append(tagged)
+							h0dict[h[0]]=h0dict[h[0]]+1
+ 							h2dict[h[2]]=h2dict[h[2]]+1
 						else:
-							if tagged[2][1]:#=="VB":# in ["VBP", "VBG"]:#=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
-								print tagged
+							pass
+							#if tagged[2][1]:#=="VB":# in ["VBP", "VBG"]:#=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
+							#	print tagged
 								#print "elseloop", tagged
-								h0dict[h[0]]=h0dict[h[0]]+1
-								h2dict[h[2]]=h2dict[h[2]]+1
+# 								h0dict[h[0]]=h0dict[h[0]]+1
+# 								h2dict[h[2]]=h2dict[h[2]]+1
 								#h0dict[tagged[0][1]]=h0dict[tagged[0][1]]+1
 								#h2dict[tagged[2][1]]=h2dict[tagged[2][1]]+1
 									
 	
-
-						
-						#else:
-						#	print h
-						#	if h[0]:
-					#	print h
-						#		h0dict[h[0]]=h0dict[h[0]]+1
-						#		h2dict[h[2]]=h2dict[h[2]]+1
-						#else:
-						#	if h[2]:#:=="days":
-						#		#print tagged
-						#		h0dict[h[0]]=h0dict[h[0]]+1
-						#		h2dict[h[2]]=h2dict[h[2]]+1
+		
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 0}
 		print "\n\n", number, "\npretext here be the results\n\n"
@@ -167,10 +159,13 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 
 		print "We have {} post items with a token count of {}".format(len(h2dict.keys()), sum(h2dict.values()))
 		print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
+		return results
 
 
 			
-rebusfinder(dir, "worddict_full.json", numberdict, "b")
+x=rebusfinder(dir, "worddict_full.json", numberdict, "b")
+
+print x, len(x)
 
 
 
