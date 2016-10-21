@@ -8,7 +8,7 @@ from collections import defaultdict
 from nltk import pos_tag
 
 starttime=time.time()
-
+#check if we have this thing somewhere else and then delete from here. oops, this is included in our results
 def word2vecwordfinder(search_terms, input_file):
 	"""
 	wordfinder looks up individual words in the clusters from word2vec.
@@ -50,7 +50,7 @@ exclude_post_context=["inche?s?", "wks?", "nd", "i", "sec", "stepping", "asap", 
 
 exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
-exclude_pre_context=["borderlands", "chicago", "c?ops?", "till?", "or", "and", "just", "f(oo|ee)?t", "last", "own", "hsv"]
+exclude_pre_context=["borderlands", "chicago", "c?ops?", "till?", "or", "and", "just", "f(oo|ee)?t", "last", "own", "hsv", "herpes"]
 exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
 
 def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
@@ -128,9 +128,9 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							# we can consider replacing this with a regex
 							(h[0] in ["need", "me", "pics"] and tagged[2][1] not in ["JJ", "JJR", "MD"])
 							or 
-							(h[0] in ["luvs", "sumbody", "face", "due", "tryin", "line", "has", "close", "interested", "alot", "oral", "talk", "new", "girl", "up", "scared", "willing", "cam", "loves", "cock", "out", "u", "nice", "how", "free", "hard", "hope", "able", "someone", "man", "woman", "male", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "lookin", "going", "trying"])
+							(h[0] in ["respond", "travel", "veldkum", "happness", "pool", "lots", "bbw", "willin", "luvz", "place", "time", "married", "pixs", "boy", "pictures", "brickz", "somebody", "memphis", "cell", "fear", "hoop", "open", "goes", "afraid", "speak", "lady", "needs", "attracted", "doms", "bottom", "head", "apply", "drive", "pic", "newer", "pinned", "luvs", "sumbody", "face", "due", "tryin", "line", "has", "close", "interested", "alot", "oral", "talk", "new", "girl", "up", "scared", "willing", "cam", "loves", "cock", "out", "u", "nice", "how", "free", "hard", "hope", "able", "someone", "man", "woman", "male", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "lookin", "going", "trying"])
 							or
-							(h[2] in ["blow", "grab", "feel", "send", "connect", "hearing", "say", "read", "contact", "please", "run", "host","kno", "talk", "just", "add", "text", "chill", "hang", "date", "find", "chat", "show", "u", "meet", "her", "hear", "me", "my", "b", "know", "play", "do", "suck", "go", "get"])
+							(h[2] in ["brag", "blow", "grab", "feel", "send", "connect", "hearing", "say", "read", "contact", "please", "run", "host","kno", "talk", "just", "add", "text", "chill", "hang", "date", "find", "chat", "show", "u", "meet", "her", "hear", "me", "my", "b", "know", "play", "do", "suck", "go", "get"])
 							):
 							#print "hooked the plusloop", tagged
 							#print "kept", tagged, "\n"
@@ -139,10 +139,10 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 							if tagged[2][1]:#=="VB":# in ["VBP", "VBG"]:#=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
 								print tagged
 								#print "elseloop", tagged
-								#h0dict[h[0]]=h0dict[h[0]]+1
-								#h2dict[h[2]]=h2dict[h[2]]+1
-								h0dict[tagged[0][1]]=h0dict[tagged[0][1]]+1
-								h2dict[tagged[2][1]]=h2dict[tagged[2][1]]+1
+								h0dict[h[0]]=h0dict[h[0]]+1
+								h2dict[h[2]]=h2dict[h[2]]+1
+								#h0dict[tagged[0][1]]=h0dict[tagged[0][1]]+1
+								#h2dict[tagged[2][1]]=h2dict[tagged[2][1]]+1
 									
 	
 
