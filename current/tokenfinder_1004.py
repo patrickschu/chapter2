@@ -12,7 +12,7 @@ import json
 #dataset
 dir='/Users/ps22344/Downloads/craig_0208/'
 #search terms
-search_terms=['killed 9 people']
+search_terms=[r'real\W+2\W+hope']
 print "search term is ", search_terms
 
 
