@@ -55,9 +55,15 @@ exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
 
 def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 	"""
- 	This finds words that are represented as numbers. 
+ 	This finds the word "to"  that represented as the number 2. 
  	All combinations \W([a-z]+)\s+("+unicode(number)+")\s+([a-z]+)\W for the number put in are identified.
- 	The lists exclude_pre and exclude_post word for negative contexts in 4.
+ 	The lists exclude_pre_context and exclude_post_context exclude instances where a word follows (post) or precedes (pre) the "2" per regex. 
+ 	Procedure: 
+ 	Eliminate all pre and post contexts;
+ 	POS tag the remaining ones and eliminate certain combinations;
+ 	Find positives by POS tag and a word list;
+ 	Dismiss the remaining ones. 
+ 	It returns a list of positives. 
  	It print the results and give type and token counts. 
 	
 	"""
