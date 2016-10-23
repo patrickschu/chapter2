@@ -10,10 +10,10 @@ import json
 
 
 #dataset
-dir='/Users/ps22344/Downloads/craig_0208/'
+#dir='/Users/ps22344/Downloads/craig_0208/'
 #search terms
-search_terms=[r'real\W+2\W+hope']
-print "search term is ", search_terms
+#search_terms=[r'sling 2']
+
 
 
 def tokenfinder(input_list, input_path):
@@ -25,6 +25,7 @@ def tokenfinder(input_list, input_path):
 	dir needs to have subfolders. 
 	"""
 	starttime=time.time()
+	print "search term is ", input_list
 	#construct the regexes
 	typedict={}
 	for item in input_list:
@@ -34,7 +35,7 @@ def tokenfinder(input_list, input_path):
 	totalhits=[]
 	#iterate over files
 	for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
-		print pati
+		#print pati
 		for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
 			fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
 			inputad=ct.adtextextractor(fili.read(), fili)
@@ -49,7 +50,7 @@ def tokenfinder(input_list, input_path):
 	print "This took us {} minutes".format((endtime-starttime)/60)	
 
 
-tokenfinder(search_terms, dir)
+#tokenfinder(search_terms, dir)
 
 
 
