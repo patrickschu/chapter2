@@ -98,7 +98,7 @@ def rebusfinder_too(input_path, number_dictionary):
 					[pre, number, punct, post]=pos_tag(h)
 					if pre[0] in ["be", "b"] and punct[0] not in [" "]:
 						print [pre, number, punct, post]
-						tk.tokenfinder(["\s*".join([pre[0],number[0], punct[0], post[0]])], dir)			
+						tk.tokenfinder(["\s*".join([re.escape(i) for i in [pre[0],number[0], punct[0], post[0]]])], dir)			
 				# for h in hits:
 # 					if h[2]:#==".":
 # 						print  h, os.path.join(input_path, pati, fil)
