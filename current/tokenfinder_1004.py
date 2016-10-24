@@ -45,9 +45,12 @@ def tokenfinder(input_list, input_path):
 				print "{} hits in file {}".format(sum([len(i) for i in matches]), os.path.join(input_path, pati, fil))
 				print matches, "\n\n"
 				totalhits.append(sum([len(i) for i in matches]))
-	print "{} matches total".format(sum(totalhits))
+	if sum(totalhits) == 0:
+		print "\nNO MATCHES IN TOKENFINDER\n---\n
+	else:
+		print "{} matches total".format(sum(totalhits))
 	endtime=time.time()
-	print "This took us {} minutes".format((endtime-starttime)/60)	
+	#print "This took us {} minutes".format((endtime-starttime)/60)	
 
 
 #tokenfinder(search_terms, dir)
