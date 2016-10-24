@@ -27,9 +27,7 @@ def word2vecwordfinder(search_terms, input_file):
 	return results
 	
 
-#regexes and utilities
-nounregex=re.compile("NN.?")
-punctuationregex="+|".join([re.escape(i) for i in list(punctuation)])
+
 #punctuationregex=re.compile("("+punctuationregex+")+")
 #print punctuationregex.pattern
 #print "finfinfs", re.findall(punctuationregex, "hello. what be up???? ")
@@ -59,10 +57,15 @@ dir='/Users/ps22344/Downloads/craig_0208/'
 #do we need the to, do ect in post_context
 exclude_post_context=[]#["inche?s?", "wks?", "nd", "i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or", "full", "wana" ]
 
-exclude_post_context=["+"]#re.compile(r"^"+i+"$") for i in exclude_post_context]
+exclude_post_context=["+",  "(", "%"]#re.compile(r"^"+i+"$") for i in exclude_post_context]
 
 exclude_pre_context=[]
 exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
+
+#regexes and utilities
+nounregex=re.compile("NN.?")
+punctuationregex="+|".join([re.escape(i) for i in [l for l in list(punctuation) if not l in exclude_post_context]])
+
 
 def rebusfinder_too(input_path, number_dictionary):
 	"""
@@ -97,11 +100,11 @@ def rebusfinder_too(input_path, number_dictionary):
 					pre, "2", optional punctuation, post
 					"""
 					[pre, number, punct, post]=pos_tag(h)
-					if pre[1] in ["VBZ"] and punct[0] not in [" "]:
+					if (pre[1] in ["IN"]) and (punct[0] not in [" "]) and (post[0] not in ["of"]):
 						print [pre, number, punct, post]
 						tk.tokenfinder(["\s*".join([re.escape(i) for i in [pre[0],number[0], punct[0], post[0]]])], dir)			
 						#error catching here 
-						
+						#
 				
 				
 				
