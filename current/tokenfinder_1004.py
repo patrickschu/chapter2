@@ -46,7 +46,7 @@ def tokenfinder(input_list, input_path):
 				print matches, "\n\n"
 				totalhits.append(sum([len(i) for i in matches]))
 	if sum(totalhits) == 0:
-		print "\nNO MATCHES IN TOKENFINDER\n---\n
+		print "\nNO MATCHES IN TOKENFINDER\n---\n"
 	else:
 		print "{} matches total".format(sum(totalhits))
 	endtime=time.time()
