@@ -17,7 +17,7 @@ for line in spread.split("\n"):
 out.close()
 
 
-with codecs.open('/Users/ps22344/Desktop/heb_search_11.json', "r", "utf-8") as jsoninputi:
+with codecs.open('/Users/ps22344/Desktop/cc.json', "r", "utf-8") as jsoninputi:
 	data=jsoninputi.read()
 	for line in data.split("\n"):
 		#print line
