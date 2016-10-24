@@ -57,10 +57,9 @@ dir='/Users/ps22344/Downloads/craig_0208/'
 
 
 #do we need the to, do ect in post_context
-#exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "daughters?", "(boy|girl)?friends?", "girls?", "kids?", "boys?", "children", "dogs?", "jobs?", "things?", "(p|a)\.?m\.?", "to", "or" ]
 exclude_post_context=[]#["inche?s?", "wks?", "nd", "i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or", "full", "wana" ]
 
-exclude_post_context=[]#re.compile(r"^"+i+"$") for i in exclude_post_context]
+exclude_post_context=["+"]#re.compile(r"^"+i+"$") for i in exclude_post_context]
 
 exclude_pre_context=[]
 exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
@@ -92,13 +91,20 @@ def rebusfinder_too(input_path, number_dictionary):
 				for h in hits:
 					#this is needed for instance where there is no punctuation
 					h=[" " if i == "" else i for i in h]
-					#thus
-					#[(u'of', 'IN'), (u'2', 'CD'), (u',', ','), (u'single', 'JJ')]
-					#pre, "2", optional punctuation, post
+					"""
+					thus
+					[(u'of', 'IN'), (u'2', 'CD'), (u',', ','), (u'single', 'JJ')]
+					pre, "2", optional punctuation, post
+					"""
 					[pre, number, punct, post]=pos_tag(h)
-					if pre[0] in ["be", "b"] and punct[0] not in [" "]:
+					if pre[1] in ["VBZ"] and punct[0] not in [" "]:
 						print [pre, number, punct, post]
 						tk.tokenfinder(["\s*".join([re.escape(i) for i in [pre[0],number[0], punct[0], post[0]]])], dir)			
+						#error catching here 
+						
+				
+				
+				
 				# for h in hits:
 # 					if h[2]:#==".":
 # 						print  h, os.path.join(input_path, pati, fil)
