@@ -76,6 +76,7 @@ def rebusfinder_too(input_path, number_dictionary):
 	
 	"""
 	for number in number_dictionary.keys():
+		print "PRE"
 		numberregex=re.compile("\W([a-z]+)\s+("+unicode(number)+")(?:\s+)?("+punctuationregex+")?(?:\s+)?([a-z]+)\W")
 		#just for now
 		h0dict=defaultdict(int)
@@ -100,7 +101,7 @@ def rebusfinder_too(input_path, number_dictionary):
 					pre, "2", optional punctuation, post
 					"""
 					[pre, number, punct, post]=pos_tag(h)
-					if (pre[1] in ["IN"]) and (punct[0] not in [" "]) and (post[0] not in ["of"]):
+					if (pre[1] in ["CC"]) and (punct[0] not in [" "]) and pre[0] not in ['or'] :
 						print [pre, number, punct, post]
 						tk.tokenfinder(["\s*".join([re.escape(i) for i in [pre[0],number[0], punct[0], post[0]]])], dir)			
 						#error catching here 
