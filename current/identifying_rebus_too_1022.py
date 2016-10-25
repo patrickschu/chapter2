@@ -72,15 +72,15 @@ def rebusfinder_too(input_path, number_dictionary):
  	This finds words that are represented as numbers. 
  	All combinations \W([a-z]+)\s+("+unicode(number)+")\s+([a-z]+)\W for the number put in are identified.
  	The lists exclude_pre and exclude_post word for negative contexts in 4.
- 	It print the results and give type and token counts. 
+ 	It prints the results and give type and token counts. 
 	
 	"""
 	for number in number_dictionary.keys():
 		#this is for comments to self
-		print "POST"
+		print "PRE"
 		
 		#this is the regular expression to identify instances of the number studied
-		numberregex=re.compile("\W([a-z]+)\s+("+unicode(number)+")(?:\s+)?("+punctuationregex+")?(?:\s+)?([a-z]+)\W")
+		numberregex=re.compile("\W([a-z]+)\s*("+punctuationregex+")?\s*("+unicode(number)+")(?:\s+)?("+punctuationregex+")?(?:\s+)?([a-z]+)\W")
 		print numberregex.pattern
 		#dicts to store statistics about context of number
 		h0dict=defaultdict(int)
@@ -105,15 +105,15 @@ def rebusfinder_too(input_path, number_dictionary):
 					[(u'of', 'IN'), (u'2', 'CD'), (u',', ','), (u'single', 'JJ')]
 					pre, "2", optional punctuation, post
 					"""
-					[pre, number, punct, post]=pos_tag(h)
-					if (post[1] in ["MD"]) and (punct[0] in [" "]):
-						print [pre, number, punct, post], "\n", os.path.join(input_path, pati, fil)
+					[pre, pre_punct, number, punct, post]=pos_tag(h)
+					if (pre[1] in ["DT"]) and (post[1] in ["JJ"]) and (punct[0] in [" "]):
+						print "\n\n***", [pre, number, punct, post], "***\n", os.path.join(input_path, pati, fil)
 						search_pattern=[re.escape(i) for i in [pre[0],number[0], punct[0], post[0]]]
 						if search_pattern not in previous_patterns:
 							tk.tokenfinder(["\s*".join(search_pattern)], dir)
 							previous_patterns.append(search_pattern)
 						else:
-							print "SEE TOKENFINDER RESULTS ABOVE"			
+							print "SEE TOKENFINDER RESULTS ABOVE\n"			
 						#error catching here 
 						#
 				
