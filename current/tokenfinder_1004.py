@@ -43,10 +43,10 @@ def tokenfinder(input_list, input_path):
 			matches=[k.findall(inputad) for k in typedict.keys()]
 			if sum([len(i) for i in matches]) > 0:
 				print "{} hits in file {}".format(sum([len(i) for i in matches]), os.path.join(input_path, pati, fil))
-				print matches, "\n\n"
+				print matches, "\n"
 				totalhits.append(sum([len(i) for i in matches]))
 	if sum(totalhits) == 0:
-		print "\nNO MATCHES IN TOKENFINDER\n---\n"
+		print "\n---\nNO MATCHES IN TOKENFINDER\n---\n"
 	else:
 		print "{} matches total".format(sum(totalhits))
 	endtime=time.time()
