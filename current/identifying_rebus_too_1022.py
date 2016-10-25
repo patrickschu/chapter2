@@ -76,13 +76,16 @@ def rebusfinder_too(input_path, number_dictionary):
 	
 	"""
 	for number in number_dictionary.keys():
+		#this is for comments to self
 		print "POST"
+		
+		#this is the regular expression to identify instances of the number studied
 		numberregex=re.compile("\W([a-z]+)\s+("+unicode(number)+")(?:\s+)?("+punctuationregex+")?(?:\s+)?([a-z]+)\W")
 		print numberregex.pattern
 		#dicts to store statistics about context of number
 		h0dict=defaultdict(int)
 		h2dict=defaultdict(int)
-		#lists to store results and previous search patterns fed into tokenfinder
+		#lists to store results and previous search patterns fed into tokenfinder to avoid duplicate output
 		previous_patterns=[]
 		results=[]
 		for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
@@ -103,11 +106,12 @@ def rebusfinder_too(input_path, number_dictionary):
 					pre, "2", optional punctuation, post
 					"""
 					[pre, number, punct, post]=pos_tag(h)
-					if (pre[1] in ["JJ"]) and (punct[0] in [" "]):
+					if (post[1] in ["MD"]) and (punct[0] in [" "]):
 						print [pre, number, punct, post], "\n", os.path.join(input_path, pati, fil)
 						search_pattern=[re.escape(i) for i in [pre[0],number[0], punct[0], post[0]]]
 						if search_pattern not in previous_patterns:
 							tk.tokenfinder(["\s*".join(search_pattern)], dir)
+							previous_patterns.append(search_pattern)
 						else:
 							print "SEE TOKENFINDER RESULTS ABOVE"			
 						#error catching here 
