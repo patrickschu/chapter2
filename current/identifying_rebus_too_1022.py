@@ -14,7 +14,7 @@ print punctuation
 
 
 starttime=time.time()
-#check if we have this thing somewhere else and then delete from here. oops, this is included in our results
+
 def word2vecwordfinder(search_terms, input_file):
 	"""
 	wordfinder looks up individual words in the clusters from word2vec.
@@ -76,12 +76,14 @@ def rebusfinder_too(input_path, number_dictionary):
 	
 	"""
 	for number in number_dictionary.keys():
-		print "PRE"
+		print "POST"
 		numberregex=re.compile("\W([a-z]+)\s+("+unicode(number)+")(?:\s+)?("+punctuationregex+")?(?:\s+)?([a-z]+)\W")
-		#just for now
+		print numberregex.pattern
+		#dicts to store statistics about context of number
 		h0dict=defaultdict(int)
 		h2dict=defaultdict(int)
-		print numberregex.pattern
+		#lists to store results and previous search patterns fed into tokenfinder
+		previous_patterns=[]
 		results=[]
 		for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
 			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
@@ -101,9 +103,13 @@ def rebusfinder_too(input_path, number_dictionary):
 					pre, "2", optional punctuation, post
 					"""
 					[pre, number, punct, post]=pos_tag(h)
-					if (pre[1] in ["CC"]) and (punct[0] not in [" "]) and pre[0] not in ['or'] :
-						print [pre, number, punct, post]
-						tk.tokenfinder(["\s*".join([re.escape(i) for i in [pre[0],number[0], punct[0], post[0]]])], dir)			
+					if (pre[1] in ["JJ"]) and (punct[0] in [" "]):
+						print [pre, number, punct, post], "\n", os.path.join(input_path, pati, fil)
+						search_pattern=[re.escape(i) for i in [pre[0],number[0], punct[0], post[0]]]
+						if search_pattern not in previous_patterns:
+							tk.tokenfinder(["\s*".join(search_pattern)], dir)
+						else:
+							print "SEE TOKENFINDER RESULTS ABOVE"			
 						#error catching here 
 						#
 				
