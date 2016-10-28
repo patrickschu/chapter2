@@ -106,8 +106,8 @@ def rebusfinder_too(input_path, number_dictionary):
 					pre, "2", optional punctuation, post
 					"""
 					[pre, pre_punct, number, punct, post]=pos_tag(h)
-					if (pre[1] in ["DT"]) and (post[1] in ["JJ"]) and (punct[0] in [" "]):
-						print "\n\n***", [pre, number, punct, post], "***\n", os.path.join(input_path, pati, fil)
+					if (post[1] in ["NNS"]) and (punct[0] in [" "]):
+						print "\n\n***", [pre, number, punct, post], "**\n", os.path.join(input_path, pati, fil)
 						search_pattern=[re.escape(i) for i in [pre[0],number[0], punct[0], post[0]]]
 						if search_pattern not in previous_patterns:
 							tk.tokenfinder(["\s*".join(search_pattern)], dir)
