@@ -16,7 +16,7 @@ import json
 
 
 
-def tokenfinder(input_list, input_path):
+def tokenfinder(input_list, input_path, length=40, lower_case=True):
 	"""
 	the tokenfinder looks over the items in an input_list.
 	the regex pattern is ".{,40}ITEM.{,40}".	
@@ -29,7 +29,7 @@ def tokenfinder(input_list, input_path):
 	#construct the regexes
 	typedict={}
 	for item in input_list:
-		typedict[re.compile(r".{,40}"+unicode(item)+".{,40}")]=0
+		typedict[re.compile(r".{,"+str(length)+"}"+unicode(item)+".{,"+str(length)+"}")]=0
 	for typi in typedict:
 		print typi.pattern	
 	totalhits=[]
@@ -39,7 +39,9 @@ def tokenfinder(input_list, input_path):
 		for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
 			fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
 			inputad=ct.adtextextractor(fili.read(), fili)
-			inputad=inputad.lower()
+			if lower_case:
+				print "were lowercasing"
+				inputad=inputad.lower()
 			matches=[k.findall(inputad) for k in typedict.keys()]
 			if sum([len(i) for i in matches]) > 0:
 				print "{} hits in file {}".format(sum([len(i) for i in matches]), os.path.join(input_path, pati, fil))
