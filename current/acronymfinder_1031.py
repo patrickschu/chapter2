@@ -3,7 +3,7 @@ import codecs
 import clustertools as ct
 import re
 from collections import defaultdict
-iort tokenfinder_1004 as tk
+import tokenfinder_1004 as tk
 
 def acronymfinder(dir):
 	"""
@@ -21,11 +21,11 @@ def acronymfinder(dir):
 			words=ct.tokenizer(inputad)
 			
 			for item in words:
-				if (re.match("^[A-Z]+$", item)) and (len(item) == 1):
+				if (re.match("^[A-Z]+$", item)) and (len(item) == 2):
 					featuredict[item] = featuredict[item]+1
 					#print item
-		print featuredict
-	for entry in featuredict:
+		print sorted(featuredict)
+	for entry in sorted(featuredict):
 		print "\n\n\n***",entry,"\n\n"
 		tk.tokenfinder([r"\s"+entry+"\s"], input_path='/Users/ps22344/Downloads/craig_0208/', length=20, lower_case=False)
 
