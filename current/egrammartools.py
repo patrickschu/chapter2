@@ -143,6 +143,11 @@ def leetfinder(word_dictionary, dir):
 # /Users/ps22344/Downloads/chapter2/current/identifying_rebus_too_1022.py
 
 
+# the capsfinder needs to be here. it does not yet exist but measures non-standard capitalization
+
+
+# the singleletterfinder needs to be here. it does not yet exist but finds things like "c u"
+
 ###SECTION 2
 ###ORTHOGRAPHY
 
