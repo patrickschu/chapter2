@@ -17,3 +17,6 @@ source my_env/bin/activate
 source chapter2_env/bin/activate
 pip install pyenchant
 
+this is the line for python scripts
+#!/Users/ps22344/Downloads/virtualenv/chapter2_env/bin/python
+
