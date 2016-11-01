@@ -30,13 +30,17 @@ def acronymfinder(dir):
 			words=ct.tokenizer(inputad)
 			
 			for item in words:
-				if (capitals.match(item)) and (len(item) == 4):
+				if (capitals.match(item)) and (len(item) == 2):
 					if not spell.spellchecker(item.lower()):
 						#print item
 						featuredict[item] = featuredict[item]+1
 					#print item
-	print sorted(featuredict)
+	print sorted(featuredict.keys())
 	print "SO many entries: ", len(featuredict)
+	
+	#sorted(d.items(), key=lambda x: x[1])
+	#[":".join((i, str(y))) for i, y in sorted(featuredict, key=featuredict.get)]
+	print  "\n".join([":".join((i, str(featuredict[i]))) for i in sorted(featuredict, key=featuredict.get, reverse=True)])
 	mid=time.time()
 	print "this took us {} minutes".format((mid-start)/60)
 	for entry in sorted(featuredict):
