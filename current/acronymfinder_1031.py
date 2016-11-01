@@ -21,14 +21,15 @@ def acronymfinder(dir):
 			words=ct.tokenizer(inputad)
 			
 			for item in words:
-				if (re.match("^[A-Z]+$", item)) and (len(item) == 3):
+				if (re.match("^[A-Z]+$", item)) and (len(item) == 4):
 					featuredict[item] = featuredict[item]+1
 					#print item
 		print sorted(featuredict)
 		print "SO many entries: ", len(featuredict)
 	for entry in sorted(featuredict):
-		print "\n\n\n***",entry,"\n\n"
-		tk.tokenfinder([r"\s"+entry+"\s"], input_path='/Users/ps22344/Downloads/craig_0208/', length=20, lower_case=False)
+		if featuredict[entry] > 5:
+			print "\n\n\n***",entry,"\n\n"
+			tk.tokenfinder([r"\s"+entry+"\s"], input_path='/Users/ps22344/Downloads/craig_0208/', length=20, lower_case=False)
 
 acronymfinder('/Users/ps22344/Downloads/craig_0208')
 #cool git update-index --assume-unchanged <file_to_ignore>
