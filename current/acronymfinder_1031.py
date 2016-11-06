@@ -21,16 +21,15 @@ def acronymfinder(dir):
 	#{
 	#'lol':0
 	#}
+	
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
-		print pati
+		print "working on ", pati
 		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
-			#print fili
 			fili=codecs.open(os.path.join(dir, pati, fili), "r", "utf-8")
 			inputad=ct.adtextextractor(fili.read(), fili)
 			words=ct.tokenizer(inputad)
-			
 			for item in words:
-				if (capitals.match(item)) and (len(item) == 2):
+				if (capitals.match(item)) and (len(item) == 3):
 					if not spell.spellchecker(item.lower()):
 						#print item
 						featuredict[item] = featuredict[item]+1
