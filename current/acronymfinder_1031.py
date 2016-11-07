@@ -23,7 +23,7 @@ def acronymfinder(dir):
 	#}
 	
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
-		print "working on ", pati
+		print "working on", pati
 		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
 			fili=codecs.open(os.path.join(dir, pati, fili), "r", "utf-8")
 			inputad=ct.adtextextractor(fili.read(), fili)
