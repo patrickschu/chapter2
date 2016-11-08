@@ -1,6 +1,6 @@
 #!/Users/ps22344/Downloads/virtualenv/chapter2_env/bin/python
 
-
+import string
 import os
 import codecs
 import re
@@ -27,11 +27,11 @@ def acronymfinder(dir):
 		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
 			fili=codecs.open(os.path.join(dir, pati, fili), "r", "utf-8")
 			inputad=ct.adtextextractor(fili.read(), fili)
-			words=ct.tokenizer(inputad)
+			words=[w.rstrip(string.punctuation).lstrip(string.punctuation) for w in ct.tokenizer(inputad)]
 			for item in words:
 				if (capitals.match(item)) and (len(item) == 3):
-					if not spell.spellchecker(item.lower()):
-						#print item
+					if not spell.spellchecker(item.lower())and item == "RVA":
+						print words
 						featuredict[item] = featuredict[item]+1
 					#print item
 	print sorted(featuredict.keys())
