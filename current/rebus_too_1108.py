@@ -60,7 +60,11 @@ def rebusfinder_too(input_path, number_dictionary):
 					"""
 					[pre, pre_punct, number, punct, post]=pos_tag(h)
 					
-					if (post[0] in postwords):
+					if (
+					(post[0] in postwords)
+					or 
+					(pre[0] in ["be", "b"] and post[0] in [".",","])
+					):
 						print "\n\n***", [pre, number, punct, post], "**\n", os.path.join(input_path, pati, fil)
 			
 						
