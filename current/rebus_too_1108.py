@@ -13,7 +13,9 @@ print punctuation
 
 #regexes and utilities
 nounregex=re.compile("NN.?")
+exclude_post_context=["+",  "(", "%"]#re.compile(r"^"+i+"$") for i in exclude_post_context]
 punctuationregex="+|".join([re.escape(i) for i in [l for l in list(punctuation) if not l in exclude_post_context]])
+
 
 #written numbers for quality control
 writtennumberdict={}
@@ -58,7 +60,7 @@ def rebusfinder_too(input_path, number_dictionary):
 					"""
 					[pre, pre_punct, number, punct, post]=pos_tag(h)
 					
-					if (post in postwords):
+					if (post[0] in postwords):
 						print "\n\n***", [pre, number, punct, post], "**\n", os.path.join(input_path, pati, fil)
 			
 						
