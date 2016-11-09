@@ -33,6 +33,7 @@ def rebusfinder_too(input_path):
 	instances where a writer uses "2" instead of "too". 
 	"""
 	for number in [2]:
+		results=[]
 		#this is the regular expression to identify instances of the number studied
 		numberregex=re.compile("\W([a-z]+)\s*("+punctuationregex+")?\s*("+unicode(number)+")(?:\s+)?("+punctuationregex+")?(?:\s+)?([a-z]+)\W")
 		print numberregex.pattern
@@ -110,7 +111,11 @@ def rebusfinder_too(input_path):
 					):
 					
 						print "\n\n***", [pre, number, punct, post], "**\n", os.path.join(input_path, pati, fil)
-						print inputad
+						results.append([pre, number, punct, post])
+		print "original result list is", len(results)
+		seti=[i[0] for i in results]
+		print len(seti)
+		print "the set is ", len(set(seti))
 						
 
 
