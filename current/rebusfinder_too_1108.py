@@ -23,7 +23,7 @@ for writtennumber in writtennumbers:
 	writtennumberdict[writtennumber]=0
 
 postwords= ["pickey", "far", "late"]
-prewords= ["ability", "head", "dick", "company"]
+prewords= ["ability", "head", "company"]
 def rebusfinder_too(input_path, number_dictionary):
 	"""
 	The rebus_too finder.
@@ -60,7 +60,12 @@ def rebusfinder_too(input_path, number_dictionary):
 					[pre, pre_punct, number, punct, post]=pos_tag(h)
 					
 					if (
-					(pre[0] in prewords)
+					(pre[0] in ["love"] and punct[0] not in [" "])
+					#this is if we know the pre-word and 2 is followed by punctuation
+					# cf 'intellectualy ability 2. '
+					#(pre[0] in prewords and punct[0] not in [" ", ")", ":"])
+					#this is if we know the word to follow
+					# cf 'not 2 late.' 
 					#(post[0] in postwords)
 					#or 
 					#you be too in front of punctuation catch
