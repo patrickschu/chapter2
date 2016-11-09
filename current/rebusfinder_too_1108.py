@@ -23,8 +23,8 @@ for writtennumber in writtennumbers:
 	writtennumberdict[writtennumber]=0
 
 postwords= ["pickey", "far", "late"]
-prewords= ["ability", "head", "company"]
-def rebusfinder_too(input_path, number_dictionary):
+prewords_withpunct= ["ability", "head", "company", "cool", "full"]
+def rebusfinder_too(input_path):
 	"""
 	The rebus_too finder.
 	It uses a list of expressions, pre-established thru "identifying_rebus_too_1022.py", to count 
@@ -51,6 +51,7 @@ def rebusfinder_too(input_path, number_dictionary):
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
 				for h in hits:
 					#this is needed for instance where there is no punctuation
+					
 					h=[" " if i == "" else i for i in h]
 					"""
 					thus
@@ -60,10 +61,15 @@ def rebusfinder_too(input_path, number_dictionary):
 					[pre, pre_punct, number, punct, post]=pos_tag(h)
 					
 					if (
-					(pre[0] in ["love"] and punct[0] not in [" "])
+					
+					(pre[0] in ["on"] and punct[0] not in [" "] and inputad.split()[inputad.split().index(pre[0])-1] == "later")# and (h[h.index(pre[0])] == "later"))
+					#unique items catcher
+					#(pre[0] in ["love"] and punct[0] not in [" "] and post[0] in ["msg"])
+					#or 
+					#(pre[0] in ["real"] and post[0] in ["have"])
 					#this is if we know the pre-word and 2 is followed by punctuation
 					# cf 'intellectualy ability 2. '
-					#(pre[0] in prewords and punct[0] not in [" ", ")", ":"])
+					#(pre[0] in prewords_withpunct and punct[0] not in [" ", ")", ":"])
 					#this is if we know the word to follow
 					# cf 'not 2 late.' 
 					#(post[0] in postwords)
@@ -71,9 +77,10 @@ def rebusfinder_too(input_path, number_dictionary):
 					#you be too in front of punctuation catch
 					#(pre[0] in ["be", "b", "are", "r"] and punct[0] not in [" ", "-", ")"])
 					):
+					
 						print "\n\n***", [pre, number, punct, post], "**\n", os.path.join(input_path, pati, fil)
 						print inputad
 						
 
 
-rebusfinder_too("/Users/ps22344/Downloads/craig_0208","x")
+rebusfinder_too("/Users/ps22344/Downloads/craig_0208")
