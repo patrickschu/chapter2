@@ -12,7 +12,6 @@ print punctuation
 
 
 #regexes and utilities
-nounregex=re.compile("NN.?")
 exclude_post_context=["+",  "(", "%"]#re.compile(r"^"+i+"$") for i in exclude_post_context]
 punctuationregex="+|".join([re.escape(i) for i in [l for l in list(punctuation) if not l in exclude_post_context]])
 
@@ -23,8 +22,8 @@ writtennumbers=["zero", "one","two","three","four","five","six","seven","eight",
 for writtennumber in writtennumbers:
 	writtennumberdict[writtennumber]=0
 
-postwords=["pickey", "far", "late"]
-
+postwords= ["pickey", "far", "late"]
+prewords= ["ability", "head", "dick", "company"]
 def rebusfinder_too(input_path, number_dictionary):
 	"""
 	The rebus_too finder.
@@ -61,12 +60,14 @@ def rebusfinder_too(input_path, number_dictionary):
 					[pre, pre_punct, number, punct, post]=pos_tag(h)
 					
 					if (
-					(post[0] in postwords)
-					or 
-					(pre[0] in ["be", "b"] and punctuationregex.match(post[0]))
+					(pre[0] in prewords)
+					#(post[0] in postwords)
+					#or 
+					#you be too in front of punctuation catch
+					#(pre[0] in ["be", "b", "are", "r"] and punct[0] not in [" ", "-", ")"])
 					):
 						print "\n\n***", [pre, number, punct, post], "**\n", os.path.join(input_path, pati, fil)
-			
+						print inputad
 						
 
 
