@@ -22,7 +22,7 @@ writtennumbers=["zero", "one","two","three","four","five","six","seven","eight",
 for writtennumber in writtennumbers:
 	writtennumberdict[writtennumber]=0
 
-postwords= ["pickey", "far", "late"]
+postwords= ["pickey", "far", "late", "much"]
 prewords_withpunct= ["ability", "head", "company", "cool", "full"]
 def rebusfinder_too(input_path):
 	"""
@@ -61,9 +61,9 @@ def rebusfinder_too(input_path):
 					[pre, pre_punct, number, punct, post]=pos_tag(h)
 					
 					if (
-					
-					(pre[0] in ["on"] and punct[0] not in [" "] and inputad.split()[inputad.split().index(pre[0])-1] == "later")# and (h[h.index(pre[0])] == "later"))
+					(pre[0] in ["kool", "ass"])
 					#unique items catcher
+					#(pre[0] in ["on"] and punct[0] not in [" "] and inputad.split()[inputad.split().index(pre[0])-1] == "later")# and (h[h.index(pre[0])] == "later"))
 					#(pre[0] in ["love"] and punct[0] not in [" "] and post[0] in ["msg"])
 					#or 
 					#(pre[0] in ["real"] and post[0] in ["have"])
