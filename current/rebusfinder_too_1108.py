@@ -22,8 +22,9 @@ writtennumbers=["zero", "one","two","three","four","five","six","seven","eight",
 for writtennumber in writtennumbers:
 	writtennumberdict[writtennumber]=0
 
-postwords= ["pickey", "far", "late", "much"]
+postwords= ["pickey", "far", "late", "much", "many", "heavy", "old"]
 prewords_withpunct= ["ability", "head", "company", "cool", "full"]
+prewords= ["band", "ass" ,"groups", "ub", "join"]
 def rebusfinder_too(input_path):
 	"""
 	The rebus_too finder.
@@ -61,8 +62,19 @@ def rebusfinder_too(input_path):
 					[pre, pre_punct, number, punct, post]=pos_tag(h)
 					
 					if (
-					(pre[0] in ["kool", "ass"])
+					(post[0] in ["date"]) 
+					
 					#unique items catcher
+					#(pre[0] in ["it"] and post[0] in ["i"])
+					#(pre[0] in ["cook"] and post[0] in ["im"])
+					#(pre[0] in ["kids"] and post[0] in ["young"]) 
+					#(pre[0] in ["life", "way"] and post[0] in ["short"])
+					#(pre[0] in ["that"] and post[0] in ["hard"])
+					#(pre[0] in ["real"] and post[0] in ["hope"])
+					#(pre[0] in ["me"] and post[0] in ["if"])
+					#(pre[0] in ["dogs"] and post[0] in ["if"])
+					#(pre[0] in ["can"] and post[0] in ["but"])
+					#(pre[0] in ["kool"] and not post[0] in ["even"])
 					#(pre[0] in ["on"] and punct[0] not in [" "] and inputad.split()[inputad.split().index(pre[0])-1] == "later")# and (h[h.index(pre[0])] == "later"))
 					#(pre[0] in ["love"] and punct[0] not in [" "] and post[0] in ["msg"])
 					#or 
