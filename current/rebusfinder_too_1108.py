@@ -25,6 +25,7 @@ for writtennumber in writtennumbers:
 postwords= ["pickey", "far", "late", "much", "many", "heavy", "old"]
 prewords_withpunct= ["ability", "head", "company", "cool", "full"]
 prewords= ["band", "ass" ,"groups", "ub", "join"]
+
 def rebusfinder_too(input_path):
 	"""
 	The rebus_too finder.
@@ -62,32 +63,50 @@ def rebusfinder_too(input_path):
 					[pre, pre_punct, number, punct, post]=pos_tag(h)
 					
 					if (
-					(post[0] in ["date"]) 
-					
+									
 					#unique items catcher
-					#(pre[0] in ["it"] and post[0] in ["i"])
-					#(pre[0] in ["cook"] and post[0] in ["im"])
-					#(pre[0] in ["kids"] and post[0] in ["young"]) 
-					#(pre[0] in ["life", "way"] and post[0] in ["short"])
-					#(pre[0] in ["that"] and post[0] in ["hard"])
-					#(pre[0] in ["real"] and post[0] in ["hope"])
-					#(pre[0] in ["me"] and post[0] in ["if"])
-					#(pre[0] in ["dogs"] and post[0] in ["if"])
-					#(pre[0] in ["can"] and post[0] in ["but"])
-					#(pre[0] in ["kool"] and not post[0] in ["even"])
-					#(pre[0] in ["on"] and punct[0] not in [" "] and inputad.split()[inputad.split().index(pre[0])-1] == "later")# and (h[h.index(pre[0])] == "later"))
-					#(pre[0] in ["love"] and punct[0] not in [" "] and post[0] in ["msg"])
-					#or 
-					#(pre[0] in ["real"] and post[0] in ["have"])
+					(pre[0] in ["date"]) 
+					or
+					(pre[0] in ["it"] and post[0] in ["i"])
+					or
+					(pre[0] in ["cook"] and post[0] in ["im"])
+					or
+					(pre[0] in ["kids"] and post[0] in ["young"]) 
+					or
+					(pre[0] in ["life", "way"] and post[0] in ["short"])
+					or
+					(pre[0] in ["that"] and post[0] in ["hard"])
+					or
+					(pre[0] in ["real"] and post[0] in ["hope"])
+					or
+					(pre[0] in ["me"] and post[0] in ["if"])
+					or
+					(pre[0] in ["dogs"] and post[0] in ["if"])
+					or
+					(pre[0] in ["can"] and post[0] in ["but"])
+					or
+					(pre[0] in ["kool"] and not post[0] in ["even"])
+					or
+					(pre[0] in ["on"] and punct[0] not in [" "] and inputad.split()[inputad.split().index(pre[0])-1] == "later")# and (h[h.index(pre[0])] == "later"))
+					or
+					(pre[0] in ["love"] and punct[0] not in [" "] and post[0] in ["msg"])
+					or
+					(pre[0] in ["real"] and post[0] in ["have"])
+					or
+					#BIGGER NETS
+					#you be too in front of punctuation catch
+					(pre[0] in ["be", "b", "are", "r"] and punct[0] not in [" ", "-", ")"])
+					or
 					#this is if we know the pre-word and 2 is followed by punctuation
 					# cf 'intellectualy ability 2. '
-					#(pre[0] in prewords_withpunct and punct[0] not in [" ", ")", ":"])
+					(pre[0] in prewords_withpunct and punct[0] not in [" ", ")", ":"])
+					or
 					#this is if we know the word to follow
-					# cf 'not 2 late.' 
-					#(post[0] in postwords)
-					#or 
-					#you be too in front of punctuation catch
-					#(pre[0] in ["be", "b", "are", "r"] and punct[0] not in [" ", "-", ")"])
+					# cf 'not 2 late.' collected in postwords
+					(post[0] in postwords)
+					or
+					#this is if we know the word to precede
+					(pre[0] in prewords)
 					):
 					
 						print "\n\n***", [pre, number, punct, post], "**\n", os.path.join(input_path, pati, fil)
