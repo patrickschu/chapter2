@@ -111,11 +111,13 @@ def rebusfinder_too(input_path):
 					):
 					
 						print "\n\n***", [pre, number, punct, post], "**\n", os.path.join(input_path, pati, fil)
-						results.append([pre, number, punct, post])
+						results.append((pre, number, punct, post, os.path.join(input_path, pati, fil)))
 		print "original result list is", len(results)
-		seti=[i[0] for i in results]
+		seti=[(i[0], i[1], i[2], i[3]) for i in results]
+		
 		print len(seti)
 		print "the set is ", len(set(seti))
+		print set(seti)
 						
 
 
