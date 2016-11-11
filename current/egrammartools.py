@@ -140,7 +140,8 @@ def leetfinder(word_dictionary, dir):
 # /Users/ps22344/Downloads/chapter2/current/identifying_rebus_2_1012.py
 
 # the rebusfinder too needs to be here; it finds instances of "2" for "too". 
-# /Users/ps22344/Downloads/chapter2/current/identifying_rebus_too_1022.py
+# /Users/ps22344/Downloads/chapter2/current/rebusfinder_too_1108.py
+# done
 
 
 # the capsfinder needs to be here. it does not yet exist but measures non-standard capitalization
