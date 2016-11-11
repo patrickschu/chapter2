@@ -114,10 +114,11 @@ def rebusfinder_too(input_path):
 						results.append((pre, number, punct, post, os.path.join(input_path, pati, fil)))
 		print "original result list is", len(results)
 		seti=[(i[0], i[1], i[2], i[3]) for i in results]
-		
+		setiset=set(seti)
 		print len(seti)
-		print "the set is ", len(set(seti))
-		print set(seti)
+		print "the set is ", len(setiset)
+		overlap={k:seti.count(k) for k in setiset}
+		print {k:overlap[k] for k in overlap if overlap[k] > 1}
 						
 
 
