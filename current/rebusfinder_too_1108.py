@@ -32,6 +32,9 @@ def rebusfinder_too(input_path):
 	It uses a list of expressions, pre-established thru "identifying_rebus_too_1022.py", to count 
 	instances where a writer uses "2" instead of "too". 
 	"""
+	predict=defaultdict(int)
+	postdict=defaultdict(int)
+	
 	for number in [2]:
 		results=[]
 		#this is the regular expression to identify instances of the number studied
@@ -112,14 +115,22 @@ def rebusfinder_too(input_path):
 					
 						print "\n\n***", [pre, number, punct, post], "**\n", os.path.join(input_path, pati, fil)
 						results.append((pre, number, punct, post, os.path.join(input_path, pati, fil)))
+						predict[pre[0]]=predict[pre[0]]+1
+						postdict[post[0]]=postdict[post[0]]+1
 		print "original result list is", len(results)
-		seti=[(i[0], i[1], i[2], i[3]) for i in results]
-		setiset=set(seti)
-		print len(seti)
-		print "the set is ", len(setiset)
-		overlap={k:seti.count(k) for k in setiset}
+		seti=set(results)
+		print "\n\n", seti
+		print "the set is ", len(seti)
+		overlap={k:results.count(k) for k in seti}
+		print overlap
 		print {k:overlap[k] for k in overlap if overlap[k] > 1}
-						
+		print "PRE CONTEXT"
+		print "\n".join([": ".join([k, unicode(predict[k])]) for k in sorted(predict, key=predict.get, reverse=True)])
+		print "POST CONTEXT"
+		print "\n".join([": ".join([k, unicode(postdict[k])]) for k in sorted(postdict, key=postdict.get, reverse=True)])
+
+
+
 
 
 rebusfinder_too("/Users/ps22344/Downloads/craig_0208")
