@@ -29,11 +29,10 @@ def acronymfinder(dir):
 			inputad=ct.adtextextractor(fili.read(), fili)
 			words=[w.rstrip(string.punctuation).lstrip(string.punctuation) for w in ct.tokenizer(inputad)]
 			for item in words:
-				if (capitals.match(item)) and (len(item) == 3):
-					if not spell.spellchecker(item.lower())and item == "RVA":
-						print words
+				if (capitals.match(item)) and (len(item) == 6):
+					if not spell.spellchecker(item.lower()):
 						featuredict[item] = featuredict[item]+1
-					#print item
+
 	print sorted(featuredict.keys())
 	print "SO many entries: ", len(featuredict)
 	
