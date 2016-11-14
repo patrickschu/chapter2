@@ -15,6 +15,8 @@ shorteningdict={
 
 }
 
+
+
 def categorymachine(json_in, outputname):
 	"""
 	The categorymachine takes a JSON input and iterates over its keys.
@@ -49,4 +51,4 @@ def categorymachine(json_in, outputname):
 		json.dump(shorteningdict, outputi)
 
 
-categorymachine('/Users/ps22344/Downloads/chapter2/current/output_acronyms4letters.json', "X")	
+categorymachine('/Users/ps22344/Downloads/chapter2/current/output_acronyms6letters.json', "X")	
