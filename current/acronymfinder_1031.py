@@ -9,11 +9,13 @@ from collections import defaultdict
 import tokenfinder_1004 as tk
 import spellchecker_1101 as spell
 import clustertools as ct
+import json
 
-
-def acronymfinder(dir):
+def acronymfinder(dir, length, output_json):
 	"""
 	This finds acronyms. 
+	Dir is directory of files. 
+	Length is length of desired acronym. 
 	"""
 	start=time.time()
 	capitals=re.compile("^[A-Z]+$")
@@ -29,7 +31,7 @@ def acronymfinder(dir):
 			inputad=ct.adtextextractor(fili.read(), fili)
 			words=[w.rstrip(string.punctuation).lstrip(string.punctuation) for w in ct.tokenizer(inputad)]
 			for item in words:
-				if (capitals.match(item)) and (len(item) == 6):
+				if (capitals.match(item)) and (len(item) == length):
 					if not spell.spellchecker(item.lower()):
 						featuredict[item] = featuredict[item]+1
 
@@ -41,14 +43,18 @@ def acronymfinder(dir):
 	print  "\n".join([":".join((i, str(featuredict[i]))) for i in sorted(featuredict, key=featuredict.get, reverse=True)])
 	mid=time.time()
 	print "this took us {} minutes".format((mid-start)/60)
-	for entry in sorted(featuredict):
-		if featuredict[entry] > 5:
-			print "\n\n\n***",entry,"\n\n"
-			tk.tokenfinder([r"\s"+entry+"\s"], input_path='/Users/ps22344/Downloads/craig_0208/', length=20, lower_case=False)
+	if output_json:
+		with codecs.open("output_acronyms"+str(length)+"letters.json", "w", "utf-8") as outputi:
+			json.dump(featuredict, outputi)
+	else:
+		for entry in sorted(featuredict):
+			if featuredict[entry] > 5:
+				print "\n\n\n***",entry,"\n\n"
+				tk.tokenfinder([r"\s"+entry+"\s"], input_path='/Users/ps22344/Downloads/craig_0208/', length=20, lower_case=False)
 	end=time.time()
 	print "this took us {} minutes".format((end-start)/60)
 
 
 
-acronymfinder('/Users/ps22344/Downloads/craig_0208')
+acronymfinder('/Users/ps22344/Downloads/craig_0208', 6, output_json=True)
 #cool git update-index --assume-unchanged <file_to_ignore>
