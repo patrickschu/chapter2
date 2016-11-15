@@ -55,8 +55,8 @@ def categorymachine(json_in, outputname):
 				shorteningdict[match[0]]['location'].append(item)
 			else:
 				#shorteningdict[match[0]]['X'].append(item)
-				in_3=raw_input("School or Not? ")
-				if ini_2 in ["S", "s"]:
+				ini_3=raw_input("School or Not? ")
+				if ini_3 in ["S", "s"]:
 					shorteningdict[match[0]]['school'].append(item)
 				else:
 					shorteningdict[match[0]]['X'].append(item)
@@ -66,4 +66,4 @@ def categorymachine(json_in, outputname):
 		json.dump(shorteningdict, outputi)
 
 
-categorymachine('/Users/ps22344/Downloads/chapter2/current/output_acronyms4letters.json', "4")	
+categorymachine('/Users/ps22344/Downloads/chapter2/current/unti.json', "CCCC")	
