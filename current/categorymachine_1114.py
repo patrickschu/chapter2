@@ -11,6 +11,7 @@ shorteningdict={
 'alphabetism': {},
 'blend': {},
 'abbreviation': {},
+'clipping': {},
 'other': {},
 'delete':{}
 
@@ -43,7 +44,7 @@ def categorymachine(json_in, outputname):
 	#iterate over keys
 	for item in [i for i in sorted(inputdict, key=inputdict.get, reverse=True) if inputdict[i] > 5]:
 		print "\n", item, "\n", len(item)
-		ini=raw_input("ALphabetism, ACronym, ABbreviation, Blend, Other, or Delete? ")
+		ini=raw_input("ALphabetism, ACronym, ABbreviation, Blend, Clipping, Other, or Delete? ")
 		match=[i for i in shorteningdict.keys() if i.startswith(ini.lower())]
 		if len(match) != 1:
 			print "WARNING NO OR TOO MANY MATCHES IN DICT KEYS: ", len(match)
@@ -59,12 +60,10 @@ def categorymachine(json_in, outputname):
 					shorteningdict[match[0]]['school'].append(item)
 				else:
 					shorteningdict[match[0]]['X'].append(item)
-	#we need to make sure theyre in the same order as the printout
-	#the json does not come in sorted i think so that needs to happen after
 	print shorteningdict
 	print "leftovers:\n", leftoverlist
 	with codecs.open("shorteningdict_"+outputname+"_1115.json", "w", "utf-8") as outputi:
 		json.dump(shorteningdict, outputi)
 
 
-categorymachine('/Users/ps22344/Downloads/chapter2/current/output_acronyms6letters.json', "6")	
+categorymachine('/Users/ps22344/Downloads/chapter2/current/output_acronyms4letters.json', "4")	
