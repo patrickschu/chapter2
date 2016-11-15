@@ -35,7 +35,7 @@ print "we have {} search terms".format(len(search_terms))
 
 def acronymcounter(acronym_list, input_dir):
 		#regex, lower and pluralize
-		acronym_list=[re.compile("((?:"+i+"|"+i.lower()+")[sS]?)") for i in acronym_list]
+		acronym_list=[re.compile("\W((?:"+i+"|"+i.lower()+")[sS]?)\W") for i in acronym_list]
 		acronym_list=set(acronym_list)
 		print [i.pattern for i in acronym_list]
 		for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
