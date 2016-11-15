@@ -53,12 +53,12 @@ def categorymachine(json_in, outputname):
 			if ini_2 in ["L"]:
 				shorteningdict[match[0]]['location'].append(item)
 			else:
-				shorteningdict[match[0]]['X'].append(item)
-			in_3=raw_input("School or Not? ")
-			if ini_2 in ["S", "s"]:
-				shorteningdict[match[0]]['school'].append(item)
-			else:
-				shorteningdict[match[0]]['X'].append(item)
+				#shorteningdict[match[0]]['X'].append(item)
+				in_3=raw_input("School or Not? ")
+				if ini_2 in ["S", "s"]:
+					shorteningdict[match[0]]['school'].append(item)
+				else:
+					shorteningdict[match[0]]['X'].append(item)
 	#we need to make sure theyre in the same order as the printout
 	#the json does not come in sorted i think so that needs to happen after
 	print shorteningdict
@@ -67,4 +67,4 @@ def categorymachine(json_in, outputname):
 		json.dump(shorteningdict, outputi)
 
 
-categorymachine('/Users/ps22344/Downloads/chapter2/current/output_acronyms2letters.json', "6")	
+categorymachine('/Users/ps22344/Downloads/chapter2/current/output_acronyms6letters.json', "6")	
