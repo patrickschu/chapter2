@@ -66,4 +66,4 @@ def categorymachine(json_in, outputname):
 		json.dump(shorteningdict, outputi)
 
 
-categorymachine('/Users/ps22344/Downloads/chapter2/current/unti.json', "CCCC")	
+categorymachine('/Users/ps22344/Downloads/chapter2/current/output_acronyms2letters.json', "2")	
