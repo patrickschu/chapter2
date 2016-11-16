@@ -81,7 +81,7 @@ def sampler(json_input, output_name):
 	for entry in fulldict.keys():
 		sampledict=defaultdict(list)
 		print entry
-		samples=tk.tokenfinder(["\W"+entry+"\W"], "/Users/ps22344/Downloads/craig_0208")
+		samples=tk.tokenfinder(["\W"+entry+"\W"], "/Users/ps22344/Downloads/craig_0208", length=20)
 		sampledict[entry]=samples
 	with codecs.open("sampler_yes_"+output_name+".json", "w", "utf-8") as writejson:
 		json.dump(outputdict, writejson)
