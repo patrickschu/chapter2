@@ -9,11 +9,11 @@ from collections import defaultdict
 
 
 filelist=[
-#"/Users/ps22344/Downloads/chapter2/current/shorteningdict_2_1115.json",
-"/Users/ps22344/Downloads/chapter2/current/shorteningdict_3_1115.json",
+"/Users/ps22344/Downloads/chapter2/current/shorteningdict_2_1115.json",
+#"/Users/ps22344/Downloads/chapter2/current/shorteningdict_3_1115.json",
 #"/Users/ps22344/Downloads/chapter2/current/shorteningdict_4_1115.json",
 #"/Users/ps22344/Downloads/chapter2/current/shorteningdict_5_1115.json",
-"/Users/ps22344/Downloads/chapter2/current/shorteningdict_6_1115.json"
+#"/Users/ps22344/Downloads/chapter2/current/shorteningdict_6_1115.json"
 ]
 
 search_terms = ["MILF"]
@@ -47,6 +47,7 @@ def acronymcounter(acronym_list, input_dir):
 		result=[0,0,2,0] 
 		"""
 		dicti=defaultdict(float)
+		matchesdicti=defaultdict(list)
 		#regex, lower and pluralize
 		acronym_list=[re.compile("\W((?:"+i+"|"+i.lower()+")[sS]?)\W") for i in acronym_list]
 		acronym_list=set(acronym_list)
@@ -61,13 +62,14 @@ def acronymcounter(acronym_list, input_dir):
 				result=[(i.findall(inputad), i.pattern) for i in acronym_list] 
 				for matches, pattern in result:
  					#the dicti is {pattern:count, pattern: count, ...}
- 					dicti[pattern]]=dicti[pattern]+len(matches)
+ 					dicti[pattern]=dicti[pattern]+len(matches)
+ 					matchesdicti[pattern]=matchesdicti[pattern]+matches
 				#result= [(i, len(i)) for i in result] 
 # 				if result:
 # 				print result
 # 					
 # 					print result
-		print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
+		print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
 
 
 acronymcounter(search_terms, "/Users/ps22344/Downloads/craig_0208")
