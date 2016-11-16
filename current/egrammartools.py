@@ -148,6 +148,7 @@ def leetfinder(word_dictionary, dir):
 ###SECTION 2
 ###ORTHOGRAPHY
 
+##Abbreviations. Do we want to split that up into clippings etc?
 #the acronymcounter counts alphabetisms and acronyms
 #it does not distinguish between them as of now
 #/Users/ps22344/Downloads/chapter2/current/acronymcounter_1115.py
