@@ -9,13 +9,6 @@ from collections import defaultdict
 import json 
 
 
-#dataset
-#dir='/Users/ps22344/Downloads/craig_0208/'
-#search terms
-#search_terms=[r'sling 2']
-
-
-
 def tokenfinder(input_list, input_path, length=40, lower_case=True):
 	"""
 	the tokenfinder looks over the items in an input_list.
@@ -25,6 +18,7 @@ def tokenfinder(input_list, input_path, length=40, lower_case=True):
 	dir needs to have subfolders. 
 	"""
 	starttime=time.time()
+	allhits=[]
 	print "search term is ", input_list
 	#construct the regexes
 	typedict={}
@@ -40,22 +34,23 @@ def tokenfinder(input_list, input_path, length=40, lower_case=True):
 			fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
 			inputad=ct.adtextextractor(fili.read(), fili)
 			if lower_case:
-				print "were lowercasing"
+				#print "were lowercasing"
 				inputad=inputad.lower()
 			matches=[k.findall(inputad) for k in typedict.keys()]
 			if sum([len(i) for i in matches]) > 0:
 				print "{} hits in file {}".format(sum([len(i) for i in matches]), os.path.join(input_path, pati, fil))
 				print matches, "\n"
 				totalhits.append(sum([len(i) for i in matches]))
+				allhits.append(matches)
 	if sum(totalhits) == 0:
 		print "\n---\nNO MATCHES IN TOKENFINDER\n---\n"
 	else:
 		print "{} matches total".format(sum(totalhits))
 	endtime=time.time()
+	return allhits
 	#print "This took us {} minutes".format((endtime-starttime)/60)	
 
 
-#tokenfinder(search_terms, dir)
 
 
 
