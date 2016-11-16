@@ -134,25 +134,37 @@ def leetfinder(word_dictionary, dir):
 #the rebusfinder needs to be here; it finds instance of "4" for "for. 
 #/Users/ps22344/Downloads/chapter2/current/identifying_rebus_1009.py
 
-
-
-# the rebusfinder 2 needs to be here; it find instances of "2" for "to".
+# the rebusfinder 2 needs to be here; it finds instances of "2" for "to".
 # /Users/ps22344/Downloads/chapter2/current/identifying_rebus_2_1012.py
 
 # the rebusfinder too needs to be here; it finds instances of "2" for "too". 
 # /Users/ps22344/Downloads/chapter2/current/rebusfinder_too_1108.py
 # done
 
-
 # the capsfinder needs to be here. it does not yet exist but measures non-standard capitalization
-
 
 # the singleletterfinder needs to be here. it does not yet exist but finds things like "c u"
 
 ###SECTION 2
 ###ORTHOGRAPHY
 
+#the acronymcounter counts alphabetisms and acronyms
+#it does not distinguish between them as of now
+#/Users/ps22344/Downloads/chapter2/current/acronymcounter_1115.py
 
+
+#clippings
+
+#abbreviations
+
+
+#phonetically motivated letter substitution
+
+
+#eye dialect
+
+
+#spellings representing prosody or non-linguistic sounds such as laughter 
 
 
 
