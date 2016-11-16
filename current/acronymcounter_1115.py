@@ -22,7 +22,7 @@ for fili in filelist:
 	with codecs.open(fili, "r", "utf-8") as inputfile:
 		acronym_dict=json.load(inputfile)
 		for key in [i for i in acronym_dict.keys() if i not in ["blend", "abbreviation", "clipping", "delete", "other"]]:
-			for cat in ['X', 'location', 'other']:
+			for cat in ['X', 'location']:
 				print "adding", acronym_dict[key][cat]
 				search_terms = search_terms + acronym_dict[key][cat]
 
@@ -57,13 +57,17 @@ def acronymcounter(acronym_list, input_dir):
 				#print os.path.join(input_dir, dir, fili)
 				with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 					inputad=ct.adtextextractor(inputtext.read(), fili)
-				result=[i.findall(inputad) for i in acronym_list] 
-				result= [(i, len(i)) for i in result if len(i) > 0] 
-				if result:
-					for res in result:
-						dicti[res]=dicti[res]+len(res)
-					print result
-		print dicti			
+				#result is a list of lists which contain matches for each regex/acronym
+				result=[(i.findall(inputad), i.pattern) for i in acronym_list] 
+				for matches, pattern in result:
+ 					#the dicti is {pattern:count, pattern: count, ...}
+ 					dicti[pattern]]=dicti[pattern]+len(matches)
+				#result= [(i, len(i)) for i in result] 
+# 				if result:
+# 				print result
+# 					
+# 					print result
+		print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
 
 
 acronymcounter(search_terms, "/Users/ps22344/Downloads/craig_0208")
