@@ -524,6 +524,8 @@ def adcleaner(text, replace_linebreak=False, remove_html=False):
 #this is used to add spaces between stops and the following word
 stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
 
+#what is the difference btw the tokenizer and the adcleaner??
+
 def tokenizer(input_string):
 	"""
 	The tokenizer takes a string of words.
