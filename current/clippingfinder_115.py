@@ -20,7 +20,7 @@ def picker(dictionary, output_name):
 	yeslist=[]
 	nolist=[]
 	#sort alphabetically please
-	for entry in dictionary.keys():
+	for entry in sorted(dictionary.keys()):
 		print "\n", entry, dictionary[entry]
 		decision=raw_input("Yes or No? ")
 		if decision in ["Y", "y"]:
