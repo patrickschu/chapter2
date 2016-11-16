@@ -29,7 +29,7 @@ def dictbuilder(input_dir, output_name, lowercase=False, print_dict=False):
 	if print_dict:
 		print  "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True)])
 	with codecs.open(output_name+".json", "w", "utf-8") as outputi:
-		json.dump(dicti, outputi)
+		json.dump(dicti, outputi, encoding="utf8")
 	print "Written dictionary with {} items to ".format(len(dicti)), output_name
 	return dicti
 	
