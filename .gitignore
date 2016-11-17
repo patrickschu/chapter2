@@ -2,8 +2,11 @@
 .RHistory
 *(Autosaved).R
 
-#my folders
+
+
+#my folders and files
 outputfiles/
+current/test.py
 
 *.DS_Store
 .AppleDouble
