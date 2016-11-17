@@ -84,7 +84,7 @@ def sampler(json_input, output_name):
 		samples=tk.tokenfinder(["\W"+entry+"\W"], "/Users/ps22344/Downloads/craig_0208", length=20)
 		sampledict[entry]=samples
 	with codecs.open("sampler_yes_"+output_name+".json", "w", "utf-8") as writejson:
-		json.dump(outputdict, writejson)
+		json.dump(sampledict, writejson)
 
 sampler('/Users/ps22344/Downloads/chapter2/current/picker_yes_3chars_1116.json', "3chars_1116")
 	
