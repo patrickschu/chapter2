@@ -71,14 +71,12 @@ def acronymcounter(acronym_list, input_dir):
  					#the dicti is {pattern:count, pattern: count, ...}
  					dicti[pattern]=dicti[pattern]+len(matches)
  					matchesdicti[pattern]=matchesdicti[pattern]+matches
-		return results 
-# 					
-# 					print result
 		print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
+		return results 
 
 
 x=acronymcounter(search_terms, "/Users/ps22344/Downloads/craig_0208")
-print x
+
 		
 
 	
