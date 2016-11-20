@@ -15,9 +15,9 @@ import tokenfinder_1004 as tk
 
 
 #dont mess with this
-with codecs.open('/Users/ps22344/Downloads/chapter2/current/sampler_yes_2chars_1116.json', 'r', 'utf-8') as jsoninput:
-	pickerdict=json.load(jsoninput)
-	print "length of pickerdict", len(pickerdict)
+# with codecs.open('/Users/ps22344/Downloads/chapter2/current/sampler_yes_2chars_1116.json', 'r', 'utf-8') as jsoninput:
+# 	pickerdict=json.load(jsoninput)
+# 	print "length of pickerdict", len(pickerdict)
 
 def picker(dictionary, output_name):
 	yeslist=[]
@@ -39,7 +39,7 @@ def picker(dictionary, output_name):
 		json.dump(outputdict, writejson)
 	print "written to ", writejson
 
-picker(pickerdict, "2chars_final_1117")
+#picker(pickerdict, "2chars_final_1117")
 
 	
 #dont mess with this
@@ -92,7 +92,7 @@ def sampler(json_input, output_name):
 		json.dump(sampledict, writejson)
 	print "written to ", writejson
 
-#sampler('/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_2chars_1116.json', "2chars_1116")
+sampler('/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_2chars_1116.json', "TRASH_2chars_1116")
 	
 
 
