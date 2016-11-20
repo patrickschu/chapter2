@@ -39,7 +39,7 @@ def picker(dictionary, output_name):
 		json.dump(outputdict, writejson)
 	print "written to ", writejson
 
-#picker(pickerdict, "2chars_final_1117")
+
 
 	
 #dont mess with this
@@ -55,7 +55,7 @@ def clippingfinder(dictionary, cutoff):
 	print "len dict before", len(dictionary)
 	dictionary = {k:v for k,v in dictionary.items() if v > cutoff}
 	print "len dict after", len(dictionary)
-	for length in [2]:
+	for length in [7]:
 		print length
 		for entry in set([i for i in dictionary.keys() if not "/" in i]):
 			if len(entry) < length + 3:
@@ -63,9 +63,9 @@ def clippingfinder(dictionary, cutoff):
 			else:
 				#print entry[:length]
 				for item in set([i for i in dictionary.keys() if i != entry and not "/" in i]):
-					if item == entry[:length]:
+					if item == entry[-length:]:
 						outputdict[item].append(entry)
-	picker(outputdict, "2chars_1116")
+	picker(outputdict, "post_7_chars_1120")
 	os.system('say "your program has finished"')
 			
 # 		#take the first 3,4,5 characters. how many needed?
@@ -73,7 +73,7 @@ def clippingfinder(dictionary, cutoff):
 # 		print the list. 
 # 		evtl tokenfind it
 
-#clippingfinder(fulldict, 5)
+
 
 
 def sampler(json_input, output_name):
@@ -92,8 +92,13 @@ def sampler(json_input, output_name):
 		json.dump(sampledict, writejson)
 	print "written to ", writejson
 
-sampler('/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_2chars_1116.json', "TRASH_2chars_1116")
-	
+
+#step 1, IDing clippings, pre-choices
+#clippingfinder(fulldict, 5)
+#step 2, use the sampler to add context
+sampler('picker_yes_post_7_chars_1120.json', "post_7_chars_1120")
+#step 3: final decision based on context from sampler
+#picker(pickerdict, "2chars_final_1117")
 
 
 
