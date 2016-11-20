@@ -15,9 +15,9 @@ import tokenfinder_1004 as tk
 
 
 #dont mess with this
-# with codecs.open('/Users/ps22344/Downloads/chapter2/current/sampler_yes_2chars_1116.json', 'r', 'utf-8') as jsoninput:
-# 	pickerdict=json.load(jsoninput)
-# 	print "length of pickerdict", len(pickerdict)
+with codecs.open('sampler_yes_post_3_chars_1120.json', 'r', 'utf-8') as jsoninput:
+	pickerdict=json.load(jsoninput)
+	print "length of pickerdict", len(pickerdict)
 
 def picker(dictionary, output_name):
 	yeslist=[]
@@ -94,11 +94,11 @@ def sampler(json_input, output_name):
 
 
 #step 1, IDing clippings, pre-choices
-#clippingfinder([6], fulldict, 5)
+clippingfinder([2], fulldict, 5)
 #step 2, use the sampler to add context
-sampler('picker_yes_post_6_chars_1120.json', "post_6_chars_1120")
+#sampler('picker_yes_post_3_chars_1120.json', "post_3_chars_1120")
 #step 3: final decision based on context from sampler
-#picker(pickerdict, "2chars_final_1117")
+#picker(pickerdict, "3chars_final_1117")
 
 
 
