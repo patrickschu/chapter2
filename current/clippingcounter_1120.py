@@ -39,17 +39,15 @@ for fili in filelist:
 				#print "adding", acronym_dict[key][cat]
 				search_terms = search_terms + acronym_dict[key][cat]
 			for cat in ['noun']:
-				#special treatment for nouns to accept plurals
+# 				#special treatment for nouns to accept plurals
 				print "adding", acronym_dict[key][cat]
-				search_terms = search_terms + [i + "s?" for i in acronym_dict[key][cat]]
-
-print search_terms
+				search_terms = search_terms + [i if i in ["les", "sis"] else i + "s?" for i in acronym_dict[key][cat]]
 
 for i in search_terms:
-	print i
-			
+	print i, search_terms.count(i)
 		
 print "we have {} search terms".format(len(search_terms))
+print "we have {} set search terms".format(len(set(search_terms)))
 
 
 
@@ -65,7 +63,7 @@ def clippingcounter(clipping_list, input_dir):
 		clipping_list=['LOL', 'ROFL', 'ASL', 'BRB']
 		result=[0,0,2,0] 
 		"""
-		excludelist=set(["oks", "fbs", "PSS", "VAS", "vas", "BCS", "bcs", "NES", "nes", "SMS", "sms", "SAS", "SSS", "sss", "nsas", "mias"])
+		excludelist=[]
 		
 		#dicts to store results
 		dicti=defaultdict(float)
@@ -75,17 +73,20 @@ def clippingcounter(clipping_list, input_dir):
 		#regex, lower and pluralize
 		for i in clipping_list:
 			print i, "\n"
-		clipping_list=[re.compile("\W((?:"+i+"|"+i.lower()+")[sS]?)\W") for i in clipping_list]
+		clipping_list=[re.compile("\W("+i+")\W") for i in clipping_list]
 		clipping_list=set(clipping_list)
 		print [i.pattern for i in clipping_list]
 		#iterate and match
 		for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 			print dir
-			for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:100]:
+			for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
 				with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 					inputad=ct.adtextextractor(inputtext.read(), fili)
 				#result is a list of lists which contain matches for each regex/acronym
-				result=[([m for m in i.findall(inputad) if not m in excludelist], i.pattern) for i in acronym_list] 
+				result=[([m for m in i.findall(inputad) if not m in excludelist], i.pattern) for i in clipping_list] 
+				o=[(r,os.path.join(input_dir, dir, fili)) for r in result if len(r[0]) > 2]
+				if o:
+					print o
 				results.append([len(matches) for matches, pattern in result])
 				for matches, pattern in result:
  					#the dicti is {pattern:count, pattern: count, ...}
@@ -95,4 +96,6 @@ def clippingcounter(clipping_list, input_dir):
 		return results 
 
 
-#x=clippingcounter(search_terms, "/Users/ps22344/Downloads/craig_0208")
+x=clippingcounter(search_terms, "/Users/ps22344/Downloads/craig_0208")
+print x
+print "lenni", len(x)
