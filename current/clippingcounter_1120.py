@@ -15,26 +15,31 @@ from collections import defaultdict
 
 
 filelist=[
-"/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_post_3chars_final_1117.json",
-"/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_post_4chars_final_1117.json",
-"/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_post_5chars_final_1117.json",
-"/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_post_6chars_final_1117.json",
-"/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_2chars_final_1117.json",
-"/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_3chars_final_1117.json",
-"/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_4chars_final_1117.json",
-"/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_5chars_final_1117.json",
-"/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_6chars_final_1117.json",
-"/Users/ps22344/Downloads/chapter2/current/clippingfiles/picker_yes_7chars_final_1117.json",
+
+'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_yes_2chars_1121.json',
+'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_yes_5chars_1121.json',
+'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_yes_4chars_1121.json',
+'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_post_4chars_1121.json',
+'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_yes_3chars_1121.json',
+'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_post_3chars_1121.json',
+'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_yes_7chars_1121.json',
+'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_yes_6chars_1121.json',
+'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_post_6chars_1121.json',
+'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_post_5chars_1121.json'
 ]
 
 search_terms = []
 
+
 for fili in filelist:
 	with codecs.open(fili, "r", "utf-8") as inputfile:
-		clipping_dict=json.load(inputfile)
-		for key in [i for i in clipping_dict.keys()]:
-			#print "adding", key
-			search_terms.append(key)
+		acronym_dict=json.load(inputfile)
+		for key in [i for i in acronym_dict.keys() if i not in ["delete", "other"]]:
+			for cat in ['X', 'noun', ]:
+				print "adding", acronym_dict[key][cat]
+				search_terms = search_terms + acronym_dict[key][cat]
+
+print search_terms
 
 for i in search_terms:
 	print i
@@ -86,4 +91,4 @@ def clippingcounter(clipping_list, input_dir):
 		return results 
 
 
-x=clippingcounter(search_terms, "/Users/ps22344/Downloads/craig_0208")
+#x=clippingcounter(search_terms, "/Users/ps22344/Downloads/craig_0208")
