@@ -94,7 +94,7 @@ def clippingcounter(clipping_list, input_dir):
 		print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
 		for entry in {k:v for k,v in matchesdicti.items() if v > 10}:
 			print entry
-			tk.tokenfinder(entry, "/Users/ps22344/Downloads/craig_0208", length=30)
+			tk.tokenfinder([entry], "/Users/ps22344/Downloads/craig_0208", length=30)
 		return results 
 
 
