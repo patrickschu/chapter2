@@ -61,7 +61,7 @@ def acronymcounter(acronym_list, input_dir):
 		#iterate and match
 		for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 			print dir
-			for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:100]:
+			for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
 				with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 					inputad=ct.adtextextractor(inputtext.read(), fili)
 				#result is a list of lists which contain matches for each regex/acronym
