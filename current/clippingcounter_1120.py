@@ -35,9 +35,13 @@ for fili in filelist:
 	with codecs.open(fili, "r", "utf-8") as inputfile:
 		acronym_dict=json.load(inputfile)
 		for key in [i for i in acronym_dict.keys() if i not in ["delete", "other"]]:
-			for cat in ['X', 'noun', ]:
-				print "adding", acronym_dict[key][cat]
+			for cat in ['X']:
+				#print "adding", acronym_dict[key][cat]
 				search_terms = search_terms + acronym_dict[key][cat]
+			for cat in ['noun']:
+				#special treatment for nouns to accept plurals
+				print "adding", acronym_dict[key][cat]
+				search_terms = search_terms + [i + "s?" for i in acronym_dict[key][cat]]
 
 print search_terms
 
