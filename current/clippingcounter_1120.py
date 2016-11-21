@@ -12,6 +12,7 @@ import codecs
 import re
 import clustertools as ct
 from collections import defaultdict
+import tokenfinder_1004 as tk
 
 
 filelist=[
@@ -70,10 +71,8 @@ def clippingcounter(clipping_list, input_dir):
 		matchesdicti=defaultdict(list)
 		results=[]
 		
-		#regex, lower and pluralize
-		for i in clipping_list:
-			print i, "\n"
 		clipping_list=[re.compile("[^web]\W("+i+")\W") if i in ["cams?", "sites?"] else re.compile("\W("+i+")\W") for i in clipping_list]
+		#clipping_list=[re.compile("\W("+i+")\W") for i in clipping_list]
 		clipping_list=set(clipping_list)
 		print [i.pattern for i in clipping_list]
 		#iterate and match
@@ -81,21 +80,24 @@ def clippingcounter(clipping_list, input_dir):
 			print dir
 			for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
 				with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
-					inputad=ct.adtextextractor(inputtext.read(), fili)
+					inputad=ct.adtextextractor(inputtext.read(), fili).lower()
 				#result is a list of lists which contain matches for each regex/acronym
 				result=[([m for m in i.findall(inputad) if not m in excludelist], i.pattern) for i in clipping_list] 
-				o=[(r,os.path.join(input_dir, dir, fili)) for r in result if len(r[0]) > 2]
-				if o:
-					print o
+				# o=[(r,os.path.join(input_dir, dir, fili)) for r in result if len(r[0]) > 2]
+# 				if o:
+# 					print o
 				results.append([len(matches) for matches, pattern in result])
 				for matches, pattern in result:
  					#the dicti is {pattern:count, pattern: count, ...}
  					dicti[pattern]=dicti[pattern]+len(matches)
  					matchesdicti[pattern]=matchesdicti[pattern]+matches
 		print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
+		for entry in {k:v for k,v in matchesdicti.items() if v > 10}:
+			print entry
+			tk.tokenfinder(entry, "/Users/ps22344/Downloads/craig_0208", length=30)
 		return results 
 
 
 x=clippingcounter(search_terms, "/Users/ps22344/Downloads/craig_0208")
-print x
-print "lenni", len(x)
+
+print "rows in result:", len(x)
