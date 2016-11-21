@@ -73,7 +73,7 @@ def clippingcounter(clipping_list, input_dir):
 		#regex, lower and pluralize
 		for i in clipping_list:
 			print i, "\n"
-		clipping_list=[re.compile("\W("+i+")\W") for i in clipping_list]
+		clipping_list=[re.compile("[^web]\W("+i+")\W") if i in ["cams?", "sites?"] else re.compile("\W("+i+")\W") for i in clipping_list]
 		clipping_list=set(clipping_list)
 		print [i.pattern for i in clipping_list]
 		#iterate and match
