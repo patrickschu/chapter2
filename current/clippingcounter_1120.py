@@ -31,32 +31,30 @@ search_terms = []
 
 for fili in filelist:
 	with codecs.open(fili, "r", "utf-8") as inputfile:
-		acronym_dict=json.load(inputfile)
-		for key in [i for i in acronym_dict.keys() if i not in ["blend", "abbreviation", "clipping", "delete", "other"]]:
-			for cat in ['X', 'location']:
-				print "adding", acronym_dict[key][cat]
-				search_terms = search_terms + acronym_dict[key][cat]
+		clipping_dict=json.load(inputfile)
+		for key in [i for i in clipping_dict.keys()]:
+			#print "adding", key
+			search_terms.append(key)
 
-print search_terms
+for i in search_terms:
+	print i
 			
 		
 print "we have {} search terms".format(len(search_terms))
 
 
-#for key in acronym_dict
 
 
-def acronymcounter(acronym_list, input_dir):
+def clippingcounter(clipping_list, input_dir):
 		"""
-		The acronymcounter uses the acronym_list to count instances	of the abbreviations listed in there. 
+		The clipping uses the clipping_list to count instances	of the clippings listed in there. 
 		Here, we make that list out of the shorteningdict jsons created earlier. 
 		The regex is designed to find lowercase and uppercase versions of each, plus plurals.
 		The input_dir contains the text files to be iterated over. 
 		It returns a list of match counts.
 		e.g.
-		acronym_list=['LOL', 'ROFL', 'ASL', 'BRB']
+		clipping_list=['LOL', 'ROFL', 'ASL', 'BRB']
 		result=[0,0,2,0] 
-		NOTE:we can consider running location and schools over a different regex that does not include plural s.
 		"""
 		excludelist=set(["oks", "fbs", "PSS", "VAS", "vas", "BCS", "bcs", "NES", "nes", "SMS", "sms", "SAS", "SSS", "sss", "nsas", "mias"])
 		
@@ -66,9 +64,11 @@ def acronymcounter(acronym_list, input_dir):
 		results=[]
 		
 		#regex, lower and pluralize
-		acronym_list=[re.compile("\W((?:"+i+"|"+i.lower()+")[sS]?)\W") for i in acronym_list]
-		acronym_list=set(acronym_list)
-		print [i.pattern for i in acronym_list]
+		for i in clipping_list:
+			print i, "\n"
+		clipping_list=[re.compile("\W((?:"+i+"|"+i.lower()+")[sS]?)\W") for i in clipping_list]
+		clipping_list=set(clipping_list)
+		print [i.pattern for i in clipping_list]
 		#iterate and match
 		for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 			print dir
@@ -86,4 +86,4 @@ def acronymcounter(acronym_list, input_dir):
 		return results 
 
 
-x=acronymcounter(search_terms, "/Users/ps22344/Downloads/craig_0208")
+x=clippingcounter(search_terms, "/Users/ps22344/Downloads/craig_0208")
