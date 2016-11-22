@@ -25,8 +25,8 @@ print string.ascii_letters
 	
 #u2 uR ub UC ru  2b c ya
 
-alphabet = {k:0 for k in [i for i in list(string.ascii_letters) if not i in ["M", "L", "m","l", "g", "j", "v", "s", "t"]]}
-print alphabet
+alphabet = {k:0 for k in [i for i in list(string.ascii_letters) if not i in ["q", "p", "i", "I", "M", "L", "m","l", "g", "j", "v", "s", "t"]]}
+print "these are our search terms", alphabet
 excludelist=[]
 
 
