@@ -25,7 +25,7 @@ def tokenfinder(input_list, input_path, length=40, lower_case=True):
 	for item in input_list:
 		typedict[re.compile(r".{,"+str(length)+"}"+unicode(item)+".{,"+str(length)+"}")]=0
 	for typi in typedict:
-		print typi.pattern	
+		print "***", typi.pattern	
 	totalhits=[]
 	#iterate over files
 	for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
