@@ -17,16 +17,16 @@ import tokenfinder_1004 as tk
 
 filelist=[
 
-'current/clippingfiles/clippingdict_catsfinal_post_3chars_1121.json',
-'current/clippingfiles/clippingdict_catsfinal_post_4chars_1121.json',
-'current/clippingfiles/clippingdict_catsfinal_post_5chars_1121.json',
-'current/clippingfiles/clippingdict_catsfinal_post_6chars_1121.json',
-'current/clippingfiles/clippingdict_catsfinal_yes_2chars_1121.json',
-'current/clippingfiles/clippingdict_catsfinal_yes_3chars_1121.json',
-'current/clippingfiles/clippingdict_catsfinal_yes_4chars_1121.json',
-'current/clippingfiles/clippingdict_catsfinal_yes_5chars_1121.json',
-'current/clippingfiles/clippingdict_catsfinal_yes_6chars_1121.json',
-'current/clippingfiles/clippingdict_catsfinal_yes_7chars_1121.json'
+'clippingfiles/clippingdict_catsfinal_post_3chars_1121.json',
+'clippingfiles/clippingdict_catsfinal_post_4chars_1121.json',
+'clippingfiles/clippingdict_catsfinal_post_5chars_1121.json',
+'clippingfiles/clippingdict_catsfinal_post_6chars_1121.json',
+'clippingfiles/clippingdict_catsfinal_yes_2chars_1121.json',
+'clippingfiles/clippingdict_catsfinal_yes_3chars_1121.json',
+'clippingfiles/clippingdict_catsfinal_yes_4chars_1121.json',
+'clippingfiles/clippingdict_catsfinal_yes_5chars_1121.json',
+'clippingfiles/clippingdict_catsfinal_yes_6chars_1121.json',
+'clippingfiles/clippingdict_catsfinal_yes_7chars_1121.json'
 ]
 
 search_terms = []
