@@ -25,7 +25,7 @@ print string.ascii_letters
 	
 #u2 uR ub UC ru  2b c ya
 
-alphabet = {k:0 for k in list(string.ascii_letters)}
+alphabet = {k:0 for k in [i for i in list(string.ascii_letters) if not i in ["M", "L", "m","l", "g", "j", "v", "s", "t"]]}
 print alphabet
 excludelist=[]
 
@@ -36,13 +36,13 @@ def characterfinder(input_dir, input_dict):
 	matchesdicti=defaultdict(list)
 	for entry in input_dict:
 		print entry
-	characterlist=set([re.compile("\W"+i+"\W") for i in input_dict.keys()])
+	characterlist=set([re.compile(" "+i+" ") for i in input_dict.keys()])
 	print [i.pattern for i in characterlist]
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
 		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
-				inputad=ct.adtextextractor(inputtext.read(), fili).lower()
+				inputad=ct.adtextextractor(inputtext.read(), fili)
 			#result is a list of lists which contain matches for each regex/acronym
 			result=[([m for m in i.findall(inputad) if not m in excludelist], i.pattern) for i in characterlist] 
 			results.append([len(matches) for matches, pattern in result])
