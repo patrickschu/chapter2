@@ -5,6 +5,9 @@ import string
 import os 
 import clustertools as ct
 import tokenfinder_1004 as tk
+from collections import defaultdict
+
+
 print string.ascii_letters
 
 # iding letters for words
@@ -24,12 +27,17 @@ print string.ascii_letters
 
 alphabet = {k:0 for k in list(string.ascii_letters)}
 print alphabet
+excludelist=[]
+
 
 def characterfinder(input_dir, input_dict):
+	results=[]
+	dicti=defaultdict(float)
+	matchesdicti=defaultdict(list)
 	for entry in input_dict:
 		print entry
 	characterlist=set([re.compile("\W"+i+"\W") for i in input_dict.keys()])
-	print characterlist
+	print [i.pattern for i in characterlist]
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
 		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
