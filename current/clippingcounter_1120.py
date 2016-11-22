@@ -42,7 +42,7 @@ for fili in filelist:
 			for cat in ['noun']:
 # 				#special treatment for nouns to accept plurals
 				print "adding", acronym_dict[key][cat]
-				search_terms = search_terms + [i if i in ["les", "sis"] else i + "s?" for i in acronym_dict[key][cat]]
+				search_terms = search_terms + [i if i in ["loc", "les", "sis"] else i + "s?" for i in acronym_dict[key][cat]]
 
 for i in search_terms:
 	print i, search_terms.count(i)
