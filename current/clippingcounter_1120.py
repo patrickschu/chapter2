@@ -17,16 +17,16 @@ import tokenfinder_1004 as tk
 
 filelist=[
 
-'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_yes_2chars_1121.json',
-'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_yes_5chars_1121.json',
-'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_yes_4chars_1121.json',
-'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_post_4chars_1121.json',
-'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_yes_3chars_1121.json',
-'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_post_3chars_1121.json',
-'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_yes_7chars_1121.json',
-'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_yes_6chars_1121.json',
-'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_post_6chars_1121.json',
-'/Users/ps22344/Downloads/chapter2/current/clippingdict_catsfinal_post_5chars_1121.json'
+'current/clippingfiles/clippingdict_catsfinal_post_3chars_1121.json',
+'current/clippingfiles/clippingdict_catsfinal_post_4chars_1121.json',
+'current/clippingfiles/clippingdict_catsfinal_post_5chars_1121.json',
+'current/clippingfiles/clippingdict_catsfinal_post_6chars_1121.json',
+'current/clippingfiles/clippingdict_catsfinal_yes_2chars_1121.json',
+'current/clippingfiles/clippingdict_catsfinal_yes_3chars_1121.json',
+'current/clippingfiles/clippingdict_catsfinal_yes_4chars_1121.json',
+'current/clippingfiles/clippingdict_catsfinal_yes_5chars_1121.json',
+'current/clippingfiles/clippingdict_catsfinal_yes_6chars_1121.json',
+'current/clippingfiles/clippingdict_catsfinal_yes_7chars_1121.json'
 ]
 
 search_terms = []
@@ -94,7 +94,6 @@ def clippingcounter(clipping_list, input_dir):
 		print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
 		for entry in {k:v for k,v in matchesdicti.items() if v > 10}:
 			print entry
-			("[\(\)]", "XXXXX", tt)
 			tk.tokenfinder([re.sub("[\(\)]", "", entry)], "/Users/ps22344/Downloads/craig_0208")
 		return results 
 
