@@ -12,7 +12,7 @@ import json
 #dataset
 dir='/Users/ps22344/Downloads/craig_0208/'
 #search terms
-search_terms=[r'\sA\s']
+search_terms=[r'\Wcams?\W']
 
 
 

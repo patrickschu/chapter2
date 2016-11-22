@@ -1,7 +1,10 @@
 import json
 import codecs
+import re
 
-tt="lolkid"
+tt="lol(kid)"
 
-print tt[-3:]
+#print tt[-3:-1]
+
+print re.sub("[\(\)]", "XXXXX", tt)
 
