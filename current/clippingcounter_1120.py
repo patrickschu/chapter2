@@ -71,7 +71,7 @@ def clippingcounter(clipping_list, input_dir):
 		matchesdicti=defaultdict(list)
 		results=[]
 		
-		clipping_list=[re.compile("[^web]\W("+i+")\W") if i in ["cams?", "sites?"] else re.compile("\W("+i+")\W") for i in clipping_list]
+		clipping_list=[re.compile("[^web|i]\W("+i+")\W") if i in ["cams?", "sites?"] else re.compile("\W("+i+")\W") for i in clipping_list]
 		#clipping_list=[re.compile("\W("+i+")\W") for i in clipping_list]
 		clipping_list=set(clipping_list)
 		print [i.pattern for i in clipping_list]
