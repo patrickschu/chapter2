@@ -25,7 +25,7 @@ print string.ascii_letters
 	
 #u2 uR ub UC ru  2b c ya
 
-alphabet = {k:0 for k in [i for i in list(string.ascii_letters) if not i in ["q", "p", "i", "I", "M", "L", "m","l", "g", "j", "v", "s", "t"]]}
+alphabet = {k:0 for k in [i for i in list(string.ascii_letters) if not i in ["Q", "q", "P", "p",  "I", "i", "M", "m", "L", "l", "g", "j", "v", "s", "t", "h", "H", "K", "k", "A", "a", "E", "e", "Z", "z"]]}
 print "these are our search terms", alphabet
 excludelist=[]
 
@@ -53,7 +53,7 @@ def characterfinder(input_dir, input_dict):
 	print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
 	for entry in {k:v for k,v in matchesdicti.items() if v > 10}:
 		print entry
-		tk.tokenfinder([re.sub("[\(\)]", "", entry)], "/Users/ps22344/Downloads/craig_0208")
+		tk.tokenfinder([re.sub("[\(\)]", "", entry)], "/Users/ps22344/Downloads/craig_0208", lower_case=False)
 	return results 
 		
 characterfinder( "/Users/ps22344/Downloads/craig_0208", alphabet)
