@@ -29,7 +29,7 @@ print string.ascii_letters
 # "D", "d", "F", "f", "G", "J", "Q", "q", "P", "p",  "I", "i", "M", "m", "O", "o", "L", "l", "g", "j", "V", "v", "s", "S", "t", "h", "H", "K", "k", "A", "a", "E", "e", "Z", "z"
 # ]]}
 # print "these are our search terms", alphabet
-# excludelist=[]
+excludelist=[]
 
 
 def characterfinder(input_dir, input_dict):
@@ -38,7 +38,7 @@ def characterfinder(input_dir, input_dict):
 	matchesdicti=defaultdict(list)
 	for entry in input_dict:
 		print entry
-	characterlist=set([re.compile(" "+i+" ") for i in input_dict.keys()])
+	characterlist=set([re.compile(" "+i+"-") for i in input_dict.keys()])
 	print [i.pattern for i in characterlist]
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
@@ -58,7 +58,7 @@ def characterfinder(input_dir, input_dict):
 		tk.tokenfinder([re.sub("[\(\)]", "", entry)], "/Users/ps22344/Downloads/craig_0208", lower_case=False)
 	return results 
 		
-#characterfinder( "/Users/ps22344/Downloads/craig_0208", alphabet)
+#characterfinder( "/Users/ps22344/Downloads/craig_0208", {"X":0})
 
 ######
 #helper funcs
@@ -69,20 +69,21 @@ def capitalizer(input_list):
 	return [i.upper()+"|"+i for i in input_list]
 
 
-xpostwords=["army", "navy", "wife", "drug", "baggage", "drama", "user"]
-xprewords=["my", "i'm"]
+xpostwords=["army", "navy", "wife", "husband", "gf", "girlfriends?", "drug", "baggage", "drama", "user", "boy", "of low", "anything", " hockey"]
+xprewords=["[Mm]y", "[Ii]'m", "[Yy]our"]
 
 
 counterdict={
-"xX":re.compile("("+"|".join(capitalizer(xprewords))+")\W+([Xx])\W+("+"|".join(capitalizer(xpostwords))+")")
+"xX":["(?:"+"|".join(capitalizer(xprewords))+")\W+([Xx])\W+" , "\W+([Xx])\W+(?:"+"|".join(capitalizer(xpostwords))+")"]
 }
-print counterdict["xX"].pattern
+
 
 def charactercounter(input_dir, input_dict):
 	results=[]
 	dicti=defaultdict(float)
 	matchesdicti=defaultdict(list)
-	search_terms=set([i for i in input_dict.values()])
+	#search_terms=set([t for i in input_dict.values() for t in i])
+	search_terms=[re.compile("|".join(i)) for i in input_dict.values()]
 	print "search terms",  [i.pattern for i in search_terms]
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
@@ -90,18 +91,23 @@ def charactercounter(input_dir, input_dict):
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 				inputad=ct.adtextextractor(inputtext.read(), fili)
 			#result is a list of lists which contain matches for each regex/acronym
-			result=[([m for m in i.findall(inputad)], i.pattern) for i in search_terms] 
+			#the list incomprehension just deletes empty search results from the "|" search
+			result=[([t for m in i.findall(inputad) for t in m if t], i.pattern) for i in search_terms] 
 			#print result
 			results.append([len(matches) for matches, pattern in result])
 			for matches, pattern in result:
 				if matches:
 					#the dicti is {pattern:count, pattern: count, ...}
-					dicti[pattern]=dicti[pattern]+len(matches)
-					matchesdicti[matches[0][1]]=matchesdicti[matches[0][1]]+matches
-	#print "matchesdict", len(matchesdicti), matchesdicti
+					dicti[matches[0]]=dicti[matches[0]]+len(matches)
+					#print len(matches[0]), 'total', len(matches)
+					#print inputad[inputad.index(matches[0])-20:inputad.index(matches[0])+20]
+					#matchesdicti collects the matches per regex, dicti per feature
+					matchesdicti[pattern]=matchesdicti[pattern]+matches
 	#print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
 	for entry in {k:v for k,v in matchesdicti.items()}:
-		print "\n", entry, len(matchesdicti[entry])
+		print "\n", entry, matchesdicti[entry]
+	for entry in dicti:
+		print entry, dicti[entry]
 	#	tk.tokenfinder([re.sub("[\(\)]", "", entry)], "/Users/ps22344/Downloads/craig_0208", lower_case=False)
 	return results 
 
