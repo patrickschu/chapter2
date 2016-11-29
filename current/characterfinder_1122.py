@@ -69,7 +69,7 @@ def capitalizer(input_list):
 	return [i.upper()+"|"+i for i in input_list]
 
 
-xpostwords=["army", "navy", "wife", "husband", "gf", "girlfriends?", "drug", "baggage", "drama", "user", "boy", "of low", "anything", " hockey"]
+xpostwords=["army", "navy", "wife", "husband", "gf", "girlfriends?", "drug", "baggage", "drama", "user", "boy", "of low", "anything", " hockey", "slaves", "relationship"]
 xprewords=["[Mm]y", "[Ii]'m", "[Yy]our"]
 
 
@@ -96,7 +96,8 @@ def charactercounter(input_dir, input_dict):
 			#print result
 			results.append([len(matches) for matches, pattern in result])
 			for matches, pattern in result:
-				if matches:
+				if len(matches) > 1:
+					print matches, fili
 					#the dicti is {pattern:count, pattern: count, ...}
 					dicti[matches[0]]=dicti[matches[0]]+len(matches)
 					#print len(matches[0]), 'total', len(matches)
