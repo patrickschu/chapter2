@@ -23,7 +23,7 @@ xprewords=["[Mm]y", "[Ii]'m", "[Yy]our"]
 
 counterdict={
 #"xX":["(?:"+"|".join(capitalizer(xprewords))+")\W+([Xx])\W+" , "\W+([Xx])\W+(?:"+"|".join(capitalizer(xpostwords))+")"]
-"cC":["(?:"+"|".join(cprewords)+")\W+([Cc])\W+" , "\W+([Cc])\W+(?:"+"|".join(cpostwords)+")"]
+"cC":["(?:"+"|".join(cprewords)+")\s+([Cc])\s+" , "\s+([Cc])\s+(?:"+"|".join(cpostwords)+")"]
 }
 
 
@@ -48,7 +48,7 @@ def charactercounter(input_dir, input_dict):
 				if len(matches) > 1:
 					print "multiple matches", matches, os.path.join(input_dir, dir, fili)
 				if len(matches) > 0:
-					print len(matches)
+					#print len(matches)
 					#the dicti is {pattern:count, pattern: count, ...}
 					for res in matches[0]:
 						dicti[res]=dicti[res]+1
@@ -61,7 +61,8 @@ def charactercounter(input_dir, input_dict):
 		print "\n", entry, matchesdicti[entry]
 	for entry in dicti:
 		print entry, dicti[entry]
-		tk.tokenfinder([entry], "/Users/ps22344/Downloads/craig_0208", lower_case=False)
+	for entry in matchesdicti:
+		tk.tokenfinder(["(?:"+"|".join(cprewords)+")\W+[Cc]\W+"], "/Users/ps22344/Downloads/craig_0208", length= 50, lower_case=False)
 	return results 
 
 
