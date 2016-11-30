@@ -11,7 +11,8 @@ def capitalizer(input_list):
 	"""
 	return [i.upper()+"|"+i for i in input_list]
 
-
+cpostwords=["where","when","how (things|we)", "[Yy][Aa]"]
+cprewords=[" 2", "[Uu]", "[Tt][Oo]","[Ll][Ee][Tt]'?s?", "[Cc]ould","can","will", "up", "I'll"]
 
 #finished
 xpostwords=["army", "navy", "wife", "husband", "gf", "girlfriends?", "drug", "baggage", "drama", "user", "boy", "of low", "anything", " hockey", "slaves", "relationship"]
@@ -19,7 +20,8 @@ xprewords=["[Mm]y", "[Ii]'m", "[Yy]our"]
 
 
 counterdict={
-"xX":["(?:"+"|".join(capitalizer(xprewords))+")\W+([Xx])\W+" , "\W+([Xx])\W+(?:"+"|".join(capitalizer(xpostwords))+")"]
+#"xX":["(?:"+"|".join(capitalizer(xprewords))+")\W+([Xx])\W+" , "\W+([Xx])\W+(?:"+"|".join(capitalizer(xpostwords))+")"]
+"cC":["(?:"+"|".join(cprewords)+")\W+([Cc])\W+" , "\W+([Cc])\W+(?:"+"|".join(cpostwords)+")"]
 }
 
 
