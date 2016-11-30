@@ -14,7 +14,7 @@ def capitalizer(input_list):
 	return [i.upper()+"|"+i for i in input_list]
 
 cpostwords=["where","when","how (?:things|we)", "[Yy][Aa]"]
-cprewords=[" 2", "[Uu]", "[Tt][Oo]","[Ll][Ee][Tt]'?s?", "[Cc]ould","can","will", "up", "I'll"]
+cprewords=[" 2", "[^ f] u", "U", "[Tt][Oo]","[Ll][Ee][Tt]'?s?", "[Cc]ould","can","will", "up", "I'll"]
 
 #finished
 xpostwords=["army", "navy", "wife", "husband", "gf", "girlfriends?", "drug", "baggage", "drama", "user", "boy", "of low", "anything", " hockey", "slaves", "relationship"]
@@ -62,7 +62,7 @@ def charactercounter(input_dir, input_dict):
 	for entry in dicti:
 		print entry, dicti[entry]
 	for entry in matchesdicti:
-		tk.tokenfinder(["(?:"+"|".join(cprewords)+")\W+[Cc]\W+"], "/Users/ps22344/Downloads/craig_0208", length= 50, lower_case=False)
+		tk.tokenfinder(["(?:"+"|".join(cprewords)+")\s+[Cc]\s+"], "/Users/ps22344/Downloads/craig_0208", length= 50, lower_case=False)
 	return results 
 
 
