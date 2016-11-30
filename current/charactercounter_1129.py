@@ -1,7 +1,9 @@
 import codecs
 import re
 import os
-
+from collections import defaultdict
+import clustertools as ct
+import tokenfinder_1004 as tk
 
 ######
 #helper funcs
@@ -11,7 +13,7 @@ def capitalizer(input_list):
 	"""
 	return [i.upper()+"|"+i for i in input_list]
 
-cpostwords=["where","when","how (things|we)", "[Yy][Aa]"]
+cpostwords=["where","when","how (?:things|we)", "[Yy][Aa]"]
 cprewords=[" 2", "[Uu]", "[Tt][Oo]","[Ll][Ee][Tt]'?s?", "[Cc]ould","can","will", "up", "I'll"]
 
 #finished
@@ -59,8 +61,8 @@ def charactercounter(input_dir, input_dict):
 		print "\n", entry, matchesdicti[entry]
 	for entry in dicti:
 		print entry, dicti[entry]
-	#	tk.tokenfinder([re.sub("[\(\)]", "", entry)], "/Users/ps22344/Downloads/craig_0208", lower_case=False)
+		tk.tokenfinder([entry], "/Users/ps22344/Downloads/craig_0208", lower_case=False)
 	return results 
 
 
-#charactercounter("/Users/ps22344/Downloads/craig_0208", counterdict)
+charactercounter("/Users/ps22344/Downloads/craig_0208", counterdict)
