@@ -25,9 +25,9 @@ print string.ascii_letters
 	
 #u2 uR ub UC ru  2b c ya
 
-# alphabet = {k:0 for k in [i for i in list(string.ascii_letters) if not i in [
-# "D", "d", "F", "f", "G", "J", "Q", "q", "P", "p",  "I", "i", "M", "m", "O", "o", "L", "l", "g", "j", "V", "v", "s", "S", "t", "h", "H", "K", "k", "A", "a", "E", "e", "Z", "z"
-# ]]}
+alphabet = {k:0 for k in [i for i in list(string.ascii_letters) if not i in [
+"D", "d", "F", "f", "G", "J", "Q", "q", "P", "p",  "I", "i", "M", "m", "O", "o", "L", "l", "g", "j", "V", "v", "s", "S", "t", "h", "H", "K", "k", "A", "a", "E", "e", "Z", "z"
+]]}
 # print "these are our search terms", alphabet
 excludelist=[]
 
@@ -38,7 +38,7 @@ def characterfinder(input_dir, input_dict):
 	matchesdicti=defaultdict(list)
 	for entry in input_dict:
 		print entry
-	characterlist=set([re.compile(" "+i+"-") for i in input_dict.keys()])
+	characterlist=set([re.compile(" "+i+" ") for i in input_dict.keys()])
 	print [i.pattern for i in characterlist]
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
@@ -58,7 +58,7 @@ def characterfinder(input_dir, input_dict):
 		tk.tokenfinder([re.sub("[\(\)]", "", entry)], "/Users/ps22344/Downloads/craig_0208", lower_case=False)
 	return results 
 		
-#characterfinder( "/Users/ps22344/Downloads/craig_0208", {"X":0})
+characterfinder( "/Users/ps22344/Downloads/craig_0208", {'c':0})
 
 ######
 #helper funcs
@@ -97,13 +97,16 @@ def charactercounter(input_dir, input_dict):
 			results.append([len(matches) for matches, pattern in result])
 			for matches, pattern in result:
 				if len(matches) > 1:
-					print matches, fili
+					print "multiple matches", matches, os.path.join(input_dir, dir, fili)
+				if len(matches) > 0:
+					print len(matches)
 					#the dicti is {pattern:count, pattern: count, ...}
-					dicti[matches[0]]=dicti[matches[0]]+len(matches)
+					for res in matches[0]:
+						dicti[res]=dicti[res]+1
 					#print len(matches[0]), 'total', len(matches)
 					#print inputad[inputad.index(matches[0])-20:inputad.index(matches[0])+20]
 					#matchesdicti collects the matches per regex, dicti per feature
-					matchesdicti[pattern]=matchesdicti[pattern]+matches
+						matchesdicti[pattern]=matchesdicti[pattern]+matches
 	#print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
 	for entry in {k:v for k,v in matchesdicti.items()}:
 		print "\n", entry, matchesdicti[entry]
@@ -113,4 +116,4 @@ def charactercounter(input_dir, input_dict):
 	return results 
 
 
-charactercounter("/Users/ps22344/Downloads/craig_0208", counterdict)
+#charactercounter("/Users/ps22344/Downloads/craig_0208", counterdict)
