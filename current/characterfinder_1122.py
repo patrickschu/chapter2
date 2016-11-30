@@ -58,6 +58,6 @@ def characterfinder(input_dir, input_dict):
 		tk.tokenfinder([re.sub("[\(\)]", "", entry)], "/Users/ps22344/Downloads/craig_0208", lower_case=False)
 	return results 
 		
-characterfinder( "/Users/ps22344/Downloads/craig_0208", {'c':0})
+characterfinder( "/Users/ps22344/Downloads/craig_0208", {"ur":0})
 
 
