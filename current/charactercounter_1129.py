@@ -25,7 +25,7 @@ cprewords=[" 2", "[^ f] u", "U", "[Tt][Oo]","[Ll][Ee][Tt]'?s?", "[Cc]ould","can"
 counterdict={
 #"xX":["(?:"+"|".join(capitalizer(xprewords))+")\W+([Xx])\W+" , "\W+([Xx])\W+(?:"+"|".join(capitalizer(xpostwords))+")"]
 #"cC":["(?:"+"|".join(cprewords)+")\s+([Cc])\s+" , "\s+([Cc])\s+(?:"+"|".join(cpostwords)+")"]
-"u":["\s+(u)\s+"],
+#"u":["\s+(u)\s+"],
 #"U":["\s+(U)\s+"+"".join(upostwords)]
 }
 
