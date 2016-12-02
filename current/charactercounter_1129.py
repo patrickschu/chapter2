@@ -30,8 +30,8 @@ counterdict={
 #"cC":["(?:"+"|".join(cprewords)+")\s+([Cc])\s+" , "\s+([Cc])\s+(?:"+"|".join(cpostwords)+")"]
 #"u":["\s+(u)\s+"],
 #"U":["\s+(U)\s+"+"".join(upostwords)]
-"r":["(?<!(e|g|t))\s+(r)\s+(?!and b |\&amp;)"]
-#"R":["(?<!rated|[A-Z] [A-Z]|[Tt]oys|Cocks|Girls)\s+(R)\s+(?![A-Z] [A-Z]|R |B |AND [R|B]|&amp;)"]
+#"r":["(?<!(e|g|t))\s+(r)\s+(?!and b |\&amp;)"]
+"R":["(?<!rated|Cocks| [Tt]oys|Girls|[A-Z] [A-Z] [A-Z])\s+(R)\s+(?![A-Z] [A-Z]|R |B |AND [R|B]|&amp;)"]
 }
 
 
