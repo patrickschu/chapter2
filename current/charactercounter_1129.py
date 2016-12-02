@@ -12,14 +12,17 @@ def capitalizer(input_list):
 	returns a list with inputword|inputword.upper() to feed into regex
 	"""
 	return [i.upper()+"|"+i for i in input_list]
+#where (?<!x) means "only if it doesn't have "x" before this point"
+capitalrprewords=[]
+capitalrpostwords=[]
 
-upostwords=["(?!of )"]
 
 #finished
 xpostwords=["army", "navy", "wife", "husband", "gf", "girlfriends?", "drug", "baggage", "drama", "user", "boy", "of low", "anything", " hockey", "slaves", "relationship"]
 xprewords=["[Mm]y", "[Ii]'m", "[Yy]our"]
 cpostwords=["where","when","how (?:things|we)", "[Yy][Aa]"]
 cprewords=[" 2", "[^ f] u", "U", "[Tt][Oo]","[Ll][Ee][Tt]'?s?", "[Cc]ould","can","will", "up", "I'll"]
+upostwords=["(?!of )"]
 
 
 counterdict={
@@ -27,6 +30,8 @@ counterdict={
 #"cC":["(?:"+"|".join(cprewords)+")\s+([Cc])\s+" , "\s+([Cc])\s+(?:"+"|".join(cpostwords)+")"]
 #"u":["\s+(u)\s+"],
 #"U":["\s+(U)\s+"+"".join(upostwords)]
+"r":["(?<!(e|g|t))\s+(r)\s+(?!and b |\&amp;)"]
+#"R":["(?<!rated|[A-Z] [A-Z]|[Tt]oys|Cocks|Girls)\s+(R)\s+(?![A-Z] [A-Z]|R |B |AND [R|B]|&amp;)"]
 }
 
 
@@ -65,7 +70,7 @@ def charactercounter(input_dir, input_dict):
 	for entry in dicti:
 		print entry, dicti[entry]
 	for entry in matchesdicti:
-		tk.tokenfinder(["(?:"+"|".join(cprewords)+")\s+[Cc]\s+"], "/Users/ps22344/Downloads/craig_0208", length= 50, lower_case=False)
+		tk.tokenfinder(["(?<!(e|g|t))\s+(r)\s+(?!(and b |\\&))"], "/Users/ps22344/Downloads/craig_0208", length= 50, lower_case=False)
 	return results 
 
 
