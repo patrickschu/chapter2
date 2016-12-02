@@ -33,7 +33,7 @@ counterdict={
 #"r":["(?<!(e|g|t))\s+(r)\s+(?!and b |\&amp;)"]
 #"R":["(?<!rated|Cocks| [Tt]oys|Girls|[A-Z] [A-Z] [A-Z])\s+(R)\s+(?![A-Z] [A-Z]|R |B |AND [R|B]|&amp;)"]
 #"b":["(?<! size|r and)\s+(b)\s+(?!day |cups?|tits|e |or larger)"]
-"B": ["(?<![A|R] AND| Part|[a-z] F W|&amp;)\s+(B)\s+(?!cups?|tits|level|average|horror|rated|movie|in the world|S |Q |and W |B? ?W)"]
+"B": ["(?<![A|R] AND| Part|\w F W|&amp;)\s+(B)\s+(?!cups?|tits|level|average|horror|rated|movie|in the world|S |Q |and W |B? ?W)"]
 }
 
 
@@ -72,7 +72,7 @@ def charactercounter(input_dir, input_dict):
 	for entry in dicti:
 		print entry, dicti[entry]
 	for entry in matchesdicti:
-		tk.tokenfinder(["(.{,20})(?<![A|R] AND| Part|[a-z] F W|&amp;)\s+(B)\s+(?!cups?|tits|level|average|horror|rated|movie|in the world|S |Q |and W |B? ?W)"], "/Users/ps22344/Downloads/craig_0208", length= 50, lower_case=False)
+		tk.tokenfinder(["(.{,20})(?<![A|R] AND| Part|\w F W|&amp;)\s+(B)\s+(?!cups?|tits|level|average|horror|rated|movie|in the world|S |Q |and W |B? ?W)"], "/Users/ps22344/Downloads/craig_0208", length= 50, lower_case=False)
 	return results 
 
 
