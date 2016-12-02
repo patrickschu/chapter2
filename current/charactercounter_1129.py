@@ -34,7 +34,8 @@ counterdict={
 #"R":["(?<!rated|Cocks| [Tt]oys|Girls|[A-Z] [A-Z] [A-Z])\s+(R)\s+(?![A-Z] [A-Z]|R |B |AND [R|B]|&amp;)"]
 #"b":["(?<! size|r and)\s+(b)\s+(?!day |cups?|tits|e |or larger)"]
 #"B": ["(?<![A|R] AND| Part|. F W|&amp;)\s+(B)\s+(?!cups?|tits|level|average|horror|rated|movie|in the world|S |Q |and W |B? ?W)"]
-"N": ["(?<![A-Z] [A-Z]|Ave) N (?!Houston|Wilmot|Tucson|Dallas|Warren|side|Avalon|St Pete|Scottsdale|Tampa|C[Oo][Uu][Nn][Tt][Yy]|Arl\.|Royaltown|Golden Isles|Oeleans|Ballard Rd|Broward|Ward|angola|Oracle|Hubert Ave|European|Tryon|Hill\w+ |Wil\w+ |[Ss][Uu][Bb][Jj][Ee][Cc][Tt]|state line|for now|of Dayton| AUGHTY|[A-Z] [A-Z] )"]
+"N": ["(?<![A-Z] [A-Z]|Ave| MA)\s+(N)\s+(?!Houston|Wilmot|Tucson|Dallas|Warren|side|Avalon|St Pete|Scottsdale|Tampa|C[Oo][Uu][Nn][Tt][Yy]|Arl\.|Royaltown|Golden Isles|Oeleans|Ballard Rd|Broward|Ward|angola|Oracle|Hubert Ave|European|Tryon|Hill\w+ |Wil\w+ |[Ss][Uu][Bb][Jj][Ee][Cc][Tt]|state line|for now|of Dayton|THE INSIDE|THE SURROUNDING|TIME| AUGHTY|[A-Z] [A-Z] )"],
+#"n": ["(?<!I'm| im|ver)\s+(n)\s+(?!shape|city|town|[Nn]orth|the subject)"]
 }
 
 
@@ -56,7 +57,7 @@ def charactercounter(input_dir, input_dict):
 			#print result
 			results.append([len(matches) for matches, pattern in result])
 			for matches, pattern in result:
-				if len(matches) > 0:
+				if len(matches) > 1:
 					print "multiple matches", matches, os.path.join(input_dir, dir, fili)
 				if len(matches) > 0:
 					#print len(matches)
@@ -73,7 +74,7 @@ def charactercounter(input_dir, input_dict):
 	for entry in dicti:
 		print entry, dicti[entry]
 	for entry in matchesdicti:
-		tk.tokenfinder(["(.{,20})(?<![A|R] AND| Part|. F W|&amp;)\s+(B)\s+(?!cups?|tits|level|average|horror|rated|movie|in the world|S |Q |and W |B? ?W)"], "/Users/ps22344/Downloads/craig_0208", length= 50, lower_case=False)
+		tk.tokenfinder(["(.{,20})(?<![A-Z] [A-Z]|Ave| MA)\s+(N)\s+(?!Houston|Wilmot|Tucson|Dallas|Warren|side|Avalon|St Pete|Scottsdale|Tampa|C[Oo][Uu][Nn][Tt][Yy]|Arl\.|Royaltown|Golden Isles|Oeleans|Ballard Rd|Broward|Ward|angola|Oracle|Hubert Ave|European|Tryon|Hill\w+ |Wil\w+ |[Ss][Uu][Bb][Jj][Ee][Cc][Tt]|state line|for now|of Dayton|THE INSIDE|THE SURROUNDING|TIME| AUGHTY|[A-Z] [A-Z] )"], "/Users/ps22344/Downloads/craig_0208", length= 50, lower_case=False)
 	return results 
 
 
