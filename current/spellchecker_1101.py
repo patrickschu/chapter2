@@ -9,8 +9,8 @@ import re
 import clustertools as ct
 import time
 import os
-
-
+from collections import defaultdict
+import json
 
 
 
@@ -22,15 +22,23 @@ def spellchecker(word):
 	return result
 
 
-# for pati in [i for i in os.listdir('/Users/ps22344/Downloads/craig_0208') if not i.startswith(".")]:
-# 		start=time.time()
-# 		print pati
-# 		for fili in [i for i in os.listdir(os.path.join('/Users/ps22344/Downloads/craig_0208', pati)) if not i.startswith(".")][:500]:
-# 			fili=codecs.open(os.path.join('/Users/ps22344/Downloads/craig_0208', pati, fili), "r", "utf-8")
-# 			inputad=ct.adtextextractor(fili.read(), fili)
-# 			words=ct.tokenizer(inputad)
-# 			
-# 			for item in words:
-# 				spellchecker(item)
-# 		end=time.time()
-# 		print "this took us {} minutes".format(end-start/60)
+for pati in [i for i in os.listdir('/Users/ps22344/Downloads/craig_0208') if not i.startswith(".")]:
+		dict=defaultdict(float)
+		start=time.time()
+		print pati
+		for fili in [i for i in os.listdir(os.path.join('/Users/ps22344/Downloads/craig_0208', pati)) if not i.startswith(".")][:5]:
+			fili=codecs.open(os.path.join('/Users/ps22344/Downloads/craig_0208', pati, fili), "r", "utf-8")
+			inputad=ct.adtextextractor(fili.read(), fili)
+			words=ct.tokenizer(inputad)
+			
+			for item in words:
+				if not spellchecker(item):
+					dict[item]=dict[item]+1
+
+print "\n".join([":".join([i, str(dict[i])]) for i in sorted(dict, key=dict.get, reverse=True)])
+		
+with codecs.open("misspellings_1203.json", "w", "utf-8") as jsonout:
+	json.dump(dict, jsonout)	
+		
+end=time.time()
+print "this took us {} minutes".format(end-start/60)
