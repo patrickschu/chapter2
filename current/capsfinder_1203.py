@@ -9,9 +9,9 @@ abbreviations=["LTR"]
 
 
 capsdict={
-#re.compile("(\W+[A-Z]{3,})\W+"):"all caps",
+re.compile("(\W+[A-Z]{3,})\W+"):"all caps",
 #re.compile("\W+([a-z]+[A-Z]+(?:[a-z]+)?(?:[A-Z]+)?)\W"):"PascalCase",
-re.compile("\W+([A-Z]+[a-z]+[A-Z]+(?:[a-z]+)?)\W"):"CamelCase",
+#re.compile("\W+([A-Z]+[a-z]+[A-Z]+(?:[a-z]+)?)\W"):"CamelCase",
 
 
 }
@@ -36,7 +36,7 @@ def capsfinder(input_dir, input_dict):
 			result=[([t for t in i.findall(inputad) if not t in abbreviations], i.pattern) for i in search_terms] 
 			#print result
 			if len(result) > 1:
-				print "result", len(result), result
+				print "warning result > 1", len(result), result
 			#this is the count we returs
 			results.append([len(matches) for matches, pattern in result])
 			#here we inspect findings. note resultS vs result
