@@ -21,12 +21,12 @@ def spellchecker(word):
 	#print result
 	return result
 
+dict=defaultdict(float)
 
 for pati in [i for i in os.listdir('/Users/ps22344/Downloads/craig_0208') if not i.startswith(".")]:
-		dict=defaultdict(float)
 		start=time.time()
 		print pati
-		for fili in [i for i in os.listdir(os.path.join('/Users/ps22344/Downloads/craig_0208', pati)) if not i.startswith(".")][:5]:
+		for fili in [i for i in os.listdir(os.path.join('/Users/ps22344/Downloads/craig_0208', pati)) if not i.startswith(".")]:
 			fili=codecs.open(os.path.join('/Users/ps22344/Downloads/craig_0208', pati, fili), "r", "utf-8")
 			inputad=ct.adtextextractor(fili.read(), fili)
 			words=ct.tokenizer(inputad)
