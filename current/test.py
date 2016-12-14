@@ -1,18 +1,8 @@
-import json
-import codecs
-import re
+import numpy as np
 
-tt="lol(kid)"
-
-#print tt[-3:-1]
-
-#print re.sub("[\(\)]", "XXXXX", tt)
+t=np.array([[1,1], [2,2]])
 
 
-p1=(1,2)
-p2=(4,4)
+print t, "\n---"
 
-
-	
-dist(p1,p2)
-
+print np.column_stack((t, [[1000,1000,0], [2000,2000,0]]))
