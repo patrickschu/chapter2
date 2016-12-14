@@ -9,7 +9,7 @@ abbreviations=["LTR"]
 
 
 capsdict={
-re.compile("(\W+[A-Z]{3,})\W+"):"all caps",
+re.compile("\W+([A-Z]{3,})\W+"):"all caps",
 #re.compile("\W+([a-z]+[A-Z]+(?:[a-z]+)?(?:[A-Z]+)?)\W"):"PascalCase",
 #re.compile("\W+([A-Z]+[a-z]+[A-Z]+(?:[a-z]+)?)\W"):"CamelCase",
 
@@ -57,4 +57,4 @@ def capsfinder(input_dir, input_dict):
 	return results 
 
 
-capsfinder("/Users/ps22344/Downloads/craig_0208", capsdict)
+capsfinder("/home/ps22344/Downloads/craig_0208", capsdict)
