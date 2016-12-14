@@ -16,6 +16,18 @@ import egrammartools as egram
 	# wordmatrix_with_cat=wordmatrix[1:wordmatrix.shape[0],]
 	# print "with", np.shape(wordmatrix_with_cat)
 	# return (wordmatrix_without_cat, wordmatrix_with_cat, catdicti, filedict)
+#start matrix: np ([file_no1, cat1], [file_no2, cat2],..)
+#for each script: add to matrix ([file_no1, cat1, countX1, countY1, ...], [file_no2, cat2, ...]
+#this is how its done
+
+# import numpy as np
+
+# t=np.array([[1,1], [2,2]])
+
+
+# print t, "\n---"
+
+# print np.column_stack((t, [[1000,1000,0], [2000,2000,0]]))
 
 
 import clustertools as ct
