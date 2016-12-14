@@ -74,8 +74,8 @@ def charactercounter(input_dir, input_dict):
 	for entry in dicti:
 		print entry, dicti[entry]
 	for entry in matchesdicti:
-		tk.tokenfinder(["(.{,20})(?<![A-Z] [A-Z]|Ave| MA)\s+(N)\s+(?!Houston|Ballard|word|Royaton|Wilmot|Tucson|Dallas|Warren|side|Avalon|St Pete|Scottsdale|Tampa|C[Oo][Uu][Nn][Tt][Yy]|[Rr][Oo][Ll][Ll]|Arl\.|Royaltown|Golden Isles|Oeleans|Ballard Rd|Broward|Ward|angola|Oracle|[Hubert|1st] Ave|European|Tryon|Hill\w+ |Wil\w+|[Ss][Uu][Bb][Jj][Ee][Cc][Tt]|state line|for now|with a dick|OT |of (\s+Dayton|Talla\w+)|THE INSIDE|THE SURROUNDING|TIME|AUGHTY|[A-Z] [A-Z] |&amp; 5th)(.{,20})"], "/Users/ps22344/Downloads/craig_0208", length= 50, lower_case=False)
+		tk.tokenfinder(["(.{,20})(?<![A-Z] [A-Z]|Ave| MA)\s+(N)\s+(?!Houston|Ballard|word|Royaton|Wilmot|Tucson|Dallas|Warren|side|Avalon|St Pete|Scottsdale|Tampa|C[Oo][Uu][Nn][Tt][Yy]|[Rr][Oo][Ll][Ll]|Arl\.|Royaltown|Golden Isles|Oeleans|Ballard Rd|Broward|Ward|angola|Oracle|[Hubert|1st] Ave|European|Tryon|Hill\w+ |Wil\w+|[Ss][Uu][Bb][Jj][Ee][Cc][Tt]|state line|for now|with a dick|OT |of (\s+Dayton|Talla\w+)|THE INSIDE|THE SURROUNDING|TIME|AUGHTY|[A-Z] [A-Z] |&amp; 5th)(.{,20})"], "/home/ps22344/Downloads/craig_0208", length= 50, lower_case=False)
 	return results 
 
 
-charactercounter("/Users/ps22344/Downloads/craig_0208", counterdict)
+charactercounter("/home/ps22344/Downloads/craig_0208", counterdict)
