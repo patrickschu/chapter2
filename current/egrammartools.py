@@ -142,8 +142,11 @@ def leetfinder(word_dictionary, dir):
 # done
 
 # the capsfinder needs to be here. it does not yet exist but measures non-standard capitalization
+# the capsfinder is here E:\cygwin\home\ps22344\Downloads\chapter2\current\capsfinder_1203.py
 
 # the singleletterfinder needs to be here. it does not yet exist but finds things like "c u"
+# here it is E:\cygwin\home\ps22344\Downloads\chapter2\current\charactercounter_1129.py
+
 
 ###SECTION 2
 ###ORTHOGRAPHY
