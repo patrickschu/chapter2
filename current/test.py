@@ -3,6 +3,7 @@ import codecs
 import time
 import os
 import clustertools as ct
+import re
 
 t=np.array([[1,1], [2,2]])
 
@@ -25,22 +26,24 @@ def emoticonfinder(dir):
 	featuredict={}
 	with codecs.open('/home/ps22344/Downloads/chapter2/textfiles/emolist_final.txt', "r", "utf-8") as inputtext:
 		for line in inputtext.readlines():
-			featuredict[line.rstrip("\n")]=0
+			featuredict[re.compile("\W"+(re.escape(line.rstrip("\n")))+"\W")]=0
 	#test formatting
 	for k in featuredict:
-		if k.startswith(" "):
-			print k, "starts with whitespace"
+		print k.pattern
+		
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 		print pati
 		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
-			fili=codecs.open(os.path.join(dir, pati, fili), "r", "utf-8")
-			inputad=ct.adtextextractor(fili.read(), fili)
-			words=ct.tokenizer(inputad)
-			for item in words:
-				if item in featuredict:
-					featuredict[item] = featuredict[item]+1
+			with codecs.open(os.path.join(dir, pati, fili), "r", "utf-8") as inputfili:
+				inputad=ct.adtextextractor(inputfili.read(), fili)
+			result=[k.findall(inputad) for k in featuredict.keys()]
+			if sum([len(i) for i in result]) > 6:
+				print result
+				print os.path.join(dir, pati, fili)
+			
 	print featuredict
 	endtime=time.time()
 	print "This took us {} minutes".format((endtime-starttime)/60)
+	
 
 emoticonfinder ("/home/ps22344/Downloads/craig_0208")
