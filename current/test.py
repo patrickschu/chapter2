@@ -55,10 +55,11 @@ def emoticonfinder(dir):
 			
 	endtime=time.time()
 	print "This took us {} minutes".format((endtime-starttime)/60)
-	print results
+	#print results
 	print len(results), "files processed"
 	print "\n\n"
-	for k in resultdict:
+	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
+	for k in sorted(resultdict, key=resultdict.get, reverse=True):
 		print k, resultdict[k]
 	return results
 	
