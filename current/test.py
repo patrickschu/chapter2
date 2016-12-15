@@ -4,6 +4,9 @@ import time
 import os
 import clustertools as ct
 import re
+from collections import defaultdict
+
+
 
 t=np.array([[1,1], [2,2]])
 
@@ -25,11 +28,14 @@ def emoticonfinder(dir):
 	#creating a featuredict from file
 	featuredict={}
 	search_terms=[]
+	results=[]
+	resultdict=defaultdict(float)
+	
 	with codecs.open('/home/ps22344/Downloads/chapter2/textfiles/emolist_final_2.txt', "r", "utf-8") as inputtext:
 		for line in inputtext.readlines():
 			print line.rstrip("\n")
 			#featuredict[re.compile(" ("+re.escape(line.rstrip("\n"))+")")]=0
-			search_terms.append(re.compile(" ("+re.escape(line.rstrip("\n"))+")"))
+			search_terms.append(re.compile("\W("+re.escape(line.rstrip("\n"))+")(?: |<)"))
 		
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 		print pati
@@ -37,13 +43,24 @@ def emoticonfinder(dir):
 			with codecs.open(os.path.join(dir, pati, fili), "r", "utf-8") as inputfili:
 				inputad=ct.adtextextractor(inputfili.read(), fili)
 			result=[k.findall(inputad) for k in search_terms]
-			if sum([len(i) for i in result]) > 6:
-				for n, i in enumerate(result):
-					print search_terms[n].pattern, n,i
-				print os.path.join(dir, pati, fili), "\n"
+			for no, item in enumerate(result):
+				resultdict[no]=resultdict[no]+len(item)
+			results.append([len(i) for i in result])
+			# if 11 > sum([len(i) for i in result]) > 6:
+				# for n, i in enumerate(result):
+					# if len(i) > 0:
+						# print search_terms[n].pattern, n,i
+				# print os.path.join(dir, pati, fili), "\n"
+				# os.system("cygstart "+os.path.join(dir, pati, fili))
 			
 	endtime=time.time()
 	print "This took us {} minutes".format((endtime-starttime)/60)
+	print results
+	print len(results), "files processed"
+	print "\n\n"
+	for k in resultdict:
+		print k, resultdict[k]
+	return results
 	
 
 emoticonfinder ("/home/ps22344/Downloads/craig_0208")
