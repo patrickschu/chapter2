@@ -24,24 +24,24 @@ def emoticonfinder(dir):
 	starttime=time.time()
 	#creating a featuredict from file
 	featuredict={}
-	with codecs.open('/home/ps22344/Downloads/chapter2/textfiles/emolist_final.txt', "r", "utf-8") as inputtext:
+	search_terms=[]
+	with codecs.open('/home/ps22344/Downloads/chapter2/textfiles/emolist_final_2.txt', "r", "utf-8") as inputtext:
 		for line in inputtext.readlines():
-			featuredict[re.compile("\W"+(re.escape(line.rstrip("\n")))+"\W")]=0
-	#test formatting
-	for k in featuredict:
-		print k.pattern
+			print line.rstrip("\n")
+			#featuredict[re.compile(" ("+re.escape(line.rstrip("\n"))+")")]=0
+			search_terms.append(re.compile(" ("+re.escape(line.rstrip("\n"))+")"))
 		
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 		print pati
 		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
 			with codecs.open(os.path.join(dir, pati, fili), "r", "utf-8") as inputfili:
 				inputad=ct.adtextextractor(inputfili.read(), fili)
-			result=[k.findall(inputad) for k in featuredict.keys()]
+			result=[k.findall(inputad) for k in search_terms]
 			if sum([len(i) for i in result]) > 6:
-				print result
-				print os.path.join(dir, pati, fili)
+				for n, i in enumerate(result):
+					print search_terms[n].pattern, n,i
+				print os.path.join(dir, pati, fili), "\n"
 			
-	print featuredict
 	endtime=time.time()
 	print "This took us {} minutes".format((endtime-starttime)/60)
 	
