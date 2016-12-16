@@ -46,7 +46,7 @@ def emoticonfinder(dir):
 		
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 		print pati
-		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")][:2]:
+		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
 			with codecs.open(os.path.join(dir, pati, fili), "r", "utf-8") as inputfili:
 				inputad=ct.adtextextractor(inputfili.read(), fili)
 			result=[k.findall(inputad) for k in search_terms]
