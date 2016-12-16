@@ -5,7 +5,7 @@ import os
 import clustertools as ct
 import re
 from collections import defaultdict
-
+from string import punctuation
 
 
 t=np.array([[1,1], [2,2]])
@@ -15,14 +15,43 @@ print t, "\n---"
 
 print np.column_stack((t, [[1000,1000,0], [2000,2000,0]]))
 
+def repeatedpunctuationfinder(dir):
+	"""
+	The repeatedpunctuationfinder uses string.punctuation to create a dictionary of regexes.
+	These are used to identify non-Standard usage of punctuation. 
+	Note how we hardcoded the ?!? variants into the punctuationdict from the start. 
+	The returned punctuationdict= {regex_object: count_of_matches, regex_object_2: count_of_matches,}
+	THIS DOES NOT ITERATE OR ANYTHING
+	
+	-- Source file is /Users/ps22344/Downloads/chapter2/current/punctuationcounter_0927.py ---
+	"""
+	punctuationdict={
+	re.compile(r"(?:\s|\w)(!\?|\?!)(?:\s|\w)"):0
+	}
+
+	for stringi in punctuation:
+		print stringi, "-->", re.escape(stringi)
+		punctuationdict[re.compile(re.escape(stringi)+"{2,}")]=0	
+	testi="I love you honeybear. I do..."
+	for i in punctuationdict:
+		result=i.findall(testi)
+		if result:
+			print i.pattern
+			print result
+		punctuationdict[i]=len(result)
+	print punctuationdict
+
+repeatedpunctuationfinder("a")
+	
 
 def emoticonfinder(dir):
 	"""
 	The emoticonfinder takes a directory with corpus files as input. 
+	It returns a list of lists with counts of each emoticon in each file in dir.
+	Emoticons are read from file.
+	list=[[x1feature1, x1feature2, ...], [x2feature1, x2feature2, ...]]
 	We might consider making the file with emoticons an argument as well. 
-	The emoticonfinder creates a list of relevant emoticons from a text file. 
-	Then counts how often they occur in files in dir.
-	--- Source file is /Users/ps22344/Downloads/chapter2/current/emoticoncounter.py ---
+	--- Original Source file is /Users/ps22344/Downloads/chapter2/current/emoticoncounter.py ---
 	"""
 	starttime=time.time()
 	#creating a featuredict from file
@@ -34,7 +63,6 @@ def emoticonfinder(dir):
 	with codecs.open('/home/ps22344/Downloads/chapter2/textfiles/emolist_final_2.txt', "r", "utf-8") as inputtext:
 		for line in inputtext.readlines():
 			print line.rstrip("\n")
-			#featuredict[re.compile(" ("+re.escape(line.rstrip("\n"))+")")]=0
 			search_terms.append(re.compile("\W("+re.escape(line.rstrip("\n"))+")(?: |<)"))
 		
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
@@ -61,12 +89,7 @@ def emoticonfinder(dir):
 	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
 	for k in sorted(resultdict, key=resultdict.get, reverse=True):
 		print k, resultdict[k]
-	for i in results:
-		print i, "\n\n"
-	print "shape of results", len(results)
+	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	return results
 	
-
-emoticonfinder ("/home/ps22344/Downloads/craig_0208")
-
 
