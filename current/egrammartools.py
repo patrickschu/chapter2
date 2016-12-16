@@ -229,7 +229,7 @@ def leetcounter(dir):
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 
-#the rebusfinder needs to be here; it finds instance of "4" for "for. 
+#the rebusfinder needs to be here; it finds instances of "4" for "for. 
 def rebusfinder(input_path):
 	"""
  	This finds words that are represented as numbers. 
