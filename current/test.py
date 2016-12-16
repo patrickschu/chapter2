@@ -99,7 +99,7 @@ def rebusfinder(input_path):
 				# print t
 		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 			
-rebusfinder(dir)
+
 
 
 def leetcounter(dir):
