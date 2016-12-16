@@ -66,7 +66,7 @@ def rebusfinder(input_path, word_dictionary):
 				fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
 				inputad=ct.adtextextractor(fili.read(), fil)
 				inputad=inputad.lower()
-				wordcount=len(inputad)
+				wordcount=float(len(inputad))
 				hits=numberregex.findall(inputad)
 				#this weeds out all the phonenumbers. 
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
@@ -82,19 +82,22 @@ def rebusfinder(input_path, word_dictionary):
 							h0dict[h[0]]=h0dict[h[0]]+1
 							h2dict[h[2]]=h2dict[h[2]]+1
 							result.append(h)
-				if len(result) > 2:
-					print result
-				results.append(result)
-			print "res len", len(results)
+				#if len(result) > 0:
+				#	print "len", len(result)
+				results.append([(len(result), len(result)/wordcount)])
+			print "total len", len(results)
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 0}
 		print "\n\n", number, "\n\posttext here be the results\n\n"
 		#print "\n".join([": ".join([k, unicode(h0dict[k])]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
-		print "\n".join([": ".join([k, unicode(h2dict[k])]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
+		#print "\n".join([": ".join([k, unicode(h2dict[k])]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
 
 		#print "We have {} post items with a token count of {}".format(len(h2dict.keys()), sum(h2dict.values()))
 		#print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
-
+		for t in [[x[1] for x in i] for i in results]:
+			if sum (t) > 0:
+				print t
+		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 			
 rebusfinder(dir, "worddict_full.json")
 
