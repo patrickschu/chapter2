@@ -39,7 +39,7 @@ def emoticonfinder(dir):
 		
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 		print pati
-		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
+		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")][:2]:
 			with codecs.open(os.path.join(dir, pati, fili), "r", "utf-8") as inputfili:
 				inputad=ct.adtextextractor(inputfili.read(), fili)
 			result=[k.findall(inputad) for k in search_terms]
@@ -61,7 +61,12 @@ def emoticonfinder(dir):
 	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
 	for k in sorted(resultdict, key=resultdict.get, reverse=True):
 		print k, resultdict[k]
+	for i in results:
+		print i, "\n\n"
+	print "shape of results", len(results)
 	return results
 	
 
 emoticonfinder ("/home/ps22344/Downloads/craig_0208")
+
+
