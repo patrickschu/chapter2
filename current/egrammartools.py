@@ -26,6 +26,54 @@ import json
 def emoticonfinder(dir):
 	"""
 	The emoticonfinder takes a directory with corpus files as input. 
+	It returns a list of lists with counts of each emoticon in each file in dir.
+	Emoticons are read from file.
+	list=[[x1feature1, x1feature2, ...], [x2feature1, x2feature2, ...]]
+	We might consider making the file with emoticons an argument as well. 
+	--- Original Source file is /Users/ps22344/Downloads/chapter2/current/emoticoncounter.py ---
+	"""
+	starttime=time.time()
+	#creating a featuredict from file
+	featuredict={}
+	search_terms=[]
+	results=[]
+	resultdict=defaultdict(float)
+	
+	with codecs.open('/home/ps22344/Downloads/chapter2/textfiles/emolist_final_2.txt', "r", "utf-8") as inputtext:
+		for line in inputtext.readlines():
+			print line.rstrip("\n")
+			search_terms.append(re.compile("\W("+re.escape(line.rstrip("\n"))+")(?: |<)"))
+		
+	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
+		print pati
+		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")][:2]:
+			with codecs.open(os.path.join(dir, pati, fili), "r", "utf-8") as inputfili:
+				inputad=ct.adtextextractor(inputfili.read(), fili)
+			result=[k.findall(inputad) for k in search_terms]
+			for no, item in enumerate(result):
+				resultdict[no]=resultdict[no]+len(item)
+			results.append([len(i) for i in result])
+			# if 11 > sum([len(i) for i in result]) > 6:
+				# for n, i in enumerate(result):
+					# if len(i) > 0:
+						# print search_terms[n].pattern, n,i
+				# print os.path.join(dir, pati, fili), "\n"
+				# os.system("cygstart "+os.path.join(dir, pati, fili))
+			
+	endtime=time.time()
+	print "This took us {} minutes".format((endtime-starttime)/60)
+	#print results
+	print len(results), "files processed"
+	print "\n\n"
+	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
+	for k in sorted(resultdict, key=resultdict.get, reverse=True):
+		print k, resultdict[k]
+	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+	return results
+	
+
+	"""
+	The emoticonfinder takes a directory with corpus files as input. 
 	We might consider making the file with emoticons an argument as well. 
 	The emoticonfinder creates a list of relevant emoticons from a text file. 
 	Then counts how often they occur in files in dir.
