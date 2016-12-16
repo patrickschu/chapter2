@@ -26,7 +26,7 @@ for writtennumber in writtennumbers:
 
 print writtennumberdict
 #dirs
-dir='/Users/ps22344/Downloads/craig_0208/'
+dir='/home/ps22344/Downloads/craig_0208/'
 #dir='/Users/ps22344/Downloads/craigbalanced_0601'
 
 exclude_post_context=["fingers","nights", "weeling","wheel",  "s", "am", "a.m.", "figures", "pm", "p.m.","dogs","tattoos", "emails", "foot", "feet", "ft", "children", "guy", "just", "of", "to", "i", "year", "years", "yr", "yrs", "days", "wheeler", "wheelers", "wheeling", "times", "or", "and", "months", "in", "kids", "weeks", "day", "days"]
