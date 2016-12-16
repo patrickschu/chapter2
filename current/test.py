@@ -45,7 +45,7 @@ exclude_pre_context= ["battlefield", "minimum", "but", "from", "got", "be", "thi
 include_pre_context=["pay", "m", "w", "up", "swf","love", "here", "not", "there", "ready","lkng","me", "ask", "live", "cheer", "grateful", "thanks", "partner", "men", "man", "male", "woman", "women","looking", "lookin", "pic", "pix", "lookn", "pics", "picture", "photo"]
 include_post_context=["swf","yu","who", "dead", "reading", "over", "help", "life", "your", "the", "a", "my", "our", "an", "real", "you", "u", "me", "ltr", "play", "same", "whatever", "sex", "someone", "fun"]
 
-def rebusfinder(input_path, word_dictionary):
+def rebusfinder(input_path):
 	"""
  	This finds words that are represented as numbers. 
  	All combinations \W([a-z]+)\s+("+unicode(number)+")\s+([a-z]+)\W for the number put in are identified.
@@ -94,12 +94,12 @@ def rebusfinder(input_path, word_dictionary):
 
 		#print "We have {} post items with a token count of {}".format(len(h2dict.keys()), sum(h2dict.values()))
 		#print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
-		for t in [[x[1] for x in i] for i in results]:
-			if sum (t) > 0:
-				print t
+		# for t in [[x[1] for x in i] for i in results]:
+			# if sum (t) > 0:
+				# print t
 		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 			
-rebusfinder(dir, "worddict_full.json")
+rebusfinder(dir)
 
 
 def leetcounter(dir):
