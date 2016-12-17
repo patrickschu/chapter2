@@ -282,6 +282,14 @@ def rebusfinder_to(input_dir):
  	It print the results and give type and token counts. 
 	Returns a list of lists where each list contains raw and per word counts. 
 	"""
+	#written numbers for quality control
+	writtennumberdict={}
+	
+	writtennumbers=["zero", "one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen", "twenty", "thirty", "fourty", "fifty", "sixty", "fivefivefive"]	
+
+	for writtennumber in writtennumbers:
+		writtennumberdict[writtennumber]=0
+	
 	nounregex=re.compile("NN.?")
 	exclude_post_context=["inche?s?", "wks?", "nd", "i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or", "full", "wana" ]
 	exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
