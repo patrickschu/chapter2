@@ -78,7 +78,8 @@ def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_word
 		print numberregex.pattern
 		results=[]
 		for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
-			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
+			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")][:5]:
+				result=[]
 				fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
 				inputad=ct.adtextextractor(fili.read(), fil)
 				inputad=inputad.lower()
@@ -142,14 +143,15 @@ def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_word
 							):
 							#print "hooked the plusloop", tagged
 							print tagged
-							results.append(tagged)
+							result.append(tagged)
 							h0dict[h[0]]=h0dict[h[0]]+1
  							h2dict[h[2]]=h2dict[h[2]]+1
 						else:
 							pass
-									
+						results.append([(len(result), len(result)/wordcount)[)			
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
-		h0dict={k:v for k,v in h0dict.items() if v > 0}
+		h0dict={k:v for k,v in h0dict.items() if v > 3}
+		h2dict={k:v for k,v in h2dict.items() if v > 3}
 		print "\n\n", number, "\npretext here be the results\n\n"
 		for entry in sorted(h0dict, key=h0dict.get, reverse=True):
 			print entry, h0dict[entry]
@@ -157,6 +159,8 @@ def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_word
 		for entry in sorted(h2dict, key=h2dict.get, reverse=True):
 			print entry, h2dict[entry]
 		print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
+		print [i for i in results if sum(i) > 2]
+		print results
 		return results
 
 
