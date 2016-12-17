@@ -7,6 +7,7 @@ import re
 from collections import defaultdict
 from string import punctuation
 import json
+from nltk import pos_tag
 
 starttime=time.time()
 #check if we have this thing somewhere else and then delete from here. oops, this is included in our results
@@ -150,13 +151,17 @@ def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_word
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 0}
 		print "\n\n", number, "\npretext here be the results\n\n"
+		for entry in sorted(h0dict, key=h0dict.get, reverse=True):
+			print entry, h0dict[entry]
 		print "We have {} post items with a token count of {}".format(len(h2dict.keys()), sum(h2dict.values()))
+		for entry in sorted(h2dict, key=h2dict.get, reverse=True):
+			print entry, h2dict[entry]
 		print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		return results
 
 
 			
-x=rebusfinder_to(dir, "worddict_full.json", numberdict, "b")
+x=rebusfinder_to('/home/ps22344/Downloads/craig_0208', "worddict_full.json", numberdict, "b")
 
 
 def rebusfinder(input_path):
