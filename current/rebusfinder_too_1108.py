@@ -133,4 +133,4 @@ def rebusfinder_too(input_path):
 
 
 
-rebusfinder_too("/Users/ps22344/Downloads/craig_0208")
+rebusfinder_too("/home/ps22344/Downloads/craig_0208")
