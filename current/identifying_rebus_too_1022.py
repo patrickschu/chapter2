@@ -55,9 +55,9 @@ dir='/home/ps22344/Downloads/craig_0208/'
 
 
 #do we need the to, do ect in post_context
-exclude_post_context=[]#["inche?s?", "wks?", "nd", "i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or", "full", "wana" ]
+exclude_post_context=["inche?s?", "wks?", "nd", "i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or", "full", "wana" ]
 
-exclude_post_context=["+",  "(", "%"]#re.compile(r"^"+i+"$") for i in exclude_post_context]
+exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
 exclude_pre_context=[]
 exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
@@ -98,18 +98,13 @@ def rebusfinder_too(input_path, number_dictionary):
 				#this weeds out all the phonenumbers. 
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
 				for h in hits:
-					h=[" " if i == "" else i for i in h]
-					print "h in hits", h
- 					if h[2]:#==".":
- 						print "h[2] idd"
-						print  h, os.path.join(input_path, pati, fil)
- 						print pos_tag(h), "\n"
-						
+					h=["" if i == "" else i for i in h]
+					#print "h in hits", h
 					if not any (regex.match(h[2]) for regex in exclude_post_context) and not any (regex.match(h[0]) for regex in exclude_pre_context):
 						tagged=pos_tag(h)
-						print tagged
-						if h[2] not in [" "]:
-							print tagged, os.path.join(input_path, pati, fil)
+						#print tagged
+						#if h[2] not in [" "]:
+							#print tagged, os.path.join(input_path, pati, fil)
 							#print inputad
 						h0dict[h[0]]=h0dict[h[0]]+1
  						h2dict[h[2]]=h2dict[h[2]]+1
@@ -165,15 +160,15 @@ def rebusfinder_too(input_path, number_dictionary):
  							or
  							(h[2] in ["survive", "brag", "blow", "grab", "feel", "send", "connect", "hearing", "say", "read", "contact", "please", "run", "host","kno", "talk", "just", "add", "text", "chill", "hang", "date", "find", "chat", "show", "u", "meet", "her", "hear", "me", "my", "b", "know", "play", "do", "suck", "go", "get", "fuck"])
 							):
- 							#print "hooked the plusloop", tagged
- 							print tagged
+ 							print "hooked the plusloop", tagged
+ 							#print tagged
  							results.append(tagged)
  							h0dict[h[0]]=h0dict[h[0]]+1
   							h2dict[h[2]]=h2dict[h[2]]+1
  						else:
  							pass
 						if tagged[2][1]:#=="VB":# in ["VBP", "VBG"]:#=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
-								print tagged
+								#print tagged
 								#print "elseloop", tagged
  								h0dict[h[0]]=h0dict[h[0]]+1
  								h2dict[h[2]]=h2dict[h[2]]+1
