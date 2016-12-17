@@ -45,17 +45,9 @@ print writtennumberdict
 dir='/Users/ps22344/Downloads/craig_0208/'
 #dir='/Users/ps22344/Downloads/craigbalanced_0601'
 
-nounregex=re.compile("NN.?")
-#do we need the to, do ect in post_context
-#exclude_post_context=["years?", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "daughters?", "(boy|girl)?friends?", "girls?", "kids?", "boys?", "children", "dogs?", "jobs?", "things?", "(p|a)\.?m\.?", "to", "or" ]
-exclude_post_context=["inche?s?", "wks?", "nd", "i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or", "full", "wana" ]
 
-exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 
-exclude_pre_context=["borderlands", "chicago", "c?ops?", "till?", "or", "and", "just", "f(oo|ee)?t", "last", "own", "hsv", "herpes"]
-exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
-
-def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_words):
+def rebusfinder_to(input_dir):
 	"""
  	This finds the word "to"  that represented as the number 2. 
  	All combinations \W([a-z]+)\s+("+unicode(number)+")\s+([a-z]+)\W for the number put in are identified.
@@ -67,8 +59,13 @@ def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_word
  	Dismiss the remaining ones. 
  	It returns a list of positives. 
  	It print the results and give type and token counts. 
-	
+	Returns a list of lists where each list contains raw and per word counts. 
 	"""
+	nounregex=re.compile("NN.?")
+	exclude_post_context=["inche?s?", "wks?", "nd", "i", "sec", "stepping", "asap", "tattoos", "years?", "yrs", "months?", "weeks?", "days?", "hours?", "times?", "peoples?", "(boy|girl)?friends?", "(p|a)\.?m\.?", "to", "or", "full", "wana" ]
+	exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
+	exclude_pre_context=["borderlands", "chicago", "c?ops?", "till?", "or", "and", "just", "f(oo|ee)?t", "last", "own", "hsv", "herpes"]
+	exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
 	search_terms=[2]
 	for number in search_terms:
 		numberregex=re.compile("\W([a-z]+)\s+("+unicode(number)+")\s+([a-z]+)\W")
@@ -77,10 +74,10 @@ def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_word
 		h2dict=defaultdict(int)
 		print numberregex.pattern
 		results=[]
-		for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
-			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
+		for pati in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
+			for fil in [i for i in os.listdir(os.path.join(input_dir, pati)) if not i.startswith(".")]:
 				result=[]
-				fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
+				fili=codecs.open(os.path.join(input_dir, pati, fil), "r", "utf-8")
 				inputad=ct.adtextextractor(fili.read(), fil)
 				inputad=inputad.lower()
 				wordcount=float(len(ct.tokenizer(inputad)))
@@ -142,14 +139,15 @@ def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_word
 							(h[2] in ["survive", "brag", "blow", "grab", "feel", "send", "connect", "hearing", "say", "read", "contact", "please", "run", "host","kno", "talk", "just", "add", "text", "chill", "hang", "date", "find", "chat", "show", "u", "meet", "her", "hear", "me", "my", "b", "know", "play", "do", "suck", "go", "get", "fuck"])
 							):
 							#print "hooked the plusloop", tagged
-							print tagged
+							#print fil, "len tagged", type(tagged)
 							result.append(tagged)
+							#print "len result", len(result)
 							h0dict[h[0]]=h0dict[h[0]]+1
  							h2dict[h[2]]=h2dict[h[2]]+1
 						else:
 							pass
-						results.append([(len(result), len(result)/wordcount)])
-						#print [(len(result), len(result)/wordcount)]
+				results.append([(len(result), len(result)/wordcount)])
+				#print [(len(result), len(result)/wordcount)]
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 3}
 		h2dict={k:v for k,v in h2dict.items() if v > 3}
@@ -160,14 +158,14 @@ def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_word
 		for entry in sorted(h2dict, key=h2dict.get, reverse=True):
 			print entry, h2dict[entry]
 		print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
-		print [i for i in results if sum(i) > 2]
-		print results
+		#print [i for i in results if sum(i[0]) > 2]
+		#print results
 		print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
-		return results
+		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 
 			
-x=rebusfinder_to('/home/ps22344/Downloads/craig_0208', "worddict_full.json", numberdict, "b")
+x=rebusfinder_to('/home/ps22344/Downloads/craig_0208')
 
 
 def rebusfinder(input_path):
