@@ -65,6 +65,7 @@ def rebusfinder_too(input_path):
 				inputad=ct.adtextextractor(fili.read(), fil)
 				inputad=ct.adcleaner(inputad, replace_linebreak=True)
 				inputad=inputad.lower()
+				wordcount=len(ct.tokenizer(inputad))
 				hits=numberregex.findall(inputad)
 				#this weeds out all the phonenumbers. 
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
@@ -132,7 +133,7 @@ def rebusfinder_too(input_path):
 						postdict[post[0]]=postdict[post[0]]+1
 						result.append(h)
 						if len(result) > 0:
-						print "result initial", len(result)
+							print "result initial", len(result)
 					result=[(i, i/wordcount) for i in result]
 					if len(result) > 0:
 						print "result for file", len(result)
