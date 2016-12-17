@@ -50,7 +50,7 @@ for writtennumber in writtennumbers:
 
 print writtennumberdict
 #dirs
-dir='/Users/ps22344/Downloads/craig_0208/'
+dir='/home/ps22344/Downloads/craig_0208/'
 #dir='/Users/ps22344/Downloads/craigbalanced_0601'
 
 
@@ -98,106 +98,87 @@ def rebusfinder_too(input_path, number_dictionary):
 				#this weeds out all the phonenumbers. 
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
 				for h in hits:
-					#this is needed for instance where there is no punctuation
 					h=[" " if i == "" else i for i in h]
-					"""
-					thus
-					[(u'of', 'IN'), (u'2', 'CD'), (u',', ','), (u'single', 'JJ')]
-					pre, "2", optional punctuation, post
-					"""
-					[pre, pre_punct, number, punct, post]=pos_tag(h)
-					if (post[1] in ["NNS"]) and (punct[0] in [" "]):
-						print "\n\n***", [pre, number, punct, post], "**\n", os.path.join(input_path, pati, fil)
-						search_pattern=[re.escape(i) for i in [pre[0],number[0], punct[0], post[0]]]
-						if search_pattern not in previous_patterns:
-							tk.tokenfinder(["\s*".join(search_pattern)], dir)
-							previous_patterns.append(search_pattern)
-						else:
-							print "SEE TOKENFINDER RESULTS ABOVE\n"			
-						#error catching here 
-						#
-				
-				
-				
-				# for h in hits:
-# 					if h[2]:#==".":
-# 						print  h, os.path.join(input_path, pati, fil)
-# 						print pos_tag(h), "\n"
+					print "h in hits", h
+ 					if h[2]:#==".":
+ 						print "h[2] idd"
+						print  h, os.path.join(input_path, pati, fil)
+ 						print pos_tag(h), "\n"
 						
-					#if not any (regex.match(h[2]) for regex in exclude_post_context) and not any (regex.match(h[0]) for regex in exclude_pre_context):
-						#tagged=pos_tag(h), fil
-						#print tagged
-						#if h[2] not in [" "]:
-						#	print tagged, os.path.join(input_path, pati, fil)
+					if not any (regex.match(h[2]) for regex in exclude_post_context) and not any (regex.match(h[0]) for regex in exclude_pre_context):
+						tagged=pos_tag(h)
+						print tagged
+						if h[2] not in [" "]:
+							print tagged, os.path.join(input_path, pati, fil)
 							#print inputad
-						#h0dict[h[0]]=h0dict[h[0]]+1
- 						#h2dict[h[2]]=h2dict[h[2]]+1
-						#h0dict[tagged[0][1]]=h0dict[tagged[0][1]]+1
-						#h2dict[tagged[2][1]]=h2dict[tagged[2][1]]+1
+						h0dict[h[0]]=h0dict[h[0]]+1
+ 						h2dict[h[2]]=h2dict[h[2]]+1
+						h0dict[tagged[0][1]]=h0dict[tagged[0][1]]+1
+						h2dict[tagged[2][1]]=h2dict[tagged[2][1]]+1
 						#taking out trash
-						# if (
-# 							(tagged[0][1] in ["DT", "JJS", "TO", "PRP$"]) 
-# 							or
-# 							(tagged[0][1]=="IN" and h[0] not in ["out", "like"])
-# 							or
-# 							(tagged[0][1] in ["VBG"] and h[0] not in ["talking", "responding", "waiting", "getting","looking", "going", "trying"])
-# 							or
-# 							(tagged[0][1] in ["VB", "VBD", "VBP", "VBZ"] and tagged[2][1] in ["JJ"])
-# 							or
-# 							#this is where we screw up
-# 							(tagged[2][1] in ["NNS"] and h[2] not in ["chat", "kiss", "go", "know", "find", "do", "c", "knees"])
-# 							or
-# 							(tagged[2][1]=="IN")
-# 							or
-# 							(tagged[2][1]=="CC" and h[2] not in ["but"])
-# 							or
+						if (
+ 							(tagged[0][1] in ["DT", "JJS", "TO", "PRP$"]) 
+ 							or
+ 							(tagged[0][1]=="IN" and h[0] not in ["out", "like"])
+ 							or
+ 							(tagged[0][1] in ["VBG"] and h[0] not in ["talking", "responding", "waiting", "getting","looking", "going", "trying"])
+ 							or
+ 							(tagged[0][1] in ["VB", "VBD", "VBP", "VBZ"] and tagged[2][1] in ["JJ"])
+ 							or
+ 							#this is where we screw up
+ 							(tagged[2][1] in ["NNS"] and h[2] not in ["chat", "kiss", "go", "know", "find", "do", "c", "knees"])
+ 							or
+ 							(tagged[2][1]=="IN")
+ 							or
+ 							(tagged[2][1]=="CC" and h[2] not in ["but"])
+ 							or
 # 							#we don't need this if we are to just ignore whatever goes thru all of it
 # 							#TEMPTEMPTEMP
-# 							(h[0] in ["be", "other", "s", "type", "was", "work", "im", "baths", "you", "maybe", "big", "day", "o", "round", "ride", "avengers", "kids", "had", "number", "have", "like", "here", "size", "got", "are", "send", "only", "have", "go", "is", "bedroom", "but", "beautiful", "nice"])
-# 							or
-# 							(h[2] in ["face", "new", "faced", "wonderful", "must", "min", "short", "si", "br", "step", "start", "so", "out", "story", "bdrm", "other", "out", "story", "yr", "looking", "more", "but", "hrs", "bedroom"])
-# 							or 
-# 							(tagged[2][1] in ["JJ", "VBD", "VBZ", "VBG"])
-# 							):
-# 							#print "killed",tagged, "\n"
-# 							pass
+ 							(h[0] in ["be", "other", "s", "type", "was", "work", "im", "baths", "you", "maybe", "big", "day", "o", "round", "ride", "avengers", "kids", "had", "number", "have", "like", "here", "size", "got", "are", "send", "only", "have", "go", "is", "bedroom", "but", "beautiful", "nice"])
+ 							or
+ 							(h[2] in ["face", "new", "faced", "wonderful", "must", "min", "short", "si", "br", "step", "start", "so", "out", "story", "bdrm", "other", "out", "story", "yr", "looking", "more", "but", "hrs", "bedroom"])
+ 							or 
+ 							(tagged[2][1] in ["JJ", "VBD", "VBZ", "VBG"])
+ 							):
+ 							#print "killed",tagged, "\n"
+ 							pass
 # 						
 # 						#finding the good
-# 						elif (
-# 							(tagged[2][1] in ["DT", "CD", "EX", "NNS", "VB"])
-# 							or
-# 							(tagged[2][1] in ["JJ"] and h[0] in ["opposed"])
-# 							or
-# 							(tagged[2][1] in ["PRP"] and not nounregex.match(tagged[0][1]))
-# 							or
-# 							(h[0] == "have" and h[2] in ["browse", "force", "go", "send", "talk"])
-# 							or
-# 							(h[0] == "like" and h[2] not in ["furry", "cuz", "straight"])
-# 							or
-# 							(h[0] in ["here"] and nounregex.match(tagged[2][1]))
-# 							or
-# 							#really what we are exluding here is anything non-Verb or Noun
+ 						elif (
+ 							(tagged[2][1] in ["DT", "CD", "EX", "NNS", "VB"])
+ 							or
+ 							(tagged[2][1] in ["JJ"] and h[0] in ["opposed"])
+ 							or
+ 							(tagged[2][1] in ["PRP"] and not nounregex.match(tagged[0][1]))
+ 							or
+ 							(h[0] == "have" and h[2] in ["browse", "force", "go", "send", "talk"])
+ 							or
+ 							(h[0] == "like" and h[2] not in ["furry", "cuz", "straight"])
+ 							or
+ 							(h[0] in ["here"] and nounregex.match(tagged[2][1]))
+ 							or
+ 							#really what we are exluding here is anything non-Verb or Noun
 # 							# we can consider replacing this with a regex
-# 							(h[0] in ["need", "me", "pics"] and tagged[2][1] not in ["JJ", "JJR", "MD"])
-# 							or 
-# 							(h[0] in ["momma", "women", "delighted", "tryn", "respond", "travel", "veldkum", "happness", "pool", "lots", "bbw", "willin", "luvz", "place", "time", "married", "pixs", "boy", "pictures", "brickz", "somebody", "memphis", "cell", "fear", "hoop", "open", "goes", "afraid", "speak", "lady", "needs", "attracted", "doms", "bottom", "head", "apply", "drive", "pic", "newer", "pinned", "luvs", "sumbody", "face", "due", "tryin", "line", "has", "close", "interested", "alot", "oral", "talk", "new", "girl", "up", "scared", "willing", "cam", "loves", "cock", "out", "u", "nice", "how", "free", "hard", "hope", "able", "someone", "man", "woman", "male", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "lookin", "going", "trying"])
-# 							or
-# 							(h[2] in ["survive", "brag", "blow", "grab", "feel", "send", "connect", "hearing", "say", "read", "contact", "please", "run", "host","kno", "talk", "just", "add", "text", "chill", "hang", "date", "find", "chat", "show", "u", "meet", "her", "hear", "me", "my", "b", "know", "play", "do", "suck", "go", "get", "fuck"])
-# 							):
-# 							#print "hooked the plusloop", tagged
-# 							print tagged
-# 							results.append(tagged)
-# 							h0dict[h[0]]=h0dict[h[0]]+1
-#  							h2dict[h[2]]=h2dict[h[2]]+1
-# 						else:
-# 							pass
-							#if tagged[2][1]:#=="VB":# in ["VBP", "VBG"]:#=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
-							#	print tagged
+ 							(h[0] in ["need", "me", "pics"] and tagged[2][1] not in ["JJ", "JJR", "MD"])
+ 							or 
+ 							(h[0] in ["momma", "women", "delighted", "tryn", "respond", "travel", "veldkum", "happness", "pool", "lots", "bbw", "willin", "luvz", "place", "time", "married", "pixs", "boy", "pictures", "brickz", "somebody", "memphis", "cell", "fear", "hoop", "open", "goes", "afraid", "speak", "lady", "needs", "attracted", "doms", "bottom", "head", "apply", "drive", "pic", "newer", "pinned", "luvs", "sumbody", "face", "due", "tryin", "line", "has", "close", "interested", "alot", "oral", "talk", "new", "girl", "up", "scared", "willing", "cam", "loves", "cock", "out", "u", "nice", "how", "free", "hard", "hope", "able", "someone", "man", "woman", "male", "down", "love", "luv", "ready", "want", "wants"]+["talking", "responding", "waiting", "getting","looking", "lookin", "going", "trying"])
+ 							or
+ 							(h[2] in ["survive", "brag", "blow", "grab", "feel", "send", "connect", "hearing", "say", "read", "contact", "please", "run", "host","kno", "talk", "just", "add", "text", "chill", "hang", "date", "find", "chat", "show", "u", "meet", "her", "hear", "me", "my", "b", "know", "play", "do", "suck", "go", "get", "fuck"])
+							):
+ 							#print "hooked the plusloop", tagged
+ 							print tagged
+ 							results.append(tagged)
+ 							h0dict[h[0]]=h0dict[h[0]]+1
+  							h2dict[h[2]]=h2dict[h[2]]+1
+ 						else:
+ 							pass
+						if tagged[2][1]:#=="VB":# in ["VBP", "VBG"]:#=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
+								print tagged
 								#print "elseloop", tagged
-# 								h0dict[h[0]]=h0dict[h[0]]+1
-# 								h2dict[h[2]]=h2dict[h[2]]+1
-								#h0dict[tagged[0][1]]=h0dict[tagged[0][1]]+1
-								#h2dict[tagged[2][1]]=h2dict[tagged[2][1]]+1
+ 								h0dict[h[0]]=h0dict[h[0]]+1
+ 								h2dict[h[2]]=h2dict[h[2]]+1
+								h0dict[tagged[0][1]]=h0dict[tagged[0][1]]+1
+								h2dict[tagged[2][1]]=h2dict[tagged[2][1]]+1
 									
 	
 		
