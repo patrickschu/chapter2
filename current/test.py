@@ -54,7 +54,7 @@ exclude_post_context=[re.compile(r"^"+i+"$") for i in exclude_post_context]
 exclude_pre_context=["borderlands", "chicago", "c?ops?", "till?", "or", "and", "just", "f(oo|ee)?t", "last", "own", "hsv", "herpes"]
 exclude_pre_context=[re.compile(r"^"+i+"$") for i in exclude_pre_context]
 
-def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
+def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_words):
 	"""
  	This finds the word "to"  that represented as the number 2. 
  	All combinations \W([a-z]+)\s+("+unicode(number)+")\s+([a-z]+)\W for the number put in are identified.
@@ -81,6 +81,7 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
 				fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
 				inputad=ct.adtextextractor(fili.read(), fil)
 				inputad=inputad.lower()
+				wordcount=float(len(ct.tokenizer(inputad)))
 				hits=numberregex.findall(inputad)
 				#this weeds out all the phonenumbers. 
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
@@ -145,30 +146,17 @@ def rebusfinder(input_path, word_dictionary, number_dictionary, excluded_words):
  							h2dict[h[2]]=h2dict[h[2]]+1
 						else:
 							pass
-							#if tagged[2][1]:#=="VB":# in ["VBP", "VBG"]:#=="go":#:# in ['my']:#, 'know', 'my']:#["me", "need", "man"]:# == "down":#h[2] not in ["have", "and", "like", "hear"]:
-							#	print tagged
-								#print "elseloop", tagged
-# 								h0dict[h[0]]=h0dict[h[0]]+1
-# 								h2dict[h[2]]=h2dict[h[2]]+1
-								#h0dict[tagged[0][1]]=h0dict[tagged[0][1]]+1
-								#h2dict[tagged[2][1]]=h2dict[tagged[2][1]]+1
 									
-	
-		
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 0}
 		print "\n\n", number, "\npretext here be the results\n\n"
-		print "\n".join([": ".join([k, unicode(h0dict[k]), ".".join(word2vecwordfinder([k], '/Users/ps22344/Downloads/chapter2/current/clusters_74_19_45_07_31.json'))]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
-		print "\n\n", number, "\nposttext here be the results\n\n"
-		print "\n".join([": ".join([k, unicode(h2dict[k]), ".".join(word2vecwordfinder([k], '/Users/ps22344/Downloads/chapter2/current/clusters_74_19_45_07_31.json'))]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
-
 		print "We have {} post items with a token count of {}".format(len(h2dict.keys()), sum(h2dict.values()))
 		print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		return results
 
 
 			
-x=rebusfinder(dir, "worddict_full.json", numberdict, "b")
+x=rebusfinder_to(dir, "worddict_full.json", numberdict, "b")
 
 
 def rebusfinder(input_path):
