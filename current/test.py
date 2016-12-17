@@ -78,7 +78,7 @@ def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_word
 		print numberregex.pattern
 		results=[]
 		for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
-			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")][:5]:
+			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
 				result=[]
 				fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
 				inputad=ct.adtextextractor(fili.read(), fil)
@@ -148,7 +148,8 @@ def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_word
  							h2dict[h[2]]=h2dict[h[2]]+1
 						else:
 							pass
-						results.append([(len(result), len(result)/wordcount)[)			
+						results.append([(len(result), len(result)/wordcount)])
+						#print [(len(result), len(result)/wordcount)]
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 3}
 		h2dict={k:v for k,v in h2dict.items() if v > 3}
@@ -161,6 +162,7 @@ def rebusfinder_to(input_path, word_dictionary, number_dictionary, excluded_word
 		print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		print [i for i in results if sum(i) > 2]
 		print results
+		print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 		return results
 
 
