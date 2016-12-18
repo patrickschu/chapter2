@@ -59,7 +59,7 @@ def rebusfinder_too(input_path):
 		previous_patterns=[]
 		results=[]
 		for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
-			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")][:20]:
+			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
 				result=[]
 				fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
 				inputad=ct.adtextextractor(fili.read(), fil)
@@ -138,7 +138,6 @@ def rebusfinder_too(input_path):
 						#	print "result for file", len(result), result, #os.path.join(input_path, pati, fil)
 				print len(result)
 				results.append([(len(result), len(result)/wordcount)])
-				print results
 				if sum(result) > 1:
 					print "result for file", len(result), result, os.path.join(input_path, pati, fil)
 					
@@ -152,8 +151,6 @@ def rebusfinder_too(input_path):
 		print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 		#for u in [[x[1] for x in i] for i in results]:
 		#	print u
-		print "\n---\n"
-		print [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 
