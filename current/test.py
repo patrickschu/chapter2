@@ -30,26 +30,37 @@ import codecs
 from collections import defaultdict
 import os
 
-abbreviations=["LTR"]
 
 
-capsdict={
-re.compile("\W+([A-Z]{3,})\W+"):"all caps",
-#re.compile("\W+([a-z]+[A-Z]+(?:[a-z]+)?(?:[A-Z]+)?)\W"):"PascalCase",
-#re.compile("\W+([A-Z]+[a-z]+[A-Z]+(?:[a-z]+)?)\W"):"CamelCase",
 
 
-}
 
-print {i.pattern for i,v in capsdict.items()}
-
-def capsfinder(input_dir, input_dict):
+def capsfinder(input_dir, input_dict, limit):
+	"""
+	The capsfinder finds instances of non-Standard capitalization. 
+	Items such as iPhone or ReTro as well as straightforward THINGS. 
+	input_dir is the folder with corpus files to iterate over.
+	input_dict is 
+	limit sets the percentage of words that can be capitalized at the most, supposed to address the files that are all caps. 
+	do we want switch over at this point and count the lowercase ones?
+	Based on capsfinder_1203.py.
+	Returns a list of lists where each list contains raw and per word counts.
+	"""
+	capsdict={
+	re.compile("\W+([A-Z]{3,})\W
+	+"):"all caps",
+	re.compile("\W+([a-z]+[A-Z]+(?:[a-z]+)?(?:[A-Z]+)?)\W"):"PascalCase",
+	re.compile("\W+([A-Z]+[a-z]+[A-Z]+(?:[a-z]+)?)\W"):"CamelCase"
+	}
+	print {i.pattern for i,v in capsdict.items()}
+	
+	abbreviations=["LTR"]
 	results=[]
 	#dicti is results by word/item
 	dicti=defaultdict(float)
 	#matchesdicti is results by Regexpattern
 	matchesdicti=defaultdict(list)
-	search_terms=[i for i in input_dict.keys()]
+	search_terms=[i for i in capsfinder.keys()]
 	print "search terms",  [i.pattern for i in search_terms]
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
@@ -59,11 +70,12 @@ def capsfinder(input_dir, input_dict):
 			#we exclude anything we have in our abbreviations dict
 			#no, we cover this by subtracting the results later
 			result=[([t for t in i.findall(inputad) if not t in abbreviations], i.pattern) for i in search_terms] 
-			#print result
+			wordcount=len(ct.tokenizer(inputad))
 			if len(result) > 1:
 				print "warning result > 1", len(result), result
 			#this is the count we returs
-			results.append([len(matches) for matches, pattern in result])
+			results.append([(len(matches), (len(matches))/wordcount) for matches, pattern in result])
+			print results, wordcount
 			#here we inspect findings. note resultS vs result
 			for matches, pattern in result:
 				if len(matches) > 100:
@@ -75,11 +87,12 @@ def capsfinder(input_dir, input_dict):
 					#matchesdicti collects the matches per regex, dicti per feature
 					matchesdicti[pattern]=matchesdicti[pattern]+matches
 	print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
-	for entry in {k:v for k,v in matchesdicti.items()}:
- 		print "\n", entry, matchesdicti[entry]
+	#for entry in {k:v for k,v in matchesdicti.items()}:
+ 	#	print "\n", entry, matchesdicti[entry]
  	for entry in dicti:
  		print entry, dicti[entry]
-	return results 
+	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
 
 
 capsfinder("/home/ps22344/Downloads/craig_0208", capsdict)
