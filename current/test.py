@@ -59,7 +59,7 @@ def rebusfinder_too(input_path):
 		previous_patterns=[]
 		results=[]
 		for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
-			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
+			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")][:20]:
 				result=[]
 				fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
 				inputad=ct.adtextextractor(fili.read(), fil)
@@ -132,13 +132,17 @@ def rebusfinder_too(input_path):
 						#results.append((pre, number, punct, post, os.path.join(input_path, pati, fil)))
 						predict[pre[0]]=predict[pre[0]]+1
 						postdict[post[0]]=postdict[post[0]]+1
-						result.append([1])
+						result.append(1)
 						print h
-						result=[(len(result), len(result)/wordcount)]
-					if result[0][0] > 0:
-						print "result for file", len(result), result, os.path.join(input_path, pati, fil)
-		results.append(result)
-		#print "len results", len(results)
+						#if result[0] > 10: 
+						#	print "result for file", len(result), result, #os.path.join(input_path, pati, fil)
+				print len(result)
+				results.append([(len(result), len(result)/wordcount)])
+				print results
+				if sum(result) > 1:
+					print "result for file", len(result), result, os.path.join(input_path, pati, fil)
+					
+				#print "len results", len(results)
 		
 		print "original result list is", len(results)
 		print "PRE CONTEXT"
@@ -146,6 +150,10 @@ def rebusfinder_too(input_path):
 		print "POST CONTEXT"
 		print "\n".join([": ".join([k, unicode(postdict[k])]) for k in sorted(postdict, key=postdict.get, reverse=True)])
 		print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+		#for u in [[x[1] for x in i] for i in results]:
+		#	print u
+		print "\n---\n"
+		print [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 
