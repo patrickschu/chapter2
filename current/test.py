@@ -31,7 +31,7 @@ from collections import defaultdict
 import os
 
 
-def charactercounter(input_dir, input_dict):
+def charactercounter(input_dir):
 	"""
 	Finds individual characters representing an entire word.
 	Example: C U for see you. 
@@ -63,9 +63,9 @@ def charactercounter(input_dir, input_dict):
 	#"U":["\s+(U)\s+"+"".join(upostwords)]
 	#"r":["(?<!(e|g|t))\s+(r)\s+(?!and b |\&amp;)"]
 	#"R":["(?<!rated|Cocks| [Tt]oys|Girls|[A-Z] [A-Z] [A-Z])\s+(R)\s+(?![A-Z] [A-Z]|R |B |AND [R|B]|&amp;)"]
-	#"b":["(?<! size|r and)\s+(b)\s+(?!day |cups?|tits|e |or larger)"]
-	#"B": ["(?<![A|R] AND| Part|. F W|&amp;)\s+(B)\s+(?!cups?|tits|level|average|horror|rated|movie|in the world|S |Q |and W |B? ?W)"]
-	"N": ["(?<![A-Z] [A-Z]|Ave| MA)\s+(N)\s+(?!Houston|Ballard|word|Royaton|Wilmot|Tucson|Dallas|Warren|side|Avalon|St Pete|Scottsdale|Tampa|C[Oo][Uu][Nn][Tt][Yy]|[Rr][Oo][Ll][Ll]|Arl\.|Royaltown|Golden Isles|Oeleans|Ballard Rd|Broward|Ward|angola|Oracle|[Hubert|1st] Ave|European|Tryon|Hill\w+ |Wil\w+|[Ss][Uu][Bb][Jj][Ee][Cc][Tt]|state line|for now|with a dick|OT |of (\s+Dayton|Talla\w+)|THE INSIDE|THE SURROUNDING|TIME|AUGHTY|[A-Z] [A-Z] |&amp; 5th)"],
+	"b":["(?<! size|r and)\s+(b)\s+(?!day |cups?|tits|e |or larger)"],
+	"B": ["(?<![A|R] AND| Part|. F W|&amp;)\s+(B)\s+(?!cups?|tits|level|average|horror|rated|movie|in the world|S |Q |and W |B? ?W)"],
+	"N": ["(?<![A-Z] [A-Z]|Ave| MA)\s+(N)\s+(?!Houston|Ballard|word|Royaton|Wilmot|Tucson|Dallas|Warren|side|Avalon|St Pete|Scottsdale|Tampa|C[Oo][Uu][Nn][Tt][Yy]|[Rr][Oo][Ll][Ll]|Arl\.|Royaltown|Golden Isles|Oeleans|Ballard Rd|Broward|Ward|angola|Oracle|[Hubert|1st] Ave|European|Tryon|Hill\w+ |Wil\w+|[Ss][Uu][Bb][Jj][Ee][Cc][Tt]|state line|for now|with a dick|OT |of (\s+Dayton|Talla\w+)|THE INSIDE|THE SURROUNDING|TIME|AUGHTY|[A-Z] [A-Z] |&amp; 5th)"]
 	#"n": ["(?<!I'm| im|ver|sia)\s+(n)\s+(?!shape|city|town|Bismarck|[Rr]oses| b |subject|[Nn]orth|the subject|[Rr][Oo][Ll][Ll]|[0-9] [0-9])"]
 	}
 		
@@ -81,7 +81,7 @@ def charactercounter(input_dir, input_dict):
 				inputad=ct.adtextextractor(inputtext.read(), fili)
 			#result is a list of lists which contain matches for each regex/acronym
 			#the list incomprehension just deletes empty search results from the "|" search
-			wordcount=float(len(tk.tokenizer(inputad)))
+			wordcount=float(len(ct.tokenizer(inputad)))
 			result=[([t for m in i.findall(inputad) for t in m if t], i.pattern) for i in search_terms] 
 			#print result
 			results.append([(len(matches), len(matches)/wordcount) for matches, pattern in result])
@@ -101,9 +101,10 @@ def charactercounter(input_dir, input_dict):
 		print "\n", entry, matchesdicti[entry]
 	for entry in sorted(dicti, key=dicti.get, reverse=True):
 		print entry, dicti[entry]
+	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	end=time.time()
 	print "This took us {} minutes".format((end-start)/60)
-	for u in [[x[0] for x in i] for i in results]:
+	for u in [[x[1] for x in i] for i in results]:
 		print u
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]  
 
