@@ -62,7 +62,7 @@ def capsfinder(input_dir, limit):
 	print "search terms",  [i.pattern for i in search_terms]
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
-		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:800]:
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:200]:
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 				inputad=ct.adtextextractor(inputtext.read(), fili)
 			#we exclude anything we have in our abbreviations dict
@@ -83,12 +83,10 @@ def capsfinder(input_dir, limit):
 					#print len(matches[0]), 'total', len(matches)
 					#matchesdicti collects the matches per regex, dicti per feature
 					matchesdicti[pattern]=matchesdicti[pattern]+matches
-	print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True) if dicti[i] > 10])	
+	#print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True) if dicti[i] > 100])	
 	for entry in {k:v for k,v in matchesdicti.items()}:
- 		print "\n", entry, set([i for i in matchesdicti[entry] if len(matchesdicti[entry]) >50])
+ 		print "\n", entry, set([i for i in matchesdicti[entry] if matchesdicti[entry].count(i) > 50])
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
-	for u in [[x[0] for x in i] for i in results]:
-		print u
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
 
 
