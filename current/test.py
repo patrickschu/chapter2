@@ -31,41 +31,6 @@ from collections import defaultdict
 import os
 
 
-
-######
-#helper funcs
-def capitalizer(input_list):
-	"""
-	returns a list with inputword|inputword.upper() to feed into regex
-	"""
-	return [i.upper()+"|"+i for i in input_list]
-#where (?<!x) means "only if it doesn't have "x" before this point"
-capitalrprewords=[]
-capitalrpostwords=[]
-
-
-#finished
-xpostwords=["army", "navy", "wife", "husband", "gf", "girlfriends?", "drug", "baggage", "drama", "user", "boy", "of low", "anything", " hockey", "slaves", "relationship"]
-xprewords=["[Mm]y", "[Ii]'m", "[Yy]our"]
-cpostwords=["where","when","how (?:things|we)", "[Yy][Aa]"]
-cprewords=[" 2", "[^ f] u", "U", "[Tt][Oo]","[Ll][Ee][Tt]'?s?", "[Cc]ould","can","will", "up", "I'll"]
-upostwords=["(?!of )"]
-
-
-counterdict={
-#"xX":["(?:"+"|".join(capitalizer(xprewords))+")\W+([Xx])\W+" , "\W+([Xx])\W+(?:"+"|".join(capitalizer(xpostwords))+")"]
-#"cC":["(?:"+"|".join(cprewords)+")\s+([Cc])\s+" , "\s+([Cc])\s+(?:"+"|".join(cpostwords)+")"]
-#"u":["\s+(u)\s+"],
-#"U":["\s+(U)\s+"+"".join(upostwords)]
-#"r":["(?<!(e|g|t))\s+(r)\s+(?!and b |\&amp;)"]
-#"R":["(?<!rated|Cocks| [Tt]oys|Girls|[A-Z] [A-Z] [A-Z])\s+(R)\s+(?![A-Z] [A-Z]|R |B |AND [R|B]|&amp;)"]
-#"b":["(?<! size|r and)\s+(b)\s+(?!day |cups?|tits|e |or larger)"]
-#"B": ["(?<![A|R] AND| Part|. F W|&amp;)\s+(B)\s+(?!cups?|tits|level|average|horror|rated|movie|in the world|S |Q |and W |B? ?W)"]
-"N": ["(?<![A-Z] [A-Z]|Ave| MA)\s+(N)\s+(?!Houston|Ballard|word|Royaton|Wilmot|Tucson|Dallas|Warren|side|Avalon|St Pete|Scottsdale|Tampa|C[Oo][Uu][Nn][Tt][Yy]|[Rr][Oo][Ll][Ll]|Arl\.|Royaltown|Golden Isles|Oeleans|Ballard Rd|Broward|Ward|angola|Oracle|[Hubert|1st] Ave|European|Tryon|Hill\w+ |Wil\w+|[Ss][Uu][Bb][Jj][Ee][Cc][Tt]|state line|for now|with a dick|OT |of (\s+Dayton|Talla\w+)|THE INSIDE|THE SURROUNDING|TIME|AUGHTY|[A-Z] [A-Z] |&amp; 5th)"],
-#"n": ["(?<!I'm| im|ver|sia)\s+(n)\s+(?!shape|city|town|Bismarck|[Rr]oses| b |subject|[Nn]orth|the subject|[Rr][Oo][Ll][Ll]|[0-9] [0-9])"]
-}
-
-
 def charactercounter(input_dir, input_dict):
 	"""
 	Finds individual characters representing an entire word.
@@ -74,15 +39,44 @@ def charactercounter(input_dir, input_dict):
 	Returns a list of lists where each list contains raw and per word counts.
 	"""
 	start=time.time()
+	#helper funcs
+	def capitalizer(input_list):
+		"""
+		returns a list with inputword|inputword.upper() to feed into regex
+		"""
+		return [i.upper()+"|"+i for i in input_list]
+	#where (?<!x) means "only if it doesn't have "x" before this point"
+	capitalrprewords=[]
+	capitalrpostwords=[]
+	
+	#finished
+	xpostwords=["army", "navy", "wife", "husband", "gf", "girlfriends?", "drug", "baggage", "drama", "user", "boy", "of low", "anything", " hockey", "slaves", "relationship"]
+	xprewords=["[Mm]y", "[Ii]'m", "[Yy]our"]
+	cpostwords=["where","when","how (?:things|we)", "[Yy][Aa]"]
+	cprewords=[" 2", "[^ f] u", "U", "[Tt][Oo]","[Ll][Ee][Tt]'?s?", "[Cc]ould","can","will", "up", "I'll"]
+	upostwords=["(?!of )"]
+
+	counterdict={
+	#"xX":["(?:"+"|".join(capitalizer(xprewords))+")\W+([Xx])\W+" , "\W+([Xx])\W+(?:"+"|".join(capitalizer(xpostwords))+")"]
+	#"cC":["(?:"+"|".join(cprewords)+")\s+([Cc])\s+" , "\s+([Cc])\s+(?:"+"|".join(cpostwords)+")"]
+	#"u":["\s+(u)\s+"],
+	#"U":["\s+(U)\s+"+"".join(upostwords)]
+	#"r":["(?<!(e|g|t))\s+(r)\s+(?!and b |\&amp;)"]
+	#"R":["(?<!rated|Cocks| [Tt]oys|Girls|[A-Z] [A-Z] [A-Z])\s+(R)\s+(?![A-Z] [A-Z]|R |B |AND [R|B]|&amp;)"]
+	#"b":["(?<! size|r and)\s+(b)\s+(?!day |cups?|tits|e |or larger)"]
+	#"B": ["(?<![A|R] AND| Part|. F W|&amp;)\s+(B)\s+(?!cups?|tits|level|average|horror|rated|movie|in the world|S |Q |and W |B? ?W)"]
+	"N": ["(?<![A-Z] [A-Z]|Ave| MA)\s+(N)\s+(?!Houston|Ballard|word|Royaton|Wilmot|Tucson|Dallas|Warren|side|Avalon|St Pete|Scottsdale|Tampa|C[Oo][Uu][Nn][Tt][Yy]|[Rr][Oo][Ll][Ll]|Arl\.|Royaltown|Golden Isles|Oeleans|Ballard Rd|Broward|Ward|angola|Oracle|[Hubert|1st] Ave|European|Tryon|Hill\w+ |Wil\w+|[Ss][Uu][Bb][Jj][Ee][Cc][Tt]|state line|for now|with a dick|OT |of (\s+Dayton|Talla\w+)|THE INSIDE|THE SURROUNDING|TIME|AUGHTY|[A-Z] [A-Z] |&amp; 5th)"],
+	#"n": ["(?<!I'm| im|ver|sia)\s+(n)\s+(?!shape|city|town|Bismarck|[Rr]oses| b |subject|[Nn]orth|the subject|[Rr][Oo][Ll][Ll]|[0-9] [0-9])"]
+	}
+		
 	results=[]
 	dicti=defaultdict(float)
 	matchesdicti=defaultdict(list)
-	#search_terms=set([t for i in input_dict.values() for t in i])
-	search_terms=[re.compile("|".join(i)) for i in input_dict.values()]
+	search_terms=[re.compile("|".join(i)) for i in counterdict.values()]
 	print "search terms",  [i.pattern for i in search_terms]
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
-		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:5]:
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 				inputad=ct.adtextextractor(inputtext.read(), fili)
 			#result is a list of lists which contain matches for each regex/acronym
@@ -113,6 +107,7 @@ def charactercounter(input_dir, input_dict):
 		print u
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]  
 
+charactercounter("/home/ps22344/Downloads/craig_0208")
 
 def capsfinder(input_dir, limit):
 	"""
@@ -172,7 +167,7 @@ def capsfinder(input_dir, limit):
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
 
 
-capsfinder("/home/ps22344/Downloads/craig_0208", 0.5)
+#capsfinder("/home/ps22344/Downloads/craig_0208", 0.5)
 
 
 
