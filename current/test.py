@@ -65,13 +65,12 @@ def rebusfinder_too(input_path):
 				inputad=ct.adtextextractor(fili.read(), fil)
 				inputad=ct.adcleaner(inputad, replace_linebreak=True)
 				inputad=inputad.lower()
-				wordcount=len(ct.tokenizer(inputad))
+				wordcount=float(len(ct.tokenizer(inputad)))
 				hits=numberregex.findall(inputad)
 				#this weeds out all the phonenumbers. 
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
 				for h in hits:
 					#this is needed for instance where there is no punctuation
-					
 					h=[" " if i == "" else i for i in h]
 					"""
 					thus
@@ -131,22 +130,17 @@ def rebusfinder_too(input_path):
 						#results.append((pre, number, punct, post, os.path.join(input_path, pati, fil)))
 						predict[pre[0]]=predict[pre[0]]+1
 						postdict[post[0]]=postdict[post[0]]+1
-						result.append(h)
+						result.append([1])
+						print h
 						if len(result) > 0:
 							print "result initial", len(result)
-					result=[(i, i/wordcount) for i in result]
-					if len(result) > 0:
-						print "result for file", len(result)
+					result=[(len(result), len(result)/wordcount)]
+					if result[0][0] > 0:
+						print "result for file", len(result), result, fil
 		results.append(result)
 		#print "len results", len(results)
 		
 		print "original result list is", len(results)
-		seti=set(results)
-		print "\n\n", seti
-		print "the set is ", len(seti)
-		overlap={k:results.count(k) for k in seti}
-		print overlap
-		print {k:overlap[k] for k in overlap if overlap[k] > 1}
 		print "PRE CONTEXT"
 		print "\n".join([": ".join([k, unicode(predict[k])]) for k in sorted(predict, key=predict.get, reverse=True)])
 		print "POST CONTEXT"
