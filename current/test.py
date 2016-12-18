@@ -40,7 +40,7 @@ def capsfinder(input_dir, limit):
 	The capsfinder finds instances of non-Standard capitalization. 
 	Items such as iPhone or ReTro as well as straightforward THINGS. 
 	input_dir is the folder with corpus files to iterate over.
-	limit sets the percentage of words that can be capitalized at the most, supposed to address the files that are all caps. 
+	limit sets the ratio of words that can be capitalized at the most, supposed to address the files that are all caps. This is a 0 to 1 ratio, i.e. 0.5 is half of all words capitalized, camelcased, etc. 
 	do we want switch over at this point and count the lowercase ones?
 	Based on capsfinder_1203.py.
 	Returns a list of lists where each list contains raw and per word counts.
@@ -62,36 +62,37 @@ def capsfinder(input_dir, limit):
 	print "search terms",  [i.pattern for i in search_terms]
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
-		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:10]:
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:800]:
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 				inputad=ct.adtextextractor(inputtext.read(), fili)
 			#we exclude anything we have in our abbreviations dict
 			#no, we cover this by subtracting the results later
 			result=[([t for t in i.findall(inputad) if not t in abbreviations], i.pattern) for i in search_terms] 
+			#print result
 			wordcount=float(len(ct.tokenizer(inputad)))
-			if len(result) > 1:
-				print "warning result > 1", len(result), result
 			#this is the count we returs
 			results.append([(len(matches), (len(matches))/wordcount) for matches, pattern in result])
-			print "\n\n\n-----\n", results, wordcount
+			#print "\n\n\n-----\n", results, wordcount
 			#here we inspect findings. note resultS vs result
 			for matches, pattern in result:
-				if len(matches) > 100:
-					print "matches", len(matches), os.path.join(input_dir, dir, fili)
+				if len(matches)/wordcount > limit:
+					print "WARNING: matches higher than limit: matches {}, wordcount {}, in {}".format(len(matches), wordcount, os.path.join(input_dir, dir, fili))
 					#the dicti is {pattern:count, pattern: count, ...}
 				for res in matches:
 					dicti[res]=dicti[res]+1
 					#print len(matches[0]), 'total', len(matches)
 					#matchesdicti collects the matches per regex, dicti per feature
 					matchesdicti[pattern]=matchesdicti[pattern]+matches
-	print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True) if dicti[i] > 1])	
+	print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True) if dicti[i] > 10])	
 	for entry in {k:v for k,v in matchesdicti.items()}:
- 		print "\n", entry, set(matchesdicti[entry])
+ 		print "\n", entry, set([i for i in matchesdicti[entry] if len(matchesdicti[entry]) >50])
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+	for u in [[x[0] for x in i] for i in results]:
+		print u
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
 
 
-capsfinder("/home/ps22344/Downloads/craig_0208", 50)
+capsfinder("/home/ps22344/Downloads/craig_0208", 0.5)
 
 
 
