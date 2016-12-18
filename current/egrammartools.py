@@ -244,7 +244,7 @@ def rebusfinder_for(input_path):
 		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 # the rebusfinder 2 needs to be here; it finds instances of "2" for "to".
-# /Users/ps22344/Downloads/chapter2/current/identifying_rebus_2_1012.py
+
 def rebusfinder_to(input_dir):
 	"""
  	This finds the word "to"  that represented as the number 2. 
@@ -257,6 +257,7 @@ def rebusfinder_to(input_dir):
  	Dismiss the remaining ones. 
  	It returns a list of positives. 
  	It print the results and give type and token counts. 
+	Based on /Users/ps22344/Downloads/chapter2/current/identifying_rebus_2_1012.py
 	Returns a list of lists where each list contains raw and per word counts. 
 	"""
 	#written numbers for quality control
@@ -370,10 +371,6 @@ def rebusfinder_to(input_dir):
 		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 
-
-# the rebusfinder too needs to be here; it finds instances of "2" for "too". 
-# /Users/ps22344/Downloads/chapter2/current/rebusfinder_too_1108.py
-# done
 def rebusfinder_too(input_path):
 	"""
 	The rebus_too finder.
