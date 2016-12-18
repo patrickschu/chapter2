@@ -69,6 +69,8 @@ def rebusfinder_too(input_path):
 				hits=numberregex.findall(inputad)
 				#this weeds out all the phonenumbers. 
 				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
+				#if len(hits) > 0:
+				#	print "\n len hits", len(hits)
 				for h in hits:
 					#this is needed for instance where there is no punctuation
 					h=[" " if i == "" else i for i in h]
@@ -132,11 +134,9 @@ def rebusfinder_too(input_path):
 						postdict[post[0]]=postdict[post[0]]+1
 						result.append([1])
 						print h
-						if len(result) > 0:
-							print "result initial", len(result)
-					result=[(len(result), len(result)/wordcount)]
+						result=[(len(result), len(result)/wordcount)]
 					if result[0][0] > 0:
-						print "result for file", len(result), result, fil
+						print "result for file", len(result), result, os.path.join(input_path, pati, fil)
 		results.append(result)
 		#print "len results", len(results)
 		
