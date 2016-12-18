@@ -23,20 +23,7 @@ from string import punctuation
 print punctuation
 
 
-#regexes and utilities
-exclude_post_context=["+",  "(", "%"]#re.compile(r"^"+i+"$") for i in exclude_post_context]
-punctuationregex="+|".join([re.escape(i) for i in [l for l in list(punctuation) if not l in exclude_post_context]])
 
-
-#written numbers for quality control
-writtennumberdict={}
-writtennumbers=["zero", "one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen", "twenty", "thirty", "fourty", "fifty", "sixty", "fivefivefive"]	
-for writtennumber in writtennumbers:
-	writtennumberdict[writtennumber]=0
-
-postwords= ["pickey", "far", "late", "much", "many", "heavy", "old"]
-prewords_withpunct= ["ability", "head", "company", "cool", "full"]
-prewords= ["band", "ass" ,"groups", "ub", "join"]
 
 def rebusfinder_too(input_path):
 	"""
@@ -44,6 +31,19 @@ def rebusfinder_too(input_path):
 	It uses a list of expressions, pre-established thru "identifying_rebus_too_1022.py", to count 
 	instances where a writer uses "2" instead of "too". 
 	"""
+	#regexes and utilities
+	exclude_post_context=["+",  "(", "%"]#re.compile(r"^"+i+"$") for i in exclude_post_context]
+	punctuationregex="+|".join([re.escape(i) for i in [l for l in list(punctuation) if not l in exclude_post_context]])
+	#written numbers for quality control
+	writtennumberdict={}
+	writtennumbers=["zero", "one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen", "twenty", "thirty", "fourty", "fifty", "sixty", "fivefivefive"]	
+	for writtennumber in writtennumbers:
+		writtennumberdict[writtennumber]=0
+
+	postwords= ["pickey", "far", "late", "much", "many", "heavy", "old"]
+	prewords_withpunct= ["ability", "head", "company", "cool", "full"]
+	prewords= ["band", "ass" ,"groups", "ub", "join"]
+
 	predict=defaultdict(int)
 	postdict=defaultdict(int)
 	
