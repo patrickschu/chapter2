@@ -123,30 +123,7 @@ def repeatedpunctuationfinder(dir):
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	#1st list is absolute counts, 2nd div by word count
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
-	"""
-	The repeatedpunctuationfinder uses string.punctuation to create a dictionary of regexes.
-	These are used to identify non-Standard usage of punctuation. 
-	Note how we hardcoded the ?!? variants into the punctuationdict from the start. 
-	The returned punctuationdict= {regex_object: count_of_matches, regex_object_2: count_of_matches,}
-	THIS DOES NOT ITERATE OR ANYTHING
 	
-	-- Source file is /Users/ps22344/Downloads/chapter2/current/punctuationcounter_0927.py ---
-	"""
-	punctuationdict={
-	re.compile(r"(?:\s|\w)(!\?|\?!)(?:\s|\w)"):0
-	}
-
-	for stringi in punctuation:
-		print stringi, "-->", re.escape(stringi)
-		punctuationdict[re.compile(re.escape(stringi)+"{2,}")]=0	
-
-	for i in punctuationdict:
-		result=i.findall(testi)
-		if result:
-			print i.pattern
-			print result
-		punctuationdict[i]=len(result)
-	print punctuationdict
 
 
 def leetcounter(dir):
@@ -397,6 +374,135 @@ def rebusfinder_to(input_dir):
 # the rebusfinder too needs to be here; it finds instances of "2" for "too". 
 # /Users/ps22344/Downloads/chapter2/current/rebusfinder_too_1108.py
 # done
+def rebusfinder_too(input_path):
+	"""
+	The rebus_too finder.
+	It uses a list of expressions, pre-established thru "identifying_rebus_too_1022.py", to count 
+	instances where a writer uses "2" instead of "too". 
+	Based on rebusfinder_too_1108.
+	Returns a list of lists where each list contains raw and per word counts. 
+	"""
+	#regexes and utilities
+	exclude_post_context=["+",  "(", "%"]#re.compile(r"^"+i+"$") for i in exclude_post_context]
+	punctuationregex="+|".join([re.escape(i) for i in [l for l in list(punctuation) if not l in exclude_post_context]])
+	#written numbers for quality control
+	writtennumberdict={}
+	writtennumbers=["zero", "one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen", "twenty", "thirty", "fourty", "fifty", "sixty", "fivefivefive"]	
+	for writtennumber in writtennumbers:
+		writtennumberdict[writtennumber]=0
+
+	postwords= ["pickey", "far", "late", "much", "many", "heavy", "old"]
+	prewords_withpunct= ["ability", "head", "company", "cool", "full"]
+	prewords= ["band", "ass" ,"groups", "ub", "join"]
+
+	predict=defaultdict(int)
+	postdict=defaultdict(int)
+	
+	for number in [2]:
+		results=[]
+		#this is the regular expression to identify instances of the number studied
+		numberregex=re.compile("\W([a-z]+)\s*("+punctuationregex+")?\s*("+unicode(number)+")(?:\s+)?("+punctuationregex+")?(?:\s+)?([a-z]+)\W")
+		print numberregex.pattern
+		#dicts to store statistics about context of number
+		h0dict=defaultdict(int)
+		h2dict=defaultdict(int)
+		#lists to store results and previous search patterns fed into tokenfinder to avoid duplicate output
+		previous_patterns=[]
+		results=[]
+		for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
+			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
+				result=[]
+				fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
+				inputad=ct.adtextextractor(fili.read(), fil)
+				inputad=ct.adcleaner(inputad, replace_linebreak=True)
+				inputad=inputad.lower()
+				wordcount=float(len(ct.tokenizer(inputad)))
+				hits=numberregex.findall(inputad)
+				#this weeds out all the phonenumbers. 
+				hits=[h for h in hits if h[0] not in writtennumberdict and h[2] not in writtennumberdict]
+				#if len(hits) > 0:
+				#	print "\n len hits", len(hits)
+				for h in hits:
+					#this is needed for instance where there is no punctuation
+					h=[" " if i == "" else i for i in h]
+					"""
+					thus
+					[(u'of', 'IN'), (u'2', 'CD'), (u',', ','), (u'single', 'JJ')]
+					pre, "2", optional punctuation, post
+					"""
+					[pre, pre_punct, number, punct, post]=pos_tag(h)
+					
+					if (
+									
+					#unique items catcher
+					(pre[0] in ["date"]) 
+					or
+					(pre[0] in ["it"] and post[0] in ["i"])
+					or
+					(pre[0] in ["cook"] and post[0] in ["im"])
+					or
+					(pre[0] in ["kids"] and post[0] in ["young"]) 
+					or
+					(pre[0] in ["life", "way"] and post[0] in ["short"])
+					or
+					(pre[0] in ["that"] and post[0] in ["hard"])
+					or
+					(pre[0] in ["real"] and post[0] in ["hope"])
+					or
+					(pre[0] in ["me"] and post[0] in ["if"])
+					or
+					(pre[0] in ["dogs"] and post[0] in ["if"])
+					or
+					(pre[0] in ["can"] and post[0] in ["but"])
+					or
+					(pre[0] in ["kool"] and not post[0] in ["even"])
+					or
+					(pre[0] in ["on"] and punct[0] not in [" "] and inputad.split()[inputad.split().index(pre[0])-1] == "later")# and (h[h.index(pre[0])] == "later"))
+					or
+					(pre[0] in ["love"] and punct[0] not in [" "] and post[0] in ["msg"])
+					or
+					(pre[0] in ["real"] and post[0] in ["have"])
+					or
+					#BIGGER NETS
+					#you be too in front of punctuation catch
+					(pre[0] in ["be", "b", "are", "r"] and punct[0] not in [" ", "-", ")"])
+					or
+					#this is if we know the pre-word and 2 is followed by punctuation
+					# cf 'intellectualy ability 2. '
+					(pre[0] in prewords_withpunct and punct[0] not in [" ", ")", ":"])
+					or
+					#this is if we know the word to follow
+					# cf 'not 2 late.' collected in postwords
+					(post[0] in postwords)
+					or
+					#this is if we know the word to precede
+					(pre[0] in prewords)
+					):
+					
+						#print "\n\n***", [pre, number, punct, post], "**\n", os.path.join(input_path, pati, fil)
+						#results.append((pre, number, punct, post, os.path.join(input_path, pati, fil)))
+						predict[pre[0]]=predict[pre[0]]+1
+						postdict[post[0]]=postdict[post[0]]+1
+						result.append(1)
+						print h
+						#if result[0] > 10: 
+						#	print "result for file", len(result), result, #os.path.join(input_path, pati, fil)
+				results.append([(len(result), len(result)/wordcount)])
+				if sum(result) > 1:
+					print "result for file", len(result), result, os.path.join(input_path, pati, fil)
+					print results
+					
+				#print "len results", len(results)
+		
+		print "original result list is", len(results)
+		print "PRE CONTEXT"
+		print "\n".join([": ".join([k, unicode(predict[k])]) for k in sorted(predict, key=predict.get, reverse=True)])
+		print "POST CONTEXT"
+		print "\n".join([": ".join([k, unicode(postdict[k])]) for k in sorted(postdict, key=postdict.get, reverse=True)])
+		print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+		#for u in [[x[1] for x in i] for i in results]:
+		#	print u
+		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 # the capsfinder needs to be here. it does not yet exist but measures non-standard capitalization
 # the capsfinder is here E:\cygwin\home\ps22344\Downloads\chapter2\current\capsfinder_1203.py
