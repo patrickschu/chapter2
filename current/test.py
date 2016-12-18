@@ -76,7 +76,7 @@ def charactercounter(input_dir):
 	print "search terms",  [i.pattern for i in search_terms]
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
-		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:200]:
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 				inputad=ct.adtextextractor(inputtext.read(), fili)
 			#result is a list of lists which contain matches for each regex/acronym
@@ -100,8 +100,8 @@ def charactercounter(input_dir):
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	end=time.time()
 	print "This took us {} minutes".format((end-start)/60)
-	for u in [[x[1] for x in i] for i in results]:
-		print u
+	#for u in [[x[1] for x in i] for i in results]:
+	#	print u
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]  
 
 charactercounter("/home/ps22344/Downloads/craig_0208")
