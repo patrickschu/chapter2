@@ -136,10 +136,10 @@ def rebusfinder_too(input_path):
 						print h
 						#if result[0] > 10: 
 						#	print "result for file", len(result), result, #os.path.join(input_path, pati, fil)
-				print len(result)
 				results.append([(len(result), len(result)/wordcount)])
 				if sum(result) > 1:
 					print "result for file", len(result), result, os.path.join(input_path, pati, fil)
+					print results
 					
 				#print "len results", len(results)
 		
