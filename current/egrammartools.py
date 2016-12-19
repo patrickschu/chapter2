@@ -556,9 +556,78 @@ def capsfinder(input_dir, limit):
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 
-# the singleletterfinder needs to be here. it does not yet exist but finds things like "c u"
-# here it is E:\cygwin\home\ps22344\Downloads\chapter2\current\charactercounter_1129.py
+def singleletterfinder(input_dir):
+	"""
+	Finds individual characters representing an entire word.
+	Example: C U for see you. 
+	Based on charactercounter_1129.py.
+	Returns a list of lists where each list contains raw and per word counts.
+	"""
+	start=time.time()
+	#helper funcs
+	def capitalizer(input_list):
+		"""
+		returns a list with inputword|inputword.upper() to feed into regex
+		"""
+		return [i.upper()+"|"+i for i in input_list]
+	#where (?<!x) means "only if it doesn't have "x" before this point"
+	capitalrprewords=[]
+	capitalrpostwords=[]
+	
+	#finished
+	xpostwords=["army", "navy", "wife", "husband", "gf", "girlfriends?", "drug", "baggage", "drama", "user", "boy", "of low", "anything", " hockey", "slaves", "relationship"]
+	xprewords=["[Mm]y", "[Ii]'m", "[Yy]our"]
+	cpostwords=["where","when","how (?:things|we)", "[Yy][Aa]"]
+	cprewords=[" 2", "[^ f] u", "U", "[Tt][Oo]","[Ll][Ee][Tt]'?s?", "[Cc]ould","can","will", "up", "I'll"]
+	upostwords=["(?!of )"]
 
+	counterdict={
+	"xX":["(?:"+"|".join(capitalizer(xprewords))+")\W+([Xx])\W+" , "\W+([Xx])\W+(?:"+"|".join(capitalizer(xpostwords))+")"],
+	"cC":["(?:"+"|".join(cprewords)+")\s+([Cc])\s+" , "\s+([Cc])\s+(?:"+"|".join(cpostwords)+")"],
+	"u":["\s+(u)\s+"],
+	"U":["\s+(U)\s+"+"".join(upostwords)],
+	"r":["(?<!(e|g|t))\s+(r)\s+(?!and b |\&amp;)"],
+	"R":["(?<!rated|Cocks| [Tt]oys|Girls|[A-Z] [A-Z] [A-Z])\s+(R)\s+(?![A-Z] [A-Z]|R |B |AND [R|B]|&amp;)"],
+	"b":["(?<! size|r and)\s+(b)\s+(?!day |cups?|tits|e |or larger)"],
+	"B": ["(?<![A|R] AND| Part|. F W|&amp;)\s+(B)\s+(?!cups?|tits|level|average|horror|rated|movie|in the world|S |Q |and W |B? ?W)"],
+	"N": ["(?<![A-Z] [A-Z]|Ave| MA)\s+(N)\s+(?!Houston|Ballard|word|Royaton|Wilmot|Tucson|Dallas|Warren|side|Avalon|St Pete|Scottsdale|Tampa|C[Oo][Uu][Nn][Tt][Yy]|[Rr][Oo][Ll][Ll]|Arl\.|Royaltown|Golden Isles|Oeleans|Ballard Rd|Broward|Ward|angola|Oracle|[Hubert|1st] Ave|European|Tryon|Hill\w+ |Wil\w+|[Ss][Uu][Bb][Jj][Ee][Cc][Tt]|state line|for now|with a dick|OT |of (\s+Dayton|Talla\w+)|THE INSIDE|THE SURROUNDING|TIME|AUGHTY|[A-Z] [A-Z] |&amp; 5th)"],
+	"n": ["(?<!I'm| im|ver|sia)\s+(n)\s+(?!shape|city|town|Bismarck|[Rr]oses| b |subject|[Nn]orth|the subject|[Rr][Oo][Ll][Ll]|[0-9] [0-9])"]
+	}
+		
+	results=[]
+	dicti=defaultdict(float)
+	matchesdicti=defaultdict(list)
+	search_terms=[re.compile("|".join(i)) for i in counterdict.values()]
+	print "search terms",  [i.pattern for i in search_terms]
+	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
+		print dir
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
+			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
+				inputad=ct.adtextextractor(inputtext.read(), fili)
+			#result is a list of lists which contain matches for each regex/acronym
+			#the list incomprehension just deletes empty search results from the "|" search
+			wordcount=float(len(ct.tokenizer(inputad)))
+			result=[([t for m in i.findall(inputad) for t in m if t], i.pattern) for i in search_terms] 
+			#print result
+			results.append([(len(matches), len(matches)/wordcount) for matches, pattern in result])
+			for matches, pattern in result:
+				if len(matches) > 0:
+				#	print "multiple matches", matches, os.path.join(input_dir, dir, fili)
+					#the dicti is {pattern:count, pattern: count, ...}
+					for res in matches[0]:
+						dicti[res]=dicti[res]+1
+						#matchesdicti collects the matches per regex, dicti per feature
+						matchesdicti[pattern]=matchesdicti[pattern]+matches
+	for entry in {k:v for k,v in matchesdicti.items()}:
+		print "\n", entry, set(matchesdicti[entry])
+	for entry in sorted(dicti, key=dicti.get, reverse=True):
+		print entry, dicti[entry]
+	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+	end=time.time()
+	print "This took us {} minutes".format((end-start)/60)
+	#for u in [[x[1] for x in i] for i in results]:
+	#	print u
+	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]  
 
 ###SECTION 2
 ###ORTHOGRAPHY
