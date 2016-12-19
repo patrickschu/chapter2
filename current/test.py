@@ -53,10 +53,7 @@ def clippingcounter(input_dir):
 	Here, we make that list out of the shorteningdict jsons created earlier. 
 	The regex is designed to find lowercase and uppercase versions of each, plus plurals.
 	The input_dir contains the text files to be iterated over. 
-	It returns a list of match counts.
-	e.g.
-	clipping_list=['LOL', 'ROFL', 'ASL', 'BRB']
-	result=[0,0,2,0] 
+	Returns a list of lists where each list contains raw and per word counts.
 	"""
 	start=time.time()
 	#creating the search terms
