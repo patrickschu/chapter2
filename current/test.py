@@ -47,6 +47,8 @@ from collections import defaultdict
 import tokenfinder_1004 as tk
 
 
+ 
+
 def clippingcounter(input_dir):
 	"""
 	The clipping uses the clipping_list to count instances	of the clippings listed in there. 
@@ -131,15 +133,7 @@ def clippingcounter(input_dir):
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	#for u in [[x[1] for x in i] for i in results]:
 	#	print u
-	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]  
-
-
-
-x=clippingcounter("/home/ps22344/Downloads/craig_0208")
-
-print "rows in result:", len(x)
-
-
+	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
 
 
 def charactercounter(input_dir):
