@@ -13,16 +13,16 @@ from nltk import pos_tag
 
 def acronymcounter(input_dir):
 	"""
-	The acronymcounter uses the acronym_list to count instances	of the abbreviations listed in there. 
+	The acronymcounter counts acronyms and abbreviations. 
+	It relies on a&a previously IDd in the acronymfinder. 
 	Here, we make that list out of the shorteningdict jsons created earlier. 
 	The regex is designed to find lowercase and uppercase versions of each, plus plurals.
 	The input_dir contains the text files to be iterated over. 
-	It returns a list of match counts.
-	e.g.
-	acronym_list=['LOL', 'ROFL', 'ASL', 'BRB']
-	result=[0,0,2,0] 
+	Returns a list of lists where each list contains raw and per word counts.
+	This is based on chapter2/current/acronymcounter_1115.py.
 	NOTE:we can consider running location and schools over a different regex that does not include plural s.
 	"""
+	start=time.time()
 	filelist=[
 	"abbreviationfiles/shorteningdict_2_1115.json",
 	"abbreviationfiles/shorteningdict_3_1115.json",
@@ -59,7 +59,7 @@ def acronymcounter(input_dir):
 	#iterate and match
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
-		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:20]:
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 				inputad=ct.adtextextractor(inputtext.read(), fili)
 			#result is a list of lists which contain matches for each regex/acronym
@@ -70,8 +70,16 @@ def acronymcounter(input_dir):
 				#the dicti is {pattern:count, pattern: count, ...}
 				dicti[pattern]=dicti[pattern]+len(matches)
 				matchesdicti[pattern]=matchesdicti[pattern]+matches
-	print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
-	return results 
+	print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True) if dicti[i] > 10])
+	end=time.time()
+	print "This took us {} minutes".format((end-start)/60)
+	#for u in [[x[1] for x in i] for i in results]:
+	#	print u
+	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+	#for u in [[x[1] for x in i] for i in results]:
+	#	print u
+	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
+	
 
 
 x=acronymcounter("/home/ps22344/Downloads/craig_0208")
