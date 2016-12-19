@@ -6,7 +6,9 @@ This compiles all the tools needed for extraction of e-grammar features as defin
 # So we need dir as input
 # do we want corpus counts as result or featurelists
 # maybe: dict={feature:count, feature_2: count, ...}
-
+# we make lists to be glued together in numpy column_stack
+# the returns consist of lists, each representing a file. 
+# the file list consists of a tuple for each feature that contains (raw count, frequency per word). 
 
 
 import numpy as np
