@@ -47,7 +47,7 @@ from collections import defaultdict
 import tokenfinder_1004 as tk
 
 
-def clippingcounter(clipping_list, input_dir):
+def clippingcounter(input_dir):
 	"""
 	The clipping uses the clipping_list to count instances	of the clippings listed in there. 
 	Here, we make that list out of the shorteningdict jsons created earlier. 
@@ -105,11 +105,11 @@ def clippingcounter(clipping_list, input_dir):
 	clipping_list=[re.compile("[^web|i]\W("+i+")\W") if i in ["cams?", "sites?"] else re.compile("\W("+i+")\W") for i in clipping_list]
 	#clipping_list=[re.compile("\W("+i+")\W") for i in clipping_list]
 	clipping_list=set(clipping_list)
-	print [i.pattern for i in clipping_list]
+	#print [i.pattern for i in clipping_list]
 	#iterate and match
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
-		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:2]:
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 				inputad=ct.adtextextractor(inputtext.read(), fili).lower()
 			#result is a list of lists which contain matches for each regex/acronym
@@ -124,19 +124,21 @@ def clippingcounter(clipping_list, input_dir):
 				dicti[pattern]=dicti[pattern]+len(matches)
 				matchesdicti[pattern]=matchesdicti[pattern]+matches
 	print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
-	for entry in {k:v for k,v in matchesdicti.items() if v > 10}:
-		print entry
-		print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+	#for entry in {k:v for k,v in matchesdicti.items() if v > 10}:
+	#	print entry
+
 	end=time.time()
 	print "This took us {} minutes".format((end-start)/60)
 	#for u in [[x[1] for x in i] for i in results]:
 	#	print u
+	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+	#for u in [[x[1] for x in i] for i in results]:
+	#	print u
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]  
 
-	return results 
 
 
-x=clippingcounter("/Users/ps22344/Downloads/craig_0208")
+x=clippingcounter("/home/ps22344/Downloads/craig_0208")
 
 print "rows in result:", len(x)
 
