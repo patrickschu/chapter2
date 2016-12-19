@@ -644,6 +644,8 @@ def clippingcounter(input_dir):
 	The regex is designed to find lowercase and uppercase versions of each, plus plurals.
 	The input_dir contains the text files to be iterated over. 
 	Returns a list of lists where each list contains raw and per word counts.
+	Based on /chapter2/current/clippingcounter_1120.py
+
 	"""
 	start=time.time()
 	#creating the search terms
