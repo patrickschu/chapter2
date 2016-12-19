@@ -636,7 +636,6 @@ def singleletterfinder(input_dir):
 
 
 #clippings
-#/Users/ps22344/Downloads/chapter2/current/clippingcounter_1120.py
 def clippingcounter(input_dir):
 	"""
 	The clipping uses the clipping_list to count instances	of the clippings listed in there. 
@@ -727,10 +726,77 @@ def clippingcounter(input_dir):
 
 
 #abbreviations
-##Abbreviations. Do we want to split that up into clippings etc?
-#the acronymcounter counts alphabetisms and acronyms
-#it does not distinguish between them as of now
-#/Users/ps22344/Downloads/chapter2/current/acronymcounter_1115.py
+def acronymcounter(input_dir):
+	"""
+	The acronymcounter counts acronyms and abbreviations. 
+	I.e. things such as LOL, lol and LTR, ltr. 
+	The input_dir contains the text files to be iterated over. 
+	It relies on a&a previously IDd in the acronymfinder. 
+	Here, we make that list out of the shorteningdict jsons created earlier. 
+	The regex is designed to find lowercase and uppercase versions of each, plus plurals.
+	Undesired plurals are in the exclude_list. 
+	Returns a list of lists where each list contains raw and per word counts.
+	This is based on chapter2/current/acronymcounter_1115.py.
+	NOTE:we can consider running location and schools over a different regex that does not include plural s.
+	"""
+	start=time.time()
+	filelist=[
+	"abbreviationfiles/shorteningdict_2_1115.json",
+	"abbreviationfiles/shorteningdict_3_1115.json",
+	"abbreviationfiles/shorteningdict_4_1115.json",
+	"abbreviationfiles/shorteningdict_5_1115.json",
+	"abbreviationfiles/shorteningdict_6_1115.json"
+	]
+
+	search_terms = []
+
+	for fili in filelist:
+		with codecs.open(fili, "r", "utf-8") as inputfile:
+			acronym_dict=json.load(inputfile)
+		for key in [i for i in acronym_dict.keys() if i not in ["blend", "abbreviation", "clipping", "delete", "other"]]:
+			for cat in ['X', 'location']:
+				print "adding", acronym_dict[key][cat]
+				search_terms = search_terms + acronym_dict[key][cat]
+
+	print search_terms
+			
+	print "we have {} search terms".format(len(search_terms))
+		
+	excludelist=set(["oks", "fbs", "PSS", "VAS", "vas", "BCS", "bcs", "NES", "nes", "SMS", "sms", "SAS", "SSS", "sss", "nsas", "mias"])
+	
+	#dicts to store results
+	dicti=defaultdict(float)
+	matchesdicti=defaultdict(list)
+	results=[]
+	
+	#regex, lower and pluralize
+	acronym_list=[re.compile("\W((?:"+i+"|"+i.lower()+")[sS]?)\W") for i in search_terms]
+	acronym_list=set(acronym_list)
+	print [i.pattern for i in acronym_list]
+	#iterate and match
+	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
+		print dir
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
+			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
+				inputad=ct.adtextextractor(inputtext.read(), fili)
+			#result is a list of lists which contain matches for each regex/acronym
+			wordcount=float(len(ct.tokenizer(inputad)))
+			result=[([m for m in i.findall(inputad) if not m in excludelist], i.pattern) for i in acronym_list] 
+			results.append([(len(matches), len(matches)/wordcount) for matches, pattern in result])
+			for matches, pattern in result:
+				#the dicti is {pattern:count, pattern: count, ...}
+				dicti[pattern]=dicti[pattern]+len(matches)
+				matchesdicti[pattern]=matchesdicti[pattern]+matches
+	print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True) if dicti[i] > 10])
+	end=time.time()
+	print "This took us {} minutes".format((end-start)/60)
+	#for u in [[x[1] for x in i] for i in results]:
+	#	print u
+	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+	#for u in [[x[1] for x in i] for i in results]:
+	#	print u
+	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
+
 
 #phonetically motivated letter substitution
 
