@@ -12,22 +12,12 @@ with codecs.open ("/home/ps22344/Downloads/chapter2/textfiles/non_standard_words
 		print lini, "\n"
 		ini=raw_input("X FOR YES ")
 		if ini == "X":
-			plus.append(item)
+			plus.append(lini)
 		if ini == "ENDE":
 			print plus
 		else:
-			minus.append(item)
+			minus.append(lini)
 
-
-for item in listi:
-	print item, "\n", len(item)
-	ini=raw_input("X FOR YES ")
-	if ini == "X":
-		plus.append(item)
-	if ini == "ENDE":
-		print plus
-	else:
-		minus.append(item)
 		
 
 
