@@ -2,21 +2,9 @@ import codecs
 import re
 import clustertools as ct
 
+#; and spellings that represent prosody or nonlinguistic sounds, such as a “calling voice” (helloooo), laughter, and other (nonhuman) noises
 
 
-plus=[]
-minus=[]
-
-with codecs.open ("/home/ps22344/Downloads/chapter2/textfiles/non_standard_words_0920.txt", "r", "utf-8") as inputfile:
-	for lini in inputfile.read().split(")\n(u"):
-		print lini, "\n"
-		ini=raw_input("X FOR YES ")
-		if ini == "X":
-			plus.append(lini)
-		if ini == "ENDE":
-			print plus
-		else:
-			minus.append(lini)
 
 		
 
@@ -95,3 +83,19 @@ def phaticcounter(input_dir):
 	#for u in [[x[1] for x in i] for i in results]:
 	#	print u
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
+	
+	
+plus=[]
+minus=[]
+
+def listmaker():
+	with codecs.open ("/home/ps22344/Downloads/chapter2/textfiles/non_standard_words_0920.txt", "r", "utf-8") as inputfile:
+		for lini in inputfile.read().split(")\n(u"):
+			print lini, "\n"
+			ini=raw_input("X FOR YES ")
+			if ini == "X":
+				plus.append(lini)
+			if ini == "ENDE":
+				print plus
+			else:
+				minus.append(lini)
