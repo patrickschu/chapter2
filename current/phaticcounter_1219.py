@@ -5,38 +5,28 @@ import clustertools as ct
 #; and spellings that represent prosody or nonlinguistic sounds, such as a “calling voice” (helloooo), laughter, and other (nonhuman) noises
 
 
-\W([Hh][Aa]){1,}h?\W
-\W([Hh][Uu]){1,}h?\W
-\W([Hh][Ee]){1,}h?\W
-\W[Hh]e+y{2,}
-\W[Hh]e{2,}y+
-\W[Ss][Oo]{2,}
-\W[Hh][Mm]{1,}
-\W[Mm]{2,}
-\W[Hh][Oo]{2,}
-\W[Yy][Aa]+[Yy]+
+\W([Hh][Aa]){1,}[Hh]?\W
+\W([Hh][Uu]){1,}[Hh]?\W
+\W([Hh][Ee]){1,}[Hh]?\W
+\W[Hh][Mm]{1,}\W
 
-er
-uh\
-ummm
-lmao is in here!
-omg too
-ttyl
-f****
-yah
-hahaha
-holla
-Heyy
-hehe
-yay
-mmmm
-bam
-Hmmmm
-hahah
-Sooooo
-soooooo
-Ohh
-mmmmm
+
+\W[Hh]e+y{2,}\W
+\W[Hh]e{2,}[Yy]+\W
+
+\W[Ss][Oo]{2,}\W
+\W[Uu][Mm]+\W
+
+\W[Mm]{2,}\W
+\W[Hh][Oo]{2,}\W
+\W[Yy][Aa]+[Yy]+\W
+\W[Ee][Rr]\W
+
+\W[Uu][Hh]+\W
+
+\W[Yy]+[Aa]+[Hh]?\W
+\W[Mm]{2,}\W
+
 
 
 def prosodycounter(input_dir):
