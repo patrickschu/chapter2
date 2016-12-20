@@ -9,7 +9,7 @@ import clustertools as ct
 		
 
 
-def phaticcounter(input_dir):
+def prosodycounter(input_dir):
 	"""
 	 
 	Returns a list of lists where each list contains raw and per word counts.
