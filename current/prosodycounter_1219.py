@@ -3,37 +3,14 @@
 import codecs
 import re
 import clustertools as ct
+import time
+from collections import defaultdict
+import os
+
+
 
 #; and spellings that represent prosody or nonlinguistic sounds, such as a “calling voice” (helloooo), laughter, and other (nonhuman) noises
 
-prosodyitems=[
-
-"\s*(laugh|cough|smack|giggle)*\s",
-
-"\W[Ee][Rr]\W",
-
-"\W([Hh][Aa]){1,}[Hh]?\W",
-"\W([Hh][Uu]){1,}[Hh]?\W",
-"\W([Hh][Ee]){1,}[Hh]?\W",
-"\W[Hh][Oo]{2,}\W",
-"\W[Hh][Mm]{1,}\W",
-
-"\W[Hh]e+y{2,}\W",
-"\W[Hh]e{2,}[Yy]+\W",
-
-"\W[Mm]{2,}\W",
-
-"\W[Ss][Oo]{2,}\W",
-
-"\W[Uu][Hh]+\W",
-"\W[Uu][Mm]+\W",
-
-"\W[Yy][Aa]+[Yy]+\W",
-"\W[Yy]+[Aa]+[Hh]?\W"
-]
-
-for thing in prosodyitems:
-	print thing
 
 def prosodycounter(input_dir):
 	"""
@@ -42,32 +19,34 @@ def prosodycounter(input_dir):
 	
 	"""
 	start=time.time()
+	
 	#creating the search terms
 	prosodyitems=[
-	"\s*(laugh|cough|smack|giggle)*\s",
+	"\s(\*(?:laugh|cough|smack|giggle)\*)\s",
 
-	"\W[Ee][Rr]\W",
+	"\W([Ee][Rr])\W",
 
-	"\W([Hh][Aa]){1,}[Hh]?\W",
-	"\W([Hh][Uu]){1,}[Hh]?\W",
-	"\W([Hh][Ee]){1,}[Hh]?\W",
-	"\W[Hh][Oo]{2,}\W",
-	"\W[Hh][Mm]{1,}\W",
+	"\W((?:[Hh][Aa]){1,}[Hh]?)\W",
+	"\W((?:[Hh][Uu]){1,}[Hh]?)\W",
+	"\W((?:[Hh][Ee]){2,}[Hh]?)\W",
+	"\W([Hh][Oo]{2,})\W",
+	"\W([Hh][Mm]{1,})\W",
 
-	"\W[Hh]e+y{2,}\W",
-	"\W[Hh]e{2,}[Yy]+\W",
+	"\W([Hh]e+y{2,})\W",
+	"\W([Hh]e{2,}[Yy]+)\W",
 
-	"\W[Mm]{2,}\W",
+	"\W([Mm]{2,})\W",
 
-	"\W[Ss][Oo]{2,}\W",
+	"\W([Ss][Oo]{2,})\W",
 
-	"\W[Uu][Hh]+\W",
-	"\W[Uu][Mm]+\W",
+	"\W([Uu][Hh]+)\W",
+	"\W([Uu][Mm]+)\W",
 
-	"\W[Yy][Aa]+[Yy]+\W",
-	"\W[Yy]+[Aa]+[Hh]?\W"
+	"\W([Yy][Aa]+[Yy]+)\W",
+	"\W([Yy]+[Aa]+[Hh]?)\W"
 	]
-
+	excludelist=[]
+	
 	#dicts to store results
 	dicti=defaultdict(float)
 	matchesdicti=defaultdict(list)
@@ -79,29 +58,25 @@ def prosodycounter(input_dir):
 	#iterate and match
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
-		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:20]:
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:200]:
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 				inputad=ct.adtextextractor(inputtext.read(), fili).lower()
 			#result is a list of lists which contain matches for each regex/acronym
 			wordcount=float(len(ct.tokenizer(inputad)))
 			result=[([m for m in i.findall(inputad) if not m in excludelist], i.pattern) for i in prosody_list] 
-			print result
+			#print result
 			results.append([(len(matches), len(matches)/wordcount) for matches, pattern in result])
 			for matches, pattern in result:
 				#the dicti is {pattern:count, pattern: count, ...}
 				dicti[pattern]=dicti[pattern]+len(matches)
 				matchesdicti[pattern]=matchesdicti[pattern]+matches
 	print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
-	#for entry in {k:v for k,v in matchesdicti.items() if v > 10}:
-	#	print entry
 
 	end=time.time()
 	print "This took us {} minutes".format((end-start)/60)
-	#for u in [[x[1] for x in i] for i in results]:
-	#	print u
+	# for u in [[x[0] for x in i] for i in results]:
+		# print u
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
-	#for u in [[x[1] for x in i] for i in results]:
-	#	print u
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
 
 prosodycounter('/home/ps22344/Downloads/craig_0208')	
