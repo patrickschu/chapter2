@@ -56,6 +56,7 @@ def emoticonfinder(dir):
 	We might consider making the file with emoticons an argument as well. 
 	--- Original Source file is /Users/ps22344/Downloads/chapter2/current/emoticoncounter.py ---
 	"""
+	print "RUNNING EMOTICONFINDER"
 	starttime=time.time()
 	#creating a featuredict from file
 	featuredict={}
@@ -65,12 +66,12 @@ def emoticonfinder(dir):
 	
 	with codecs.open('/home/ps22344/Downloads/chapter2/textfiles/emolist_final_2.txt', "r", "utf-8") as inputtext:
 		for line in inputtext.readlines():
-			print line.rstrip("\n")
+			#print line.rstrip("\n")
 			search_terms.append(re.compile("\W("+re.escape(line.rstrip("\n"))+")(?: |<)"))
 		
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 		print pati
-		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
+		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")][:5]:
 			with codecs.open(os.path.join(dir, pati, fili), "r", "utf-8") as inputfili:
 				inputad=ct.adtextextractor(inputfili.read(), fili)
 			wordcount=float(len(ct.tokenizer(inputad)))
@@ -87,15 +88,14 @@ def emoticonfinder(dir):
 			
 	endtime=time.time()
 	print "This took us {} minutes".format((endtime-starttime)/60)
-	#print results
-	print len(results), "files processed"
 	print "\n\n"
 	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
 	for k in sorted(resultdict, key=resultdict.get, reverse=True):
 		print k, resultdict[k]
-	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+	#print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	#1st list is absolute counts, 2nd div by word count
-	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
+	outi= ([[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results])
+	return outi
 
 
 def repeatedpunctuationfinder(dir):
@@ -107,6 +107,7 @@ def repeatedpunctuationfinder(dir):
 	Returns two lists; first is absolute counts, the second relative counts	
 	-- Source file is /Users/ps22344/Downloads/chapter2/current/punctuationcounter_0927.py ---
 	"""
+	print "RUNNING REPEATEDPUNCTUATIONFINDER"
 	starttime=time.time()
 	#creating a featuredict from file
 	results=[]
@@ -129,7 +130,6 @@ def repeatedpunctuationfinder(dir):
 			for no, item in enumerate(result):
 				resultdict[no]=resultdict[no]+len(item)
 			results.append([(len(i), len(i)/wordcount) for i in result])
-			print results
 			if sum([len(i) for i in result]) > 80:
 				for n, i in enumerate(result):
 					 if len(i) > 0:
@@ -147,7 +147,7 @@ def repeatedpunctuationfinder(dir):
 		print k, resultdict[k]
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	#1st list is absolute counts, 2nd div by word count
-	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
+	return ([[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results])
 
 
 def leetcounter(dir):
@@ -158,8 +158,8 @@ def leetcounter(dir):
 	Returns two lists; first is absolute counts, the second relative counts	 
 	Inspired by  http://www.gamehouse.com/blog/leet-speak-cheat-sheet/
 	"""
+	print "RUNNING LEETCOUNTER"
 	starttime=time.time()
-	
 	featuredict={}
 	search_terms=[]
 	results=[]
@@ -186,7 +186,7 @@ def leetcounter(dir):
 					 if len(i) > 0:
 						 print search_terms[n].pattern, n,i, "len", len(i)
 				print os.path.join(dir, pati, fili), "\n"
-				os.system("cygstart "+os.path.join(dir, pati, fili))
+				#os.system("cygstart "+os.path.join(dir, pati, fili))
 	endtime=time.time()
 	print "This took us {} minutes".format((endtime-starttime)/60)
 	#print results
@@ -200,7 +200,7 @@ def leetcounter(dir):
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 
-#the rebusfinder needs to be here; it finds instances of "4" for "for. 
+#the rebusfinder needs to be here; it finds instances of "4" for "for". 
 def rebusfinder_for(input_path):
 	"""
  	This finds words that are represented as numbers. 
@@ -208,6 +208,9 @@ def rebusfinder_for(input_path):
  	The lists exclude_pre and exclude_post word for negative contexts in 4.
  	Returns two lists; first is absolute counts, the second relative counts	. 
 	"""
+	print "RUNNING REBUSFINDER FOR"
+	
+	writtennumberdict={}
 	#these are exclude and include contexts we need
 	writtennumbers=["zero", "one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen", "twenty", "thirty", "fourty", "fifty", "sixty"]	
 
@@ -229,6 +232,7 @@ def rebusfinder_for(input_path):
 		h2dict=defaultdict(int)
 		print numberregex.pattern
 		for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
+			print pati
 			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
 				result=[]
 				fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
@@ -284,6 +288,7 @@ def rebusfinder_to(input_dir):
 	Based on /Users/ps22344/Downloads/chapter2/current/identifying_rebus_2_1012.py
 	Returns a list of lists where each list contains raw and per word counts. 
 	"""
+	print "RUNNING REBUSFINDER TO"
 	#written numbers for quality control
 	writtennumberdict={}
 	
@@ -403,6 +408,7 @@ def rebusfinder_too(input_path):
 	Based on rebusfinder_too_1108.
 	Returns a list of lists where each list contains raw and per word counts. 
 	"""
+	print "RUNNING REBUSFINDER TOO"
 	#regexes and utilities
 	exclude_post_context=["+",  "(", "%"]#re.compile(r"^"+i+"$") for i in exclude_post_context]
 	punctuationregex="+|".join([re.escape(i) for i in [l for l in list(punctuation) if not l in exclude_post_context]])
@@ -536,6 +542,7 @@ def capsfinder(input_dir, limit):
 	Based on capsfinder_1203.py.
 	Returns a list of lists where each list contains raw and per word counts.
 	"""
+	print "RUNNING CAPSFINDER"
 	capsdict={
 	re.compile("\W+([A-Z]{3,})\W+"):"all caps",
 	re.compile("\W+([a-z]+[A-Z]+(?:[a-z]+)?(?:[A-Z]+)?)\W"):"PascalCase",
@@ -588,6 +595,7 @@ def singleletterfinder(input_dir):
 	Based on charactercounter_1129.py.
 	Returns a list of lists where each list contains raw and per word counts.
 	"""
+	print "RUNNING SINGLELETTERFINDER"
 	start=time.time()
 	#helper funcs
 	def capitalizer(input_list):
@@ -666,6 +674,7 @@ def spellingcounter(input_dir):
     It returns a lists of lists with (raw count, relative count) tuples.
 	Based on spellingcounter_1216
     """
+    print "RUNNING SPELLINGCOUNTER"
     start=time.time()
     americandict = enchant.Dict("en_US")
     goodwords=set(["wo", "'ve", "'m", "n't", "'s", "'ll", "'re", "'d", "non-"]+list(string.punctuation))
@@ -706,8 +715,8 @@ def clippingcounter(input_dir):
 	The input_dir contains the text files to be iterated over. 
 	Returns a list of lists where each list contains raw and per word counts.
 	Based on /chapter2/current/clippingcounter_1120.py
-
 	"""
+	print "RUNNING CLIPPINGCOUNTER"
 	start=time.time()
 	#creating the search terms
 	filelist=[
@@ -801,6 +810,7 @@ def acronymcounter(input_dir):
 	This is based on chapter2/current/acronymcounter_1115.py.
 	NOTE:we can consider running location and schools over a different regex that does not include plural s.
 	"""
+	print "RUNNING ACRONYMCOUNTER"
 	start=time.time()
 	filelist=[
 	"abbreviationfiles/shorteningdict_2_1115.json",
@@ -895,32 +905,25 @@ def prosodycounter(input_dir):
 	Based on prosodycounter_1219.
 	Returns a list of lists where each list contains raw and per word counts.
 	"""
+	print "RUNNING PROSODYCOUNTER"
 	start=time.time()
-	
 	#creating the search terms
 	prosodyitems=[
 	"\s(\*(?:laugh|cough|smack|giggle)\*)\s",
-
 	"\W([Ee][Rr])\W",
-
 	"\W((?:[Hh][Aa]){1,}[Hh]?)\W",
 	"\W((?:[Hh][Uu]){1,}[Hh]?)\W",
 	"\W((?:[Hh][Ee]){2,}[Hh]?)\W",
 	"\W([Hh][Oo]{2,})\W",
 	"\W([Hh][Mm]{1,})\W",
-
 	"\W([Hh]e+y{2,})\W",
 	"\W([Hh]e{2,}[Yy]+)\W",
 	"\W"+anyoftheseregex("[Hh]+[Ee]+[Ll][Ll]+[Oo]+")+"\W",
-
 	"\W([Mm]{2,}[Hh]?)\W",
 	"\W((?:[Mm][Hh]){1,})\W",
-
 	"\W([Ss][Oo]{2,})\W",
-
 	"\W([Uu][Hh]+)\W",
 	"\W([Uu][Mm]+)\W",
-
 	"\W([Yy][Aa]+[Yy]+)\W",
 	"\W([Yy]+[Aa]+[Hh]?)\W"
 	]
