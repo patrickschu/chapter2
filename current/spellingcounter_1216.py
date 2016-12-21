@@ -18,13 +18,13 @@ def spellingcounter(input_dir):
     """
     start=time.time()
     americandict = enchant.Dict("en_US")
-    goodwords=set(["wo", "'ve", "'m", "n't", "'s", "'ll"]+list(string.punctuation))
+    goodwords=set(["wo", "'ve", "'m", "n't", "'s", "'ll", "'re", "'d", "non-"]+list(string.punctuation))
     htmlregex=re.compile("<.*?>")
     results=[]
     for pati in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
         print pati
-        for fili in [i for i in os.listdir(os.path.join(input_dir, pati)) if not i.startswith(".")][:200]:
-            print fili
+        for fili in [i for i in os.listdir(os.path.join(input_dir, pati)) if not i.startswith(".")]:
+            #print fili
             result=[]
             fili=codecs.open(os.path.join(input_dir, pati, fili), "r", "utf-8")
             inputad=ct.adtextextractor(fili.read(), fili)
@@ -32,8 +32,8 @@ def spellingcounter(input_dir):
             words=ct.tokenizer(inputad)
             #print "\n\n\n", words
             wordcount=float(len(words))
-            mistakes=[w for w in words if not americandict.check(w) and w not in ["wo", "'ve", "'m", "n't", "'s", "'ll"]+list(string.punctuation)]
-            #print result, len(result)
+            mistakes=[w for w in words if not americandict.check(w) and w not in goodwords]
+            #print mistakes
             if wordcount-len(mistakes) < 0:
                  print "WARNING: negative count-mistakes", wordcount, len(correct), os.path.join(input_dir, pati, fili)
             results.append([(len(mistakes), len(mistakes)/wordcount)])
