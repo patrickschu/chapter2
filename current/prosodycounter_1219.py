@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import codecs
 import re
 import clustertools as ct
@@ -30,7 +32,8 @@ prosodyitems=[
 "\W[Yy]+[Aa]+[Hh]?\W"
 ]
 
-
+for thing in prosodyitems:
+	print thing
 
 def prosodycounter(input_dir):
 	"""
@@ -40,55 +43,49 @@ def prosodycounter(input_dir):
 	"""
 	start=time.time()
 	#creating the search terms
-	filelist=[
-	
+	prosodyitems=[
+	"\s*(laugh|cough|smack|giggle)*\s",
+
+	"\W[Ee][Rr]\W",
+
+	"\W([Hh][Aa]){1,}[Hh]?\W",
+	"\W([Hh][Uu]){1,}[Hh]?\W",
+	"\W([Hh][Ee]){1,}[Hh]?\W",
+	"\W[Hh][Oo]{2,}\W",
+	"\W[Hh][Mm]{1,}\W",
+
+	"\W[Hh]e+y{2,}\W",
+	"\W[Hh]e{2,}[Yy]+\W",
+
+	"\W[Mm]{2,}\W",
+
+	"\W[Ss][Oo]{2,}\W",
+
+	"\W[Uu][Hh]+\W",
+	"\W[Uu][Mm]+\W",
+
+	"\W[Yy][Aa]+[Yy]+\W",
+	"\W[Yy]+[Aa]+[Hh]?\W"
 	]
 
-	search_terms = []
-
-	for fili in filelist:
-		with codecs.open(fili, "r", "utf-8") as inputfile:
-			acronym_dict=json.load(inputfile)
-			for key in [i for i in acronym_dict.keys() if i not in ["delete", "other"]]:
-				for cat in ['X']:
-					#print "adding", acronym_dict[key][cat]
-					search_terms = search_terms + acronym_dict[key][cat]
-				for cat in ['noun']:
-	 				#special treatment for nouns to accept plurals
-					print "adding", acronym_dict[key][cat]
-					search_terms = search_terms + [i if i in ["loc", "les", "sis"] else i + "s?" for i in acronym_dict[key][cat]]
-
-	for i in search_terms:
-		print i, search_terms.count(i)
-			
-	print "we have {} search terms".format(len(search_terms))
-	print "we have {} set search terms".format(len(set(search_terms)))
-	
-	clipping_list=search_terms
-	#start actual counting		
-	excludelist=[]
-	
 	#dicts to store results
 	dicti=defaultdict(float)
 	matchesdicti=defaultdict(list)
 	results=[]
 	
-	clipping_list=[re.compile("\W("+i+")\W") for i in clipping_list]
-	#clipping_list=[re.compile("\W("+i+")\W") for i in clipping_list]
-	clipping_list=set(clipping_list)
-	#print [i.pattern for i in clipping_list]
+	prosody_list=[re.compile(i) for i in prosodyitems]
+	print "{} items in the prosody_list, {} unique".format(len(prosody_list), len(set(prosody_list)))
+	print [i.pattern for i in prosody_list]
 	#iterate and match
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
-		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:20]:
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 				inputad=ct.adtextextractor(inputtext.read(), fili).lower()
 			#result is a list of lists which contain matches for each regex/acronym
 			wordcount=float(len(ct.tokenizer(inputad)))
-			result=[([m for m in i.findall(inputad) if not m in excludelist], i.pattern) for i in clipping_list] 
-			# o=[(r,os.path.join(input_dir, dir, fili)) for r in result if len(r[0]) > 2]
-# 				if o:
-# 					print o
+			result=[([m for m in i.findall(inputad) if not m in excludelist], i.pattern) for i in prosody_list] 
+			print result
 			results.append([(len(matches), len(matches)/wordcount) for matches, pattern in result])
 			for matches, pattern in result:
 				#the dicti is {pattern:count, pattern: count, ...}
@@ -106,7 +103,8 @@ def prosodycounter(input_dir):
 	#for u in [[x[1] for x in i] for i in results]:
 	#	print u
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
-	
+
+prosodycounter('/home/ps22344/Downloads/craig_0208')	
 	
 plus=[]
 minus=[]
