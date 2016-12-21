@@ -26,8 +26,8 @@ def anyoftheseregex(regexstring):
 		outputregex.append(temp)
 		
 	anyregex=")|(?:".join(["".join(i) for i in outputregex])
-	#print "("+anyregex+")"
-	return "(("+anyregex+"))"
+	print "((?:"+anyregex+"))"
+	return "((?:"+anyregex+"))"
 	
 
 def prosodycounter(input_dir):
@@ -54,7 +54,7 @@ def prosodycounter(input_dir):
 	"\W([Hh]e{2,}[Yy]+)\W",
 	"\W"+anyoftheseregex("[Hh]+[Ee]+[Ll][Ll]+[Oo]+")+"\W",
 
-	"\W([Mm]{2,})\W",
+	"\W([Mm]{2,}[Hh]?)\W",
 	"\W((?:[Mm][Hh]){1,})\W",
 
 	"\W([Ss][Oo]{2,})\W",
@@ -78,7 +78,7 @@ def prosodycounter(input_dir):
 	#iterate and match
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
-		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:1000]:
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 				inputad=ct.adtextextractor(inputtext.read(), fili).lower()
 			#result is a list of lists which contain matches for each regex/acronym
@@ -91,10 +91,7 @@ def prosodycounter(input_dir):
 				#the dicti is {pattern:count, pattern: count, ...}
 				dicti[pattern]=dicti[pattern]+len(matches)
 				matchesdicti[pattern]=matchesdicti[pattern]+matches
-	#print matchesdicti
-	print [i for i in sorted(dicti, key=dicti.get, reverse=True)]
-	#print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
-
+	print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])
 	end=time.time()
 	print "This took us {} minutes".format((end-start)/60)
 	# for u in [[x[0] for x in i] for i in results]:
@@ -104,7 +101,7 @@ def prosodycounter(input_dir):
 
 prosodycounter('/home/ps22344/Downloads/craig_0208')	
 
-#anyoftheseregex("[Hh]+[Ee]+[Ll][Ll]+[Oo]+")	
+
 plus=[]
 minus=[]
 
