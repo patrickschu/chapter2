@@ -10,7 +10,18 @@ import os
 
 
 #; and spellings that represent prosody or nonlinguistic sounds, such as a “calling voice” (helloooo), laughter, and other (nonhuman) noises
-
+def anyoftheseregex(regexstring):
+	print regexstring
+	print regexstring.split("+")
+	result=regexstring.split("+")
+	outputregex=[]
+	for number, item in enumerate(result):
+		tempresult=result[number]=item+"{2,}"
+		outputregex.append(tempresult)
+		print "\n", result
+		print item+"{2,}"
+	print outputregex
+	
 
 def prosodycounter(input_dir):
 	"""
@@ -34,8 +45,10 @@ def prosodycounter(input_dir):
 
 	"\W([Hh]e+y{2,})\W",
 	"\W([Hh]e{2,}[Yy]+)\W",
+	"\W[Hh][Ee][Ll][Oo]\W",
 
 	"\W([Mm]{2,})\W",
+	"\W((?:[Mm][Hh]){1,})\W",
 
 	"\W([Ss][Oo]{2,})\W",
 
@@ -58,7 +71,7 @@ def prosodycounter(input_dir):
 	#iterate and match
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
-		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:200]:
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 				inputad=ct.adtextextractor(inputtext.read(), fili).lower()
 			#result is a list of lists which contain matches for each regex/acronym
@@ -79,8 +92,9 @@ def prosodycounter(input_dir):
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
 
-prosodycounter('/home/ps22344/Downloads/craig_0208')	
-	
+#prosodycounter('/home/ps22344/Downloads/craig_0208')	
+
+anyoftheseregex("\W[Hh]+[Ee]+[Ll]+[Oo]+\W")	
 plus=[]
 minus=[]
 
