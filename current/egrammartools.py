@@ -866,9 +866,11 @@ def acronymcounter(input_dir):
 
 def prosodycounter(input_dir):
 	"""
-	 
+	This finds representations of prosody and non-linguistic sounds.  
+	The list of features is from non-Standard words in the corpus. 
 	Returns a list of lists where each list contains raw and per word counts.
-	
+	Based on prosodycounter_1219.
+	Returns a list of lists where each list contains raw and per word counts.
 	"""
 	start=time.time()
 	
