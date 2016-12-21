@@ -6,11 +6,7 @@ import clustertools as ct
 import re
 import string
 
-##helper func
-def spellchecker(word):
-    americandict = enchant.Dict("en_US")
-    result=americandict.check(word)
-    return result
+
 
 
 def spellingcounter(input_dir):
@@ -21,6 +17,7 @@ def spellingcounter(input_dir):
     It returns a lists of lists with (raw count, relative count) tuples.
     """
     start=time.time()
+    americandict = enchant.Dict("en_US")
     goodwords=set(["wo", "'ve", "'m", "n't", "'s", "'ll"]+list(string.punctuation))
     htmlregex=re.compile("<.*?>")
     results=[]
@@ -35,7 +32,7 @@ def spellingcounter(input_dir):
             words=ct.tokenizer(inputad)
             #print "\n\n\n", words
             wordcount=float(len(words))
-            mistakes=[w for w in words if not spellchecker(w) and w not in goodwords]
+            mistakes=[w for w in words if not americandict.check(w) and w not in ["wo", "'ve", "'m", "n't", "'s", "'ll"]+list(string.punctuation)]
             #print result, len(result)
             if wordcount-len(mistakes) < 0:
                  print "WARNING: negative count-mistakes", wordcount, len(correct), os.path.join(input_dir, pati, fili)
@@ -47,7 +44,7 @@ def spellingcounter(input_dir):
     print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
     #for u in [[x[1] for x in i] for i in results]:
     #    print u
-    print [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
+    #print [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
     return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 
