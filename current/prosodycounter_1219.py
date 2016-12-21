@@ -11,16 +11,23 @@ import os
 
 #; and spellings that represent prosody or nonlinguistic sounds, such as a “calling voice” (helloooo), laughter, and other (nonhuman) noises
 def anyoftheseregex(regexstring):
-	print regexstring
-	print regexstring.split("+")
-	result=regexstring.split("+")
+	"""
+	The anyofthesregex iterates over all instances with "+" in a regex to construct a new pattern.
+	THe new pattern replaces one instance of + with a {2,}. 
+	Thus, this will get us a string to match Hhello, Heeeeello but not Hheello.
+	"""
+	print "we run the anyoftheseregex on", regexstring
+	#print regexstring.split("+")
+	result=[i for i in regexstring.split("+") if i]
 	outputregex=[]
 	for number, item in enumerate(result):
-		tempresult=result[number]=item+"{2,}"
-		outputregex.append(tempresult)
-		print "\n", result
-		print item+"{2,}"
-	print outputregex
+		temp=[i for i in regexstring.split("+") if i]
+		temp[number]=item+"{2,}"
+		outputregex.append(temp)
+		
+	anyregex=")|(?:".join(["".join(i) for i in outputregex])
+	#print "("+anyregex+")"
+	return "(("+anyregex+"))"
 	
 
 def prosodycounter(input_dir):
@@ -45,7 +52,7 @@ def prosodycounter(input_dir):
 
 	"\W([Hh]e+y{2,})\W",
 	"\W([Hh]e{2,}[Yy]+)\W",
-	"\W[Hh][Ee][Ll][Oo]\W",
+	"\W"+anyoftheseregex("[Hh]+[Ee]+[Ll][Ll]+[Oo]+")+"\W",
 
 	"\W([Mm]{2,})\W",
 	"\W((?:[Mm][Hh]){1,})\W",
@@ -71,7 +78,7 @@ def prosodycounter(input_dir):
 	#iterate and match
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
-		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
+		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")][:1000]:
 			with codecs.open(os.path.join(input_dir, dir, fili), "r", "utf-8") as inputtext:
 				inputad=ct.adtextextractor(inputtext.read(), fili).lower()
 			#result is a list of lists which contain matches for each regex/acronym
@@ -80,10 +87,13 @@ def prosodycounter(input_dir):
 			#print result
 			results.append([(len(matches), len(matches)/wordcount) for matches, pattern in result])
 			for matches, pattern in result:
+				#print pattern
 				#the dicti is {pattern:count, pattern: count, ...}
 				dicti[pattern]=dicti[pattern]+len(matches)
 				matchesdicti[pattern]=matchesdicti[pattern]+matches
-	print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
+	#print matchesdicti
+	print [i for i in sorted(dicti, key=dicti.get, reverse=True)]
+	#print "\n".join([":".join((i, str(dicti[i]), "|".join(set(matchesdicti[i])))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
 
 	end=time.time()
 	print "This took us {} minutes".format((end-start)/60)
@@ -92,9 +102,9 @@ def prosodycounter(input_dir):
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
 
-#prosodycounter('/home/ps22344/Downloads/craig_0208')	
+prosodycounter('/home/ps22344/Downloads/craig_0208')	
 
-anyoftheseregex("\W[Hh]+[Ee]+[Ll]+[Oo]+\W")	
+#anyoftheseregex("[Hh]+[Ee]+[Ll][Ll]+[Oo]+")	
 plus=[]
 minus=[]
 
