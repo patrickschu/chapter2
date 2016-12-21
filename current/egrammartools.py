@@ -49,13 +49,14 @@ def emoticonfinder(dir):
 		
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 		print pati
-		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
+		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")][:5]:
 			with codecs.open(os.path.join(dir, pati, fili), "r", "utf-8") as inputfili:
 				inputad=ct.adtextextractor(inputfili.read(), fili)
+			wordcount=float(len(ct.tokenizer(inputad)))
 			result=[k.findall(inputad) for k in search_terms]
 			for no, item in enumerate(result):
 				resultdict[no]=resultdict[no]+len(item)
-			results.append([len(i) for i in result])
+			results.append([(len(i), len(i)/wordcount) for i in result])
 			# if 11 > sum([len(i) for i in result]) > 6:
 				# for n, i in enumerate(result):
 					# if len(i) > 0:
@@ -72,7 +73,8 @@ def emoticonfinder(dir):
 	for k in sorted(resultdict, key=resultdict.get, reverse=True):
 		print k, resultdict[k]
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
-	return results
+	#1st list is absolute counts, 2nd div by word count
+	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 
 def repeatedpunctuationfinder(dir):
