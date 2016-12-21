@@ -261,14 +261,11 @@ def rebusfinder_for(input_path):
 		print "We have {} items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		h0dict={k:v for k,v in h0dict.items() if v > 0}
 		print "\n\n", number, "\n\posttext here be the results\n\n"
-		#print "\n".join([": ".join([k, unicode(h0dict[k])]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
-		#print "\n".join([": ".join([k, unicode(h2dict[k])]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
+		print "\n".join([": ".join([k, unicode(h0dict[k])]) for k in sorted(h0dict, key=h0dict.get, reverse=True)])
+		print "\n".join([": ".join([k, unicode(h2dict[k])]) for k in sorted(h2dict, key=h2dict.get, reverse=True)])
 
-		#print "We have {} post items with a token count of {}".format(len(h2dict.keys()), sum(h2dict.values()))
-		#print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
-		# for t in [[x[1] for x in i] for i in results]:
-			# if sum (t) > 0:
-				# print t
+		print "We have {} post items with a token count of {}".format(len(h2dict.keys()), sum(h2dict.values()))
+		print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 # the rebusfinder 2 needs to be here; it finds instances of "2" for "to".
