@@ -21,6 +21,27 @@ import codecs
 from collections import defaultdict
 import json 
 
+#helper funcs
+def anyoftheseregex(regexstring):
+	"""
+	The anyofthesregex iterates over all instances with "+" in a regex to construct a new pattern.
+	THe new pattern replaces one instance of + with a {2,}. 
+	Thus, this will get us a string to match Hhello, Heeeeello but not Hheello.
+	"""
+	print "we run the anyoftheseregex on", regexstring
+	#print regexstring.split("+")
+	result=[i for i in regexstring.split("+") if i]
+	outputregex=[]
+	for number, item in enumerate(result):
+		temp=[i for i in regexstring.split("+") if i]
+		temp[number]=item+"{2,}"
+		outputregex.append(temp)
+		
+	anyregex=")|(?:".join(["".join(i) for i in outputregex])
+	print "((?:"+anyregex+"))"
+	return "((?:"+anyregex+"))"
+
+
 ###SECTION 1
 ###TYPOGRAPHY
 
@@ -49,7 +70,7 @@ def emoticonfinder(dir):
 		
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 		print pati
-		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")][:5]:
+		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
 			with codecs.open(os.path.join(dir, pati, fili), "r", "utf-8") as inputfili:
 				inputad=ct.adtextextractor(inputfili.read(), fili)
 			wordcount=float(len(ct.tokenizer(inputad)))
@@ -948,22 +969,3 @@ def prosodycounter(input_dir):
 ###SECTION 4
 ###UTTERANCE LEVEL
 
-#helper funcs
-def anyoftheseregex(regexstring):
-	"""
-	The anyofthesregex iterates over all instances with "+" in a regex to construct a new pattern.
-	THe new pattern replaces one instance of + with a {2,}. 
-	Thus, this will get us a string to match Hhello, Heeeeello but not Hheello.
-	"""
-	print "we run the anyoftheseregex on", regexstring
-	#print regexstring.split("+")
-	result=[i for i in regexstring.split("+") if i]
-	outputregex=[]
-	for number, item in enumerate(result):
-		temp=[i for i in regexstring.split("+") if i]
-		temp[number]=item+"{2,}"
-		outputregex.append(temp)
-		
-	anyregex=")|(?:".join(["".join(i) for i in outputregex])
-	print "((?:"+anyregex+"))"
-	return "((?:"+anyregex+"))"
