@@ -72,7 +72,7 @@ def emoticonfinder(dir):
 		
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
 		print pati
-		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")][:5]:
+		for fili in [i for i in os.listdir(os.path.join(dir, pati)) if not i.startswith(".")]:
 			with codecs.open(os.path.join(dir, pati, fili), "r", "utf-8") as inputfili:
 				inputad=ct.adtextextractor(inputfili.read(), fili)
 			wordcount=float(len(ct.tokenizer(inputad)))
@@ -93,11 +93,9 @@ def emoticonfinder(dir):
 	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
 	for k in sorted(resultdict, key=resultdict.get, reverse=True):
 		print k, resultdict[k]
-	#print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	#1st list is absolute counts, 2nd div by word count
-	outi= ([[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results])
-	return outi
-
+	return ([[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results])
 
 def repeatedpunctuationfinder(dir):
 	"""
@@ -118,7 +116,7 @@ def repeatedpunctuationfinder(dir):
 	}
 
 	for stringi in punctuation:
-		print stringi, "-->", re.escape(stringi)
+		#print stringi, "-->", re.escape(stringi)
 		punctuationdict[re.compile("((?:"+re.escape(stringi)+" ?){2,})")]=0	
 	search_terms=punctuationdict.keys()
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
@@ -159,7 +157,7 @@ def leetcounter(dir):
 	Returns two lists; first is absolute counts, the second relative counts	 
 	Inspired by  http://www.gamehouse.com/blog/leet-speak-cheat-sheet/
 	"""
-	print "RUNNING LEETCOUNTER"
+	print "\nRUNNING LEETCOUNTER"
 	starttime=time.time()
 	featuredict={}
 	search_terms=[]
@@ -168,7 +166,7 @@ def leetcounter(dir):
 	
 	with codecs.open('/home/ps22344/Downloads/chapter2/textfiles/leetwords_1216.txt', "r", "utf-8") as inputtext:
 		for line in inputtext.readlines():
-			print line.rstrip("\n")
+			#print line.rstrip("\n")
 			search_terms.append(re.compile(" ("+line.rstrip("\n")+") "))
 	
 	for pati in [i for i in os.listdir(dir) if not i.startswith(".")]:
@@ -189,16 +187,15 @@ def leetcounter(dir):
 				print os.path.join(dir, pati, fili), "\n"
 				#os.system("cygstart "+os.path.join(dir, pati, fili))
 	endtime=time.time()
-	print "This took us {} minutes".format((endtime-starttime)/60)
-	#print results
 	print len(results), "files processed"
 	print "\n\n"
 	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
 	for k in sorted(resultdict, key=resultdict.get, reverse=True):
 		print k, resultdict[k]
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
+	print "This took us {} minutes".format((endtime-starttime)/60)
 	#1st list is absolute counts, 2nd div by word count
-	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
+	return ([[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results])
 
 
 #the rebusfinder needs to be here; it finds instances of "4" for "for". 
@@ -209,7 +206,7 @@ def rebusfinder_for(input_path):
  	The lists exclude_pre and exclude_post word for negative contexts in 4.
  	Returns two lists; first is absolute counts, the second relative counts	. 
 	"""
-	print "RUNNING REBUSFINDER FOR"
+	print "\nRUNNING REBUSFINDER FOR"
 	
 	writtennumberdict={}
 	#these are exclude and include contexts we need
@@ -223,7 +220,6 @@ def rebusfinder_for(input_path):
 
 	include_pre_context=["pay", "m", "w", "up", "swf","love", "here", "not", "there", "ready","lkng","me", "ask", "live", "cheer", "grateful", "thanks", "partner", "men", "man", "male", "woman", "women","looking", "lookin", "pic", "pix", "lookn", "pics", "picture", "photo"]
 	include_post_context=["swf","yu","who", "dead", "reading", "over", "help", "life", "your", "the", "a", "my", "our", "an", "real", "you", "u", "me", "ltr", "play", "same", "whatever", "sex", "someone", "fun"]
-
 	
 	results=[]
 	for number in [4]:
