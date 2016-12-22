@@ -5,15 +5,15 @@ import time
 completestart=time.time()
 listi=[]
 
-emos_raw, emos_freq=eg.emoticonfinder('/home/ps22344/Downloads/craig_0208')
-listi.append(np.array(emos_freq))
+# emos_raw, emos_freq=eg.emoticonfinder('/home/ps22344/Downloads/craig_0208')
+# listi.append(np.array(emos_freq))
 
-rep_raw, rep_freq= eg.repeatedpunctuationfinder('/home/ps22344/Downloads/craig_0208')
-listi.append(np.array(rep_freq))
+# rep_raw, rep_freq= eg.repeatedpunctuationfinder('/home/ps22344/Downloads/craig_0208')
+# listi.append(np.array(rep_freq))
 
 
-# leet_raw, leet_freq= eg.leetcounter('/home/ps22344/Downloads/craig_0208')
-# listi.append(leet_freq)
+leet_raw, leet_freq= eg.leetcounter('/home/ps22344/Downloads/craig_0208')
+listi.append(np.array(leet_freq))
 
 
 # rebfor_raw, rebfor_freq= eg.rebusfinder_for('/home/ps22344/Downloads/craig_0208')
@@ -45,4 +45,4 @@ t=np.column_stack(listi)
 print type(t), t.shape
 completeend=time.time()
 
-print "This took us {} minutes. So slow!".format((completestart=completeend)/60)
+print "This took us {} minutes. So slow!".format((completeend-completestart)/60)
