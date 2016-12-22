@@ -134,7 +134,7 @@ def repeatedpunctuationfinder(dir):
 					 if len(i) > 0:
 						 print search_terms[n].pattern, n,i, "len", len(i)
 				print os.path.join(dir, pati, fili), "\n"
-				os.system("cygstart "+os.path.join(dir, pati, fili))
+				#os.system("cygstart "+os.path.join(dir, pati, fili))
 			
 	endtime=time.time()
 	print "This took us {} minutes".format((endtime-starttime)/60)
