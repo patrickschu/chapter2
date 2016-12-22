@@ -583,7 +583,7 @@ def capsfinder(input_dir, limit):
 					matchesdicti[pattern]=matchesdicti[pattern]+matches
 	#print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True) if dicti[i] > 100])	
 	for entry in {k:v for k,v in matchesdicti.items()}:
- 		print "\n", entry, set([i for i in matchesdicti[entry]])
+ 		print "\n", entry, len(set([i for i in matchesdicti[entry]]))
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
@@ -631,7 +631,7 @@ def singleletterfinder(input_dir):
 	dicti=defaultdict(float)
 	matchesdicti=defaultdict(list)
 	search_terms=[re.compile("|".join(i)) for i in counterdict.values()]
-	print "search terms",  [i.pattern for i in search_terms]
+	print "search terms",  len([i.pattern for i in search_terms])
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
 		for fili in [i for i in os.listdir(os.path.join(input_dir, dir)) if not i.startswith(".")]:
@@ -745,10 +745,6 @@ def clippingcounter(input_dir):
 	 				#special treatment for nouns to accept plurals
 					print "adding", acronym_dict[key][cat]
 					search_terms = search_terms + [i if i in ["loc", "les", "sis"] else i + "s?" for i in acronym_dict[key][cat]]
-
-	for i in search_terms:
-		print i, search_terms.count(i)
-			
 	print "we have {} search terms".format(len(search_terms))
 	print "we have {} set search terms".format(len(set(search_terms)))
 	
@@ -773,7 +769,8 @@ def clippingcounter(input_dir):
 				inputad=ct.adtextextractor(inputtext.read(), fili).lower()
 			#result is a list of lists which contain matches for each regex/acronym
 			wordcount=float(len(ct.tokenizer(inputad)))
-			result=[([m for m in i.findall(inputad) if not m in excludelist], i.pattern) for i in clipping_list] 
+			result=[([m for m in i.findall(inputad) if not m in 
+			excludelist], i.pattern) for i in clipping_list] 
 			# o=[(r,os.path.join(input_dir, dir, fili)) for r in result if len(r[0]) > 2]
 # 				if o:
 # 					print o
@@ -830,7 +827,7 @@ def acronymcounter(input_dir):
 				print "adding", acronym_dict[key][cat]
 				search_terms = search_terms + acronym_dict[key][cat]
 
-	print search_terms
+	#print search_terms
 			
 	print "we have {} search terms".format(len(search_terms))
 		
@@ -844,7 +841,7 @@ def acronymcounter(input_dir):
 	#regex, lower and pluralize
 	acronym_list=[re.compile("\W((?:"+i+"|"+i.lower()+")[sS]?)\W") for i in search_terms]
 	acronym_list=set(acronym_list)
-	print [i.pattern for i in acronym_list]
+	#print [i.pattern for i in acronym_list]
 	#iterate and match
 	for dir in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print dir
