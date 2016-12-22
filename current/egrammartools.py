@@ -19,7 +19,8 @@ import time
 import os
 import codecs
 from collections import defaultdict
-import json 
+import json
+from nltk.tag import pos_tag
 
 #helper funcs
 def anyoftheseregex(regexstring):
@@ -308,6 +309,7 @@ def rebusfinder_to(input_dir):
 		print numberregex.pattern
 		results=[]
 		for pati in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
+			print pati
 			for fil in [i for i in os.listdir(os.path.join(input_dir, pati)) if not i.startswith(".")]:
 				result=[]
 				fili=codecs.open(os.path.join(input_dir, pati, fil), "r", "utf-8")
@@ -434,6 +436,7 @@ def rebusfinder_too(input_path):
 		previous_patterns=[]
 		results=[]
 		for pati in [i for i in os.listdir(input_path) if not i.startswith(".")]:
+			print pati
 			for fil in [i for i in os.listdir(os.path.join(input_path, pati)) if not i.startswith(".")]:
 				result=[]
 				fili=codecs.open(os.path.join(input_path, pati, fil), "r", "utf-8")
@@ -508,13 +511,13 @@ def rebusfinder_too(input_path):
 						predict[pre[0]]=predict[pre[0]]+1
 						postdict[post[0]]=postdict[post[0]]+1
 						result.append(1)
-						print h
+						#print h
 						#if result[0] > 10: 
 						#	print "result for file", len(result), result, #os.path.join(input_path, pati, fil)
 				results.append([(len(result), len(result)/wordcount)])
 				if sum(result) > 1:
 					print "result for file", len(result), result, os.path.join(input_path, pati, fil)
-					print results
+					#print results
 					
 				#print "len results", len(results)
 		
@@ -580,7 +583,7 @@ def capsfinder(input_dir, limit):
 					matchesdicti[pattern]=matchesdicti[pattern]+matches
 	#print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True) if dicti[i] > 100])	
 	for entry in {k:v for k,v in matchesdicti.items()}:
- 		print "\n", entry, set([i for i in matchesdicti[entry] if matchesdicti[entry].count(i) > 50])
+ 		print "\n", entry, set([i for i in matchesdicti[entry]])
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
