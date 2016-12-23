@@ -10,30 +10,16 @@ listi=[]
 dir="/home/ps22344/Downloads/craigbalanced_0601"
 
 ##prep
+#add uniqs
+uniqs, file_count=ct.uniqarraymachine(dir, 0) 	
+print "So many files", file_count
+listi.append(uniqs)
+
 #add cats
 categories_dict, no_of_categories = ct.categorymachine(dir, "category1")
 category1=ct.categoryarraymachine(dir, "category1", categories_dict)
 listi.append(category1)
 
-#add uniqs
-def uniqarraymachine(input_dir, start_no):
-	"""
-	The categoryarraymachine iterates over the input_dir and collects category info for all files.
-	It maps the categories to the numbers contained in cat_dict and returns a np.array with results. (The cat_dict will usually come out of the categorymachine above.
-	"""
-	results=[]
-	count=int(start_no)
-	for pati in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
-		print pati
-		for fili in [i for i in os.listdir(os.path.join(input_dir, pati)) if not i.startswith(".")]:
-			results.append([count])
-			count=count+1
-			print "array", count
-	return np.array(results), len(results)
-	
-uniqs, file_count=uniqarraymachine(dir, 0) 	
-print "So many files", file_count
-listi.append(uniqs)
 
 
 ##collect features
@@ -68,20 +54,39 @@ listi.append(np.array(acro_freq))
 
 emos_raw, emos_freq=eg.emoticonfinder(dir)
 listi.append(np.array(emos_freq))
-
-# # for x in listi:
-	# # print "!!!!!\n\n", x
 	
 t=np.column_stack(listi)
 
 print type(t), t.shape
 completeend=time.time()
 
-#print t
-
-for i in t:
-	print "***", i[:3]
+#this is the t w/out uniq and category
+t_no_meta=t[2:]
 
 print categories_dict
+
+def clustermachine(matrix, distance_metric, clusters=4):
+	"""
+	The clustermachine takes a matrix with word freqs and clusters according to the distance_metric. 
+	Clusters sets the input if algorithm needs a pre-determined number of clusters. 
+	Last two inputs will not be used by all algorithms. 
+	"""
+	no_of_clusters=range(clusters)	
+	result=[]
+	t=time.time()
+	
+	## # 1: kmeans
+	for x in [2,4,6]:
+		model=sklearn.cluster.KMeans(x,tol=0)
+		clustering=model.fit(matrix)
+		centroids=clustering.cluster_centers_
+		labels=clustering.labels_
+		inertia=clustering.inertia_
+		kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+		result.append(kmeans)
+		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+		u=time.time()
+		print (u-t)/60
+
 
 print "This took us {} minutes. So slow!".format((completeend-completestart)/60)
