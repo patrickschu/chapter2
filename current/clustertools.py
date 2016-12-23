@@ -596,3 +596,170 @@ def uniqarraymachine(input_dir, start_no):
 			count=count+1
 			print "array", count
 	return np.array(results), len(results)
+	
+
+def clustermachine(matrix, distance_metric, clusters=4):
+	"""
+	The clustermachine takes a matrix with word freqs and clusters according to the distance_metric. 
+	Clusters sets the input if algorithm needs a pre-determined number of clusters. 
+	Last two inputs will not be used by all algorithms. 
+	"""
+	no_of_clusters=range(clusters)	
+	result=[]
+	t=time.time()
+	
+	## # 1: kmeans
+	for x in [2,4,6]:
+		model=sklearn.cluster.KMeans(x,tol=0)
+		clustering=model.fit(matrix)
+		centroids=clustering.cluster_centers_
+		labels=clustering.labels_
+		inertia=clustering.inertia_
+		kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+		result.append(kmeans)
+		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+		u=time.time()
+		print (u-t)/60
+#		#
+
+
+#	## #2: MeanShift, takes forever @  12600, 42
+#	model=sklearn.cluster.MeanShift()
+#	clustering=model.fit(matrix)
+#	centroids=clustering.cluster_centers_
+#	labels=clustering.labels_
+#	meanshift=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+#	result.append(meanshift)
+#	u=time.time()
+#	print [i.name for i in result][len(result)-1]
+#	print (u-t)/60
+#	
+	# 3: Affinity Propagation, breaks @ 12600, 42
+# 	model=sklearn.cluster.AffinityPropagation()
+# 	clustering=model.fit(matrix)
+# 	centroid_index=model.cluster_centers_indices_
+# 	centroids=clustering.cluster_centers_
+# 	labels=clustering.labels_
+# 	aff_matrix=clustering.affinity_matrix_
+# 	its= clustering.n_iter_
+# 	affinity=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+# 	result.append(affinity)
+# 	u=time.time()
+# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 	print (u-t)/60
+	
+# 	## #4: Spectral clustering
+# 	model=sklearn.cluster.SpectralClustering()
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	aff_matrix=clustering.affinity_matrix_
+# 	spectral= ct.Clustering(model, clustering.labels_)
+# 	result.append(spectral)
+# 	u=time.time()
+# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 	print (u-t)/60
+
+
+##watch out --------- centroids are indices!!!!!
+
+	
+	# ## # 5: DBCASN,  takes forever @  12600, 42
+# 	for x in [2,4,8,16,32]:#[0.175, 0.2, 0.225, 0.3]:
+# 		model=sklearn.cluster.DBSCAN(eps=x, metric=distance_metric, algorithm='brute')
+# 		clustering=model.fit(matrix)
+# 		core_samples=clustering.core_sample_indices_
+# 		#print "core samples", matrix[clustering.core_sample_indices_]
+# 		components=clustering.components_
+# 		print "components", len(components)
+# 		labels=clustering.labels_
+# 		print labels
+# 		dbscan= ct.Clustering(model, clustering.labels_, matrix[clustering.core_sample_indices_])
+# 		result.append(dbscan)
+# 		u=time.time()
+# 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 		print (u-t)/60
+#	
+#	##GUASSIN DOEs NOT FIT OUR SCHEMA AT THIS POINT
+#	## 6: GAUSSIAN MIXTURE.
+# 	for x in [2,4,6,8,12,16,20,24]:
+# 		model=sklearn.mixture.DPGMM(x, n_iter=100, verbose=0)
+# 		print "initial weights", model.weights_
+# 		print "initial components", model.n_components
+# 		print "initial converge", model.converged_
+# 		model.fit(matrix)
+# 		print "trained weights", model.weights_
+# 		print "trained components", model.n_components
+# 		print "trained converge", model.converged_
+# 		print "\n predict", model.predict(matrix)
+# 		print "means", model.means_
+# 		#print "\n predict probs", model.predict_proba(matrix)
+# 		dirichlet= ct.Clustering(model, model.fit_predict(matrix), model.means_)
+#  		u=time.time()
+#  		result.append(dirichlet)
+#  		print (u-t)/60
+# 		
+# 	for x in [2,4,8,16,32]:
+# 		model=sklearn.mixture.GMM(x, n_iter=500, verbose=0)
+# 		print "initial weights", model.weights_
+# 		print "initial components", model.n_components
+# 		print "initial converge", model.converged_
+# 		model.fit(matrix)
+# 		print "trained weights", model.weights_
+# 		print "trained components", model.n_components
+# 		print "trained converge", model.converged_
+# 		print "\n predict", model.predict(matrix)
+# 		print "means", model.means_
+# 		#print "\n predict probs", model.predict_proba(matrix)
+# 		gauss= ct.Clustering(model, model.fit_predict(matrix), model.means_)
+#  		u=time.time()
+#  		result.append(gauss)
+#  		print (u-t)/60
+#	
+#
+	#These are essentially trees; maybe need a different approach. They are kinda predictive
+	
+# 	## #7: Agglomerative 
+	# for x in [4]:
+		# model=sklearn.cluster.AgglomerativeClustering(affinity=distance_metric, n_clusters=x, linkage='complete')
+		# clustering=model.fit(matrix)
+		# labels=clustering.labels_
+		# leaves=clustering.n_leaves_
+		# children=clustering.children_
+		# components=clustering.n_components_
+		# ward= ct.Clustering(model, clustering.labels_)
+		# result.append(ward)
+		# u=time.time()
+		# print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+		# print (u-t)/60
+# # 	
+# 
+# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 	print (u-t)/60
+
+	
+	
+	
+# 	model=sklearn.cluster.AgglomerativeClustering(affinity='cosine', linkage='complete')
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	leaves=clustering.n_leaves_
+# 	components=clustering.n_components_
+# 	ward= ct.Clustering(model, clustering.labels_)
+# 	result.append(ward)
+# 	u=time.time()
+# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 	print (u-t)/60
+
+# 	## #8: Birch Hierarchical 	
+# 	model=sklearn.cluster.Birch(threshold=0.025)
+# 	clustering=model.fit(matrix)
+# 	labels=clustering.labels_
+# 	root=clustering.root_
+# 	subcluster_labels=clustering.subcluster_labels_
+# 	birch= ct.Clustering(model, clustering.labels_)
+# 	result.append(birch)
+# 	u=time.time()
+# 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
+# 	print (u-t)/60
+	
+	return(result)
