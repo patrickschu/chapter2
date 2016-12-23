@@ -538,9 +538,10 @@ def tokenizer(input_string):
 	splittext=nltk.word_tokenize(addspace)
 	return splittext
 
-def categorymachine(input_dir):
+def categorymachine(input_dir, category_tag):
 	"""
 	The cateorymachine finds all categories (category1) of the files in the input_dir.
+	The tag given in category_tag is fed into the tagextractor. 
 	It maps them to numbers so they can be added to numpy arrays.
 	Returns a dictionary mapping those two and and the number of categories. 
 	"""
@@ -555,12 +556,12 @@ def categorymachine(input_dir):
 			inputfile=codecs.open(os.path.join(input_dir, folder,fili), "r", "utf-8").read()
 			#lets establish the category
 			#we need to make it numeric, so the numpy won't screw up
-			category=tagextractor(inputfile, "category1", fili)
+			category=tagextractor(inputfile, category_tag, fili)
 			try: 
 				cat=catdicti[category]
 			except:
 				print "We added {} to the category dictionary, coded as {}".format(category, catnumber)
-				catdicti[tagextractor(inputfile, "category1", fili)]=catnumber
+				catdicti[tagextractor(inputfile, category_tag, fili)]=catnumber
 				catnumber=catnumber+1
-				cat=catdicti[tagextractor(inputfile, "category1", fili)]
+				cat=catdicti[tagextractor(inputfile, category_tag, fili)]
 	return (catdicti, catnumber)
