@@ -2,8 +2,7 @@ import egrammartools as eg
 import clustertools as ct
 import numpy as np
 import time
-import sklearn
-from sklearn import cluster
+
 completestart=time.time()
 listi=[]
 dir="/home/ps22344/Downloads/craigbalanced_0601"
@@ -18,8 +17,6 @@ listi.append(uniqs)
 categories_dict, no_of_categories = ct.categorymachine(dir, "category1")
 category1=ct.categoryarraymachine(dir, "category1", categories_dict)
 listi.append(category1)
-
-
 
 ##collect features
 rep_raw, rep_freq= eg.repeatedpunctuationfinder(dir)
@@ -62,32 +59,4 @@ completeend=time.time()
 #this is the t w/out uniq and category
 t_no_meta=t[2:]
 
-print categories_dict
-
-def clustermachine(matrix, distance_metric, clusters=4):
-	"""
-	The clustermachine takes a matrix with word freqs and clusters according to the distance_metric. 
-	Clusters sets the input if algorithm needs a pre-determined number of clusters. 
-	Last two inputs will not be used by all algorithms. 
-	"""
-	no_of_clusters=range(clusters)	
-	result=[]
-	t=time.time()
-	
-	## # 1: kmeans
-	for x in [2,4,6]:
-		model=sklearn.cluster.KMeans(x,tol=0)
-		clustering=model.fit(matrix)
-		centroids=clustering.cluster_centers_
-		labels=clustering.labels_
-		inertia=clustering.inertia_
-		kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
-		result.append(kmeans)
-		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
-		u=time.time()
-		print (u-t)/60
-	return result
-
-cc=clustermachine(t[2:], "euclidean")
-print cc
 print "This took us {} minutes. So slow!".format((completeend-completestart)/60)
