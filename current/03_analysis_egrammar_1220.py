@@ -4,37 +4,38 @@ import time
 
 completestart=time.time()
 listi=[]
+dir="/home/ps22344/Downloads/craigbalanced_0601"
 
-rep_raw, rep_freq= eg.repeatedpunctuationfinder('/home/ps22344/Downloads/craig_0208')
+rep_raw, rep_freq= eg.repeatedpunctuationfinder(dir)
 listi.append(np.array(rep_freq))
 
 
-leet_raw, leet_freq= eg.leetcounter('/home/ps22344/Downloads/craig_0208')
+leet_raw, leet_freq= eg.leetcounter(dir)
 listi.append(np.array(leet_freq))
 
 
-rebfor_raw, rebfor_freq= eg.rebusfinder_for('/home/ps22344/Downloads/craig_0208')
+rebfor_raw, rebfor_freq= eg.rebusfinder_for(dir)
 listi.append(np.array(rebfor_freq))
 
-rebto_raw, rebto_freq= eg.rebusfinder_to('/home/ps22344/Downloads/craig_0208')
+rebto_raw, rebto_freq= eg.rebusfinder_to(dir)
 listi.append(np.array(rebto_freq))
 
-rebtoo_raw, rebtoo_freq= eg.rebusfinder_too('/home/ps22344/Downloads/craig_0208')
+rebtoo_raw, rebtoo_freq= eg.rebusfinder_too(dir)
 listi.append(np.array(rebtoo_freq))
 
-caps_raw, caps_freq=eg.capsfinder('/home/ps22344/Downloads/craig_0208', 0.5)
+caps_raw, caps_freq=eg.capsfinder(dir, 0.5)
 listi.append(np.array(caps_freq))
 
-single_raw, single_freq=eg.singleletterfinder('/home/ps22344/Downloads/craig_0208')
+single_raw, single_freq=eg.singleletterfinder(dir)
 listi.append(np.array(single_freq))
 
-clip_raw, clip_freq=eg.clippingcounter('/home/ps22344/Downloads/craig_0208')
+clip_raw, clip_freq=eg.clippingcounter(dir)
 listi.append(np.array(clip_freq))
 
-acro_raw, acro_freq=eg.acronymcounter('/home/ps22344/Downloads/craig_0208')
+acro_raw, acro_freq=eg.acronymcounter(dir)
 listi.append(np.array(acro_freq))
 
-emos_raw, emos_freq=eg.emoticonfinder('/home/ps22344/Downloads/craig_0208')
+emos_raw, emos_freq=eg.emoticonfinder(dir)
 listi.append(np.array(emos_freq))
 
 # # for x in listi:
