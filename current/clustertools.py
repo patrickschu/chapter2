@@ -550,9 +550,9 @@ def categorymachine(input_dir):
 	folderlist=[i for i in os.listdir(input_dir) if not i.startswith(".")]
 	for folder in folderlist:
 		print "Working on folder", folder
-		filis=[i for i in os.listdir(os.path.join(pathi,folder)) if not i.startswith (".")]
+		filis=[i for i in os.listdir(os.path.join(input_dir,folder)) if not i.startswith (".")]
 		for fili in filis:
-			inputfile=codecs.open(os.path.join(pathi, folder,fili), "r", "utf-8").read()
+			inputfile=codecs.open(os.path.join(input_dir, folder,fili), "r", "utf-8").read()
 			#lets establish the category
 			#we need to make it numeric, so the numpy won't screw up
 			category=tagextractor(inputfile, "category1", fili)
