@@ -600,7 +600,7 @@ def uniqarraymachine(input_dir, start_no):
 
 def clustermachine(matrix, distance_metric, clusters=4):
 	"""
-	The clustermachine takes a matrix with word freqs and clusters according to the distance_metric. 
+	The clustermachine takes a matrix with word freqs and clusters data according to the distance_metric. 
 	Clusters sets the input if algorithm needs a pre-determined number of clusters. 
 	Last two inputs will not be used by all algorithms. 
 	"""
