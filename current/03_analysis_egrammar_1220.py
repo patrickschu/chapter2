@@ -9,27 +9,34 @@ completestart=time.time()
 listi=[]
 dir="/home/ps22344/Downloads/craigbalanced_0601"
 
-
+##prep
+#add cats
 categories_dict, no_of_categories = ct.categorymachine(dir, "category1")
+category1=ct.categoryarraymachine(dir, "category1", categories_dict)
+listi.append(category1)
 
-def categoryarraymachine(input_dir, category_tag, cat_dict):
+#add uniqs
+def uniqarraymachine(input_dir, start_no):
 	"""
 	The categoryarraymachine iterates over the input_dir and collects category info for all files.
-	It maps the categories to the numbers contained in cat_dict and returns a np.array with results.
+	It maps the categories to the numbers contained in cat_dict and returns a np.array with results. (The cat_dict will usually come out of the categorymachine above.
 	"""
 	results=[]
+	count=int(start_no)
 	for pati in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print pati
 		for fili in [i for i in os.listdir(os.path.join(input_dir, pati)) if not i.startswith(".")]:
-			with codecs.open(os.path.join(input_dir, pati, fili), "r", "utf-8") as inputfili:
-				category=ct.tagextractor(inputfili.read(), category_tag, fili)
-			results.append([cat_dict[category]])
-			print "array", category, [cat_dict[category]]
-	return np.array(results)
+			results.append([count])
+			count=count+1
+			print "array", count
+	return np.array(results), len(results)
 	
-category1=categoryarraymachine(dir, "category1", categories_dict)
-listi.append(category1)
+uniqs, file_count=uniqarraymachine(dir, 0) 	
+print "So many files", file_count
+listi.append(uniqs)
 
+
+##collect features
 rep_raw, rep_freq= eg.repeatedpunctuationfinder(dir)
 listi.append(np.array(rep_freq))
 
@@ -70,7 +77,10 @@ t=np.column_stack(listi)
 print type(t), t.shape
 completeend=time.time()
 
-print t
+#print t
+
+for i in t:
+	print "***", i[:3]
 
 print categories_dict
 
