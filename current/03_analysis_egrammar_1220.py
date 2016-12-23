@@ -2,9 +2,8 @@ import egrammartools as eg
 import clustertools as ct
 import numpy as np
 import time
-import os
-import codecs
-
+import sklearn
+from sklearn import cluster
 completestart=time.time()
 listi=[]
 dir="/home/ps22344/Downloads/craigbalanced_0601"
@@ -87,6 +86,8 @@ def clustermachine(matrix, distance_metric, clusters=4):
 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
 		u=time.time()
 		print (u-t)/60
+	return result
 
-
+cc=clustermachine(t[2:], "euclidean")
+print cc
 print "This took us {} minutes. So slow!".format((completeend-completestart)/60)
