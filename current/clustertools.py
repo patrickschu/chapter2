@@ -538,28 +538,29 @@ def tokenizer(input_string):
 	splittext=nltk.word_tokenize(addspace)
 	return splittext
 
-def categorymachine(folderlist):
+def categorymachine(input_dir):
 	"""
-	The cateorymachine finds all categories (category1) of the files in the folderlist.
+	The cateorymachine finds all categories (category1) of the files in the input_dir.
 	It maps them to numbers so they can be added to numpy arrays.
 	Returns a dictionary mapping those two and and the number of categories. 
 	"""
 	print "starting category machine"
 	catdicti={}
 	catnumber=0
+	folderlist=[i for i in os.listdir(input_dir) if not i.startswith(".")]
 	for folder in folderlist:
+		print "Working on folder", folder
 		filis=[i for i in os.listdir(os.path.join(pathi,folder)) if not i.startswith (".")]
 		for fili in filis:
 			inputfile=codecs.open(os.path.join(pathi, folder,fili), "r", "utf-8").read()
-			inputtext=ct.adtextextractor(inputfile, fili)
 			#lets establish the category
 			#we need to make it numeric, so the numpy won't screw up
-			category=ct.tagextractor(inputfile, "category1", fili)
+			category=tagextractor(inputfile, "category1", fili)
 			try: 
 				cat=catdicti[category]
 			except:
 				print "We added {} to the category dictionary, coded as {}".format(category, catnumber)
-				catdicti[ct.tagextractor(inputfile, "category1", fili)]=catnumber
+				catdicti[tagextractor(inputfile, "category1", fili)]=catnumber
 				catnumber=catnumber+1
-				cat=catdicti[ct.tagextractor(inputfile, "category1", fili)]
+				cat=catdicti[tagextractor(inputfile, "category1", fili)]
 	return (catdicti, catnumber)
