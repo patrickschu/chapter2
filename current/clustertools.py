@@ -12,6 +12,9 @@ import nltk
 import time
 
 
+scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']
+
+
 linebreakregex=re.compile(r"(<br>|<br\/>)")
 stopregex=re.compile(r"([\.|\?|\!|\*]+)(\w)")
 htmlregex=re.compile(r"<.*?>")
