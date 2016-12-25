@@ -195,11 +195,16 @@ class Centroidstats(Clustering):
 		"""
 		takes a dictionary of centroids and a dictionary of features to compute features most predictive of each cluster
 		returns dictionary { cluster: {raw_diff:(word X,difference score), (word Y, difference score) ..., zscores_diff: ()()}, cluster2: {...}}
+		---WE SHOULD REALLY REPLACE THIS DICTIONARY VOCAB_USED_ WITH A LIST BUT NOT MESSING WITH IT NOW just add an if --
 		"""
 		try:
 			self._centroid_check()
 			centroiddicti=self._centroiddictmaker()
-			vocab=vocab_used_for_feature_extraction.keys()
+			if vocab_used_for_feature_extraction isinstance(lst):
+				print "vocab is a list"
+				vocab=vocab_used_for_feature_extraction
+			else:
+				vocab=vocab_used_for_feature_extraction.keys()
 			arrayed_vocab=np.array(vocab)
 			zscoredicti={k:scipy.stats.mstats.zscore(centroiddicti[k], axis=0, ddof = 1) for k in centroiddicti.keys()} #setting  "ddof = 1" so we get the same output as in R
 			predictdicti=defaultdict()
