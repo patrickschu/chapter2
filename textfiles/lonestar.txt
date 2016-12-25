@@ -7,6 +7,8 @@ CREATING SLURMS
 launcher_creator.py -n cluster_centroid_test_kmeans -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python LS_analysis_cluster_centroid_0511_kmeans.py > output_centroid_kmeans_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
 
 
+INSTALL MODULES
+easy_install --user pyenchant
 
 
 
