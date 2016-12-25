@@ -200,14 +200,16 @@ class Centroidstats(Clustering):
 		try:
 			self._centroid_check()
 			centroiddicti=self._centroiddictmaker()
-			if vocab_used_for_feature_extraction isinstance(lst):
+			if isinstance(vocab_used_for_feature_extraction, list):
 				print "vocab is a list"
 				vocab=vocab_used_for_feature_extraction
 			else:
 				vocab=vocab_used_for_feature_extraction.keys()
 			arrayed_vocab=np.array(vocab)
+			print arrayed_vocab
 			zscoredicti={k:scipy.stats.mstats.zscore(centroiddicti[k], axis=0, ddof = 1) for k in centroiddicti.keys()} #setting  "ddof = 1" so we get the same output as in R
 			predictdicti=defaultdict()
+			#the differencemaker returns a tuple "(combo,  diff, np.argsort(absolute_diff))"
 			sorted_values=self._differencemaker(centroiddicti)
 			sorted_zscores=self._differencemaker(zscoredicti)
 			predictdicti={tup[0]:{
@@ -219,6 +221,7 @@ class Centroidstats(Clustering):
 			# "In other words, a[index_array] yields a sorted a."
 			for tup in sorted_values:
 				index=tup[2]
+				print index
 				#sort by index, reverse so largest values are first
 				sorted_diffs=tup[1][index][::-1]
 				sorted_vocab=arrayed_vocab[index][::-1]
