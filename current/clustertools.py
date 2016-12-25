@@ -4,6 +4,7 @@ import numpy as np
 import scipy
 import itertools
 import sklearn
+from sklearn import cluster
 import codecs
 import json
 from collections import defaultdict
@@ -616,7 +617,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 		centroids=clustering.cluster_centers_
 		labels=clustering.labels_
 		inertia=clustering.inertia_
-		kmeans=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+		kmeans=Clustering(model, clustering.labels_, clustering.cluster_centers_)
 		result.append(kmeans)
 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
 		u=time.time()
