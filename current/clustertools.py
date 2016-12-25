@@ -599,16 +599,16 @@ def uniqarraymachine(input_dir, start_no):
 	It returns the array with the unique numbers, the number of files processed, and a dictioanry mapping each number to a file name. 
 	"""
 	results=[]
-	filedicti=defaultdict(string)
+	filedicti=defaultdict(str)
 	count=int(start_no)
 	for pati in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print pati
 		for fili in [i for i in os.listdir(os.path.join(input_dir, pati)) if not i.startswith(".")]:
 			results.append([count])
-			defaultdict[count]=os.path.join(input_dir, pati)
+			filedicti[count]=os.path.join(input_dir, pati)
 			count=count+1
 			print "array", count
-	return np.array(results), len(results)
+	return np.array(results), len(results), filedicti
 	
 
 def clustermachine(matrix, distance_metric, clusters=4):
