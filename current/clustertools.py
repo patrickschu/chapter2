@@ -594,15 +594,18 @@ def categoryarraymachine(input_dir, category_tag, cat_dict):
 	
 def uniqarraymachine(input_dir, start_no):
 	"""
-	The categoryarraymachine iterates over the input_dir and collects category info for all files.
-	It maps the categories to the numbers contained in cat_dict and returns a np.array with results. (The cat_dict will usually come out of the categorymachine above.
+	The uniqarraymachine makes an array with a unique number for each file. 
+	It counts upwards from start_no. 
+	It returns the array with the unique numbers, the number of files processed, and a dictioanry mapping each number to a file name. 
 	"""
 	results=[]
+	filedicti=defaultdict(string)
 	count=int(start_no)
 	for pati in [i for i in os.listdir(input_dir) if not i.startswith(".")]:
 		print pati
 		for fili in [i for i in os.listdir(os.path.join(input_dir, pati)) if not i.startswith(".")]:
 			results.append([count])
+			defaultdict[count]=os.path.join(input_dir, pati)
 			count=count+1
 			print "array", count
 	return np.array(results), len(results)
