@@ -11,58 +11,69 @@ dir="/home/ps22344/Downloads/craigbalanced_0601"
 #add uniqs
 uniqs, file_count=ct.uniqarraymachine(dir, 0) 	
 print "So many files", file_count
-listi.append(uniqs)
+listi.append(("uniqs", uniqs ))
 
 #add cats
 categories_dict, no_of_categories = ct.categorymachine(dir, "category1")
 category1=ct.categoryarraymachine(dir, "category1", categories_dict)
-listi.append(category1)
+listi.append(("category1", category1))
 
 ##collect features
 rep_raw, rep_freq= eg.repeatedpunctuationfinder(dir)
-listi.append(np.array(rep_freq))
-
+listi.append((["repeated_punctuation"+str(count) for count in range(0,len(rep_freq[0]))], np.array(rep_freq)))
+print listi
 
 leet_raw, leet_freq= eg.leetcounter(dir)
-listi.append(np.array(leet_freq))
+listi.append((["leetspeak"+str(count) for count in range(0,len(leet_freq[0]))], np.array(leet_freq)))
 
 
 rebfor_raw, rebfor_freq= eg.rebusfinder_for(dir)
-listi.append(np.array(rebfor_freq))
+listi.append((["rebus_for"+str(count) for count in range(0,len(rebfor_freq[0]))], np.array(rebfor_freq)))
 
 rebto_raw, rebto_freq= eg.rebusfinder_to(dir)
-listi.append(np.array(rebto_freq))
+listi.append((["rebus_to"+str(count) for count in range(0,len(rebto_freq[0]))], np.array(rebto_freq)))
 
 rebtoo_raw, rebtoo_freq= eg.rebusfinder_too(dir)
-listi.append(np.array(rebtoo_freq))
+listi.append((["rebus_too"+str(count) for count in range(0,len(rebtoo_freq[0]))], np.array(rebtoo_freq)))
 
 caps_raw, caps_freq=eg.capsfinder(dir, 0.5)
-listi.append(np.array(caps_freq))
+listi.append((["capitalization"+str(count) for count in range(0,len(caps_freq[0]))], np.array(caps_freq)))
 
 single_raw, single_freq=eg.singleletterfinder(dir)
-listi.append(np.array(single_freq))
+listi.append((["single_letters"+str(count) for count in range(0,len(single_freq[0]))], np.array(single_freq)))
 
 clip_raw, clip_freq=eg.clippingcounter(dir)
-listi.append(np.array(clip_freq))
+listi.append((["clippings"+str(count) for count in range(0,len(clip_freq[0]))], np.array(clip_freq)))
 
 acro_raw, acro_freq=eg.acronymcounter(dir)
-listi.append(np.array(acro_freq))
+listi.append((["acronyms"+str(count) for count in range(0,len(acro_freq[0]))], np.array(acro_freq)))
 
 emos_raw, emos_freq=eg.emoticonfinder(dir)
-listi.append(np.array(emos_freq))
+listi.append((["emoticons"+str(count) for count in range(0,len(emos_freq[0]))], np.array(emos_freq)))
 	
-t=np.column_stack(listi)
+t=np.column_stack([i[1] for i in listi])
+
 
 print type(t), t.shape
 completeend=time.time()
 
 #this is the t w/out uniq and category
-wordmatrix_without_cat=t[2:]
-wordmatrix_with_cat=t[1:]
+wordmatrix_without_cat=t[:,2:]
+print "matrix w/out cat", wordmatrix_without_cat.shape
+wordmatrix_with_cat=t[:,1:]
+print "matrix wit cat", wordmatrix_with_cat.shape
 catdicti=categories_dict
 
 
-##ADD SPELLING
+featuredict=[i[0] for i in listi[2:]]
+#flatten it
+featuredict=[n for i in featuredict for n in i]
+
+
+print "feature dict", featuredict, len(featuredict)
+
+
+##ADD SPELLING!!!!TO DO
 
 def main(distance_metric, testmode=False):
 	starttime=time.time()
