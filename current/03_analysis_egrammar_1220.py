@@ -59,20 +59,20 @@ completeend=time.time()
 #this is the t w/out uniq and category
 wordmatrix_without_cat=t[2:]
 wordmatrix_with_cat=t[1:]
+catdicti=categories_dict
 
-ct.clustermachine(t_no_meta, "euclidean", 4)
 
 ##ADD SPELLING
 
-def main(distance_metric, threshold, testmode=False):
+def main(distance_metric, testmode=False):
 	starttime=time.time()
 
-	x=clustermachine(wordmatrix_without_cat,distance_metric,4)
+	x=ct.clustermachine(wordmatrix_without_cat,distance_metric,4)
 	print "These clusterings have less than 2 clusters\n{}\n\n".format("\n".join([str(c.name) for c in x if c.no_of_clusters < 2]))
 	#PRINTING STUFF
 	headline="\n\n-----------\n\n"
 	print "Working with {} distance metric".format(distance_metric)
-		
+	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
 	#CROSS CLUSTERING COMPARISON
 	for clustering in [c for c in x if c.no_of_clusters > 1]:
 		cati=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels)
@@ -142,9 +142,7 @@ def main(distance_metric, threshold, testmode=False):
 		#or do we want to do predictive features and typical document per cluster as well????	
 	os.system('say "your program has finished"')
 
-for thre in [1000]:
-	print "\n\n\n\n\n\n",thre,"\n"
-	main('manhattan', thre, testmode=False)
+main('manhattan', testmode=False)
 
 
 
