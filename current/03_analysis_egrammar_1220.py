@@ -57,6 +57,96 @@ print type(t), t.shape
 completeend=time.time()
 
 #this is the t w/out uniq and category
-t_no_meta=t[2:]
+wordmatrix_without_cat=t[2:]
+wordmatrix_with_cat=t[1:]
+
+ct.clustermachine(t_no_meta, "euclidean", 4)
+
+##ADD SPELLING
+
+def main(distance_metric, threshold, testmode=False):
+	starttime=time.time()
+
+	x=clustermachine(wordmatrix_without_cat,distance_metric,4)
+	print "These clusterings have less than 2 clusters\n{}\n\n".format("\n".join([str(c.name) for c in x if c.no_of_clusters < 2]))
+	#PRINTING STUFF
+	headline="\n\n-----------\n\n"
+	print "Working with {} distance metric".format(distance_metric)
+		
+	#CROSS CLUSTERING COMPARISON
+	for clustering in [c for c in x if c.no_of_clusters > 1]:
+		cati=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels)
+		sili=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cluster_silhouette(distance_metric)
+	
+		#GENERAL STATS
+		print headline, headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[1], clustering.no_of_clusters)
+		print "Its silhouette score is {}".format(str(sili))
+		stats=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).size_of_clusters()
+		catstats=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cats_per_cluster()
+		for cluster in stats:
+			print "\nCluster {} contains {} items, {} % of the total".format(cluster, stats[cluster], round(float(stats[cluster])/len(wordmatrix_without_cat)*100))
+			for cat in [i for i in catstats[cluster] if not i in excludelist]:
+				print "{} items of category {} make up {} % of this cluster".format(catstats[cluster][cat], "".join([i[0] for i in catdicti.items() if i[1] == int(cat)]), round(catstats[cluster][cat]/catstats[cluster]['total']*100))
+		cats=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels).size_of_categories()
+		
+		#STATS PER CAT
+		print headline,"Statistics per category"
+		for cat in [i for i in cats if not i in excludelist]:
+			print "\nCategory {} has {} items".format("".join([i[0] for i in catdicti.items() if i[1] == int(cat)]), cats[cat]['total'])
+			for entry in [i for i in cats[cat]['cat_per_cluster'] if not i in excludelist]:
+				print "{} items or {} percent in cluster {}".format(cats[cat]['cat_per_cluster'][entry], round(float(cats[cat]['cat_per_cluster'][entry])/float(cats[cat]['total'])*100), entry)
+
+		#PREDICTIVE FEATURES
+		print headline, "Strongly predictive features are"
+		cents=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids).cluster_predictors(featuredict)
+		if cents:
+			for diff in cents:
+				print "\nRaw Scores"
+				print "Cluster {} and cluster {} are differentiated by \n{}\n\n\n".format(diff[0], diff[1], ", ".join([" : ".join(map(unicode, i[::-1])) for i in cents[diff]['raw_diff']][:10])) 
+				print "Zscores"
+				print "Cluster {} and cluster {} are differentiated by \n{}\n\n\n".format(diff[0], diff[1], ", ".join([" : ".join(map(unicode, i[::-1])) for i in cents[diff]['zscores_diff']][:10]))	
+			
+		
+		#PROTOTYPES
+		print headline, "Here is a typical document for each cluster"
+		distance=distance_metric
+		if distance_metric=='manhattan':
+			distance='cityblock'
+		print "We set the distance metric to {}".format(distance)
+		docs=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids).central_documents(wordmatrix_with_cat, filedicti)
+		if docs:
+			for cluster in docs:
+				print "\nCLUSTER {} \n".format(cluster)
+				with open(docs[cluster][distance][0]) as f:
+					print f.read()
+				if len(docs[cluster][distance]) > 8:
+					print "\nOther files close by in cluster {}:\n".format(cluster)
+					print ("{}\n"*8).format(*docs[cluster][distance][1:9])
+	print headline, "Comparing clusterings"
+	for clustering in [c for c in x if c.no_of_clusters > 1]:
+		print headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[0], clustering.no_of_clusters)
+		print "Its silhouette score is {}".format(str(ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cluster_silhouette(distance_metric)))
+	#all input does it just concatenate name + cluster # and supply clustering object to similarity measurement
+	input=[(str(type(i.name)).split(".")[3].rstrip("'>")+"--"+str(i.no_of_clusters), i) for i in x]
+	simi=ct.Clusteringsimilarity(wordmatrix_with_cat, wordmatrix_without_cat ,input)
+	options=['adjustedrand_sim', 'adjustedmutualinfo_sim', 'jaccard_sim', 'v_sim', 'completeness_sim', 'homogeneity_sim', 'silhouette_score_sim']
+	for o in options:
+		print "\n---\n"
+		ct.Clusteringsimilarity(wordmatrix_with_cat, wordmatrix_without_cat ,input).similarity_matrix(o)
+	
+	
+	print "\n---\n"
+	endtime=time.time()
+	process=endtime-starttime
+	print headline, "This took us {} minutes".format(process/60)
+		#or do we want to do predictive features and typical document per cluster as well????	
+	os.system('say "your program has finished"')
+
+for thre in [1000]:
+	print "\n\n\n\n\n\n",thre,"\n"
+	main('manhattan', thre, testmode=False)
+
+
+
 
 print "This took us {} minutes. So slow!".format((completeend-completestart)/60)
