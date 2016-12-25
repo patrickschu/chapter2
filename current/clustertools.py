@@ -1,13 +1,14 @@
 import re
 import os
 import numpy as np
-#import scipy
+import scipy
 import itertools
-#import sklearn
+import sklearn
 import codecs
 import json
 from collections import defaultdict
 import nltk
+import time
 
 
 linebreakregex=re.compile(r"(<br>|<br\/>)")
