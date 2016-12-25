@@ -592,7 +592,7 @@ def categoryarraymachine(input_dir, category_tag, cat_dict):
 			with codecs.open(os.path.join(input_dir, pati, fili), "r", "utf-8") as inputfili:
 				category=tagextractor(inputfili.read(), category_tag, fili)
 			results.append([cat_dict[category]])
-			print "array", category, [cat_dict[category]]
+			#print "array", category, [cat_dict[category]]
 	return np.array(results)
 	
 def uniqarraymachine(input_dir, start_no):
