@@ -610,7 +610,6 @@ def uniqarraymachine(input_dir, start_no):
 			results.append([count])
 			filedicti[count]=os.path.join(input_dir, pati)
 			count=count+1
-			print "array", count
 	return np.array(results), len(results), filedicti
 	
 
