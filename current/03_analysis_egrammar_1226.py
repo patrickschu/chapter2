@@ -23,11 +23,13 @@ listi.append(("category1", category1))
 ##collect features
 rep_raw, rep_freq= eg.repeatedpunctuationfinder(dir)
 print "shape", rep_freq.shape
+rep_freq=rep_freq.sum(axis=1)
 listi.append((["repeated_punctuation"+str(count) for count in range(0,rep_freq.shape[0])], rep_freq))
 
 
 leet_raw, leet_freq= eg.leetcounter(dir)
 print "shape", leet_freq.shape
+leet_freq=leet_freq.sum(axis=1)
 listi.append((["leetspeak"+str(count) for count in range(0,leet_freq.shape[0])], leet_freq))
 
 
@@ -50,28 +52,28 @@ listi.append((["capitalization"+str(count) for count in range(0,caps_freq.shape[
 
 single_raw, single_freq=eg.singleletterfinder(dir)
 print "shape", single_freq.shape
-caps_freq=caps_freq.sum(axis=1)
+single_freq=single_freq.sum(axis=1)
 listi.append((["single_letters"+str(count) for count in range(0,single_freq.shape[0])], single_freq))
 
 clip_raw, clip_freq=eg.clippingcounter(dir)
 print "shape", clip_freq.shape
-caps_freq=caps_freq.sum(axis=1)
+clip_freq=clip_freq.sum(axis=1)
 listi.append((["clippings"+str(count) for count in range(0,clip_freq.shape[0])], clip_freq))
 
 acro_raw, acro_freq=eg.acronymcounter(dir)
 print "shape", acro_freq.shape
-caps_freq=caps_freq.sum(axis=1)
+acro_freq=acro_freq.sum(axis=1)
 listi.append((["acronyms"+str(count) for count in range(0,acro_freq.shape[0])], acro_freq))
 
 emos_raw, emos_freq=eg.emoticonfinder(dir)
 print "shape", emos_freq.shape
-caps_freq=caps_freq.sum(axis=1)
+emos_freq=emos_freq.sum(axis=1)
 listi.append((["emoticons"+str(count) for count in range(0,emos_freq.shape[0])], emos_freq))
 
 
 pros_raw, pros_freq=eg.prosodycounter(dir)
 print "shape", pros_freq.shape
-caps_freq=caps_freq.sum(axis=1)
+pros_freq=pros_freq.sum(axis=1)
 
 
 #put into one matrix
