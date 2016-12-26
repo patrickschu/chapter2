@@ -656,7 +656,7 @@ def singleletterfinder(input_dir):
 	print "This took us {} minutes".format((end-start)/60)
 	#for u in [[x[1] for x in i] for i in results]:
 	#	print u
-	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]  
+	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]  
 
 ###SECTION 2
 ###ORTHOGRAPHY
