@@ -263,7 +263,7 @@ def rebusfinder_for(input_path):
 
 		print "We have {} post items with a token count of {}".format(len(h2dict.keys()), sum(h2dict.values()))
 		print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
-		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
+		return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
 
 # the rebusfinder 2 needs to be here; it finds instances of "2" for "to".
 
@@ -392,7 +392,7 @@ def rebusfinder_to(input_dir):
 		#print [i for i in results if sum(i[0]) > 2]
 		#print results
 		print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
-		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
+		return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
 
 
 def rebusfinder_too(input_path):
@@ -525,7 +525,7 @@ def rebusfinder_too(input_path):
 		print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 		#for u in [[x[1] for x in i] for i in results]:
 		#	print u
-		return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
+		return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
 
 		
 def capsfinder(input_dir, limit):
