@@ -581,7 +581,7 @@ def capsfinder(input_dir, limit):
 	for entry in {k:v for k,v in matchesdicti.items()}:
  		print "\n", entry, len(set([i for i in matchesdicti[entry]]))
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
-	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
+	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
 
 
 def singleletterfinder(input_dir):
