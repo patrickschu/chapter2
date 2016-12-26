@@ -23,12 +23,12 @@ listi.append(("category1", category1))
 ##collect features
 rep_raw, rep_freq= eg.repeatedpunctuationfinder(dir)
 print "shape", rep_freq.shape
-listi.append((["repeated_punctuation"+str(count) for count in range(0,len(rep_freq[0]))], np.array(rep_freq)))
+listi.append((["repeated_punctuation"+str(count) for count in range(0,rebus_freq.shape[0])], np.array(rep_freq)))
 
 
 leet_raw, leet_freq= eg.leetcounter(dir)
 print "shape", leet_freq.shape
-listi.append((["leetspeak"+str(count) for count in range(0,len(leet_freq[0]))], np.array(leet_freq)))
+listi.append((["leetspeak"+str(count) for count in range(0,rebus_freq.shape[0])], np.array(leet_freq)))
 
 
 
@@ -50,26 +50,31 @@ listi.append((["capitalization"+str(count) for count in range(0,caps_freq.shape[
 
 single_raw, single_freq=eg.singleletterfinder(dir)
 print "shape", single_freq.shape
-listi.append((["single_letters"+str(count) for count in range(0,len(single_freq[0]))], np.array(single_freq)))
+caps_freq=caps_freq.sum(axis=1)
+listi.append((["single_letters"+str(count) for count in range(0,rebus_freq.shape[0])], np.array(single_freq)))
 
 clip_raw, clip_freq=eg.clippingcounter(dir)
 print "shape", clip_freq.shape
-listi.append((["clippings"+str(count) for count in range(0,len(clip_freq[0]))], np.array(clip_freq)))
+caps_freq=caps_freq.sum(axis=1)
+listi.append((["clippings"+str(count) for count in range(0,rebus_freq.shape[0])], np.array(clip_freq)))
 
 acro_raw, acro_freq=eg.acronymcounter(dir)
 print "shape", acro_freq.shape
-
-listi.append((["acronyms"+str(count) for count in range(0,len(acro_freq[0]))], np.array(acro_freq)))
+caps_freq=caps_freq.sum(axis=1)
+listi.append((["acronyms"+str(count) for count in range(0,rebus_freq.shape[0])], np.array(acro_freq)))
 
 emos_raw, emos_freq=eg.emoticonfinder(dir)
 print "shape", emos_freq.shape
-listi.append((["emoticons"+str(count) for count in range(0,len(emos_freq[0]))], np.array(emos_freq)))
+caps_freq=caps_freq.sum(axis=1)
+listi.append((["emoticons"+str(count) for count in range(0,rebus_freq.shape[0])], np.array(emos_freq)))
 
 
 pros_raw, pros_freq=eg.prosodycounter(dir)
 print "shape", pros_freq.shape
+caps_freq=caps_freq.sum(axis=1)
 
-	
+
+#put into one matrix
 t=np.column_stack([i[1] for i in listi])
 
 
