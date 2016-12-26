@@ -3,6 +3,7 @@ import clustertools as ct
 import numpy as np
 import time
 
+#MAKE THEM ALL NUMPY
 completestart=time.time()
 listi=[]
 dir="/home/ps22344/Downloads/craigbalanced_0601"
@@ -26,17 +27,23 @@ listi.append((["repeated_punctuation"+str(count) for count in range(0,len(rep_fr
 
 leet_raw, leet_freq= eg.leetcounter(dir)
 listi.append((["leetspeak"+str(count) for count in range(0,len(leet_freq[0]))], np.array(leet_freq)))
+print np.array(leet_freq).shape
 
 
+#all rebus go together
 rebfor_raw, rebfor_freq= eg.rebusfinder_for(dir)
 rebto_raw, rebto_freq= eg.rebusfinder_to(dir)
 rebtoo_raw, rebtoo_freq= eg.rebusfinder_too(dir)
 rebus_freq=rebtoo_freq+rebto_freq+rebfor_freq
-listi.append((["rebus"+str(count) for count in range(0,len(rebus_freq[0]))], np.array(rebus_freq)))
+listi.append((["rebus"+str(count) for count in range(0,rebus_freq.shape[0])], np.array(rebus_freq)))
+print "shape of rebus", np.array(rebus_freq).shape
 print rebus_freq
 
+
 caps_raw, caps_freq=eg.capsfinder(dir, 0.5)
-listi.append((["capitalization"+str(count) for count in range(0,len(caps_freq[0]))], np.array(caps_freq)))
+caps_freq=caps_freq.sum(axis=1)
+print caps_freq.shape
+listi.append((["capitalization"+str(count) for count in range(0,caps_freq.shape[0])], np.array(caps_freq)))
 
 single_raw, single_freq=eg.singleletterfinder(dir)
 listi.append((["single_letters"+str(count) for count in range(0,len(single_freq[0]))], np.array(single_freq)))
@@ -71,7 +78,7 @@ featuredict=[n for i in featuredict for n in i]
 
 print "feature dict", featuredict, len(featuredict)
 
-
+print listi
 ##ADD SPELLING!!!!TO DO
 
 def main(distance_metric, testmode=False):
