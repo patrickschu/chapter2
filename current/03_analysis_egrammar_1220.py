@@ -22,7 +22,7 @@ listi.append(("category1", category1))
 ##collect features
 rep_raw, rep_freq= eg.repeatedpunctuationfinder(dir)
 listi.append((["repeated_punctuation"+str(count) for count in range(0,len(rep_freq[0]))], np.array(rep_freq)))
-print listi
+#print listi
 
 leet_raw, leet_freq= eg.leetcounter(dir)
 listi.append((["leetspeak"+str(count) for count in range(0,len(leet_freq[0]))], np.array(leet_freq)))
