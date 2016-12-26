@@ -700,7 +700,7 @@ def spellingcounter(input_dir):
     #for u in [[x[1] for x in i] for i in results]:
     #    print u
     #print [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
-    return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
+    return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])][[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results]
 
 #clippings
 def clippingcounter(input_dir):
@@ -786,7 +786,7 @@ def clippingcounter(input_dir):
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	#for u in [[x[1] for x in i] for i in results]:
 	#	print u
-	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
+	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])][[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
 
 
 #abbreviations
@@ -860,7 +860,7 @@ def acronymcounter(input_dir):
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	#for u in [[x[1] for x in i] for i in results]:
 	#	print u
-	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
+	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])][[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
 
 
 #phonetically motivated letter substitution
@@ -952,7 +952,7 @@ def prosodycounter(input_dir):
 	# for u in [[x[0] for x in i] for i in results]:
 		# print u
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
-	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
+	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])][[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
 
 
 
