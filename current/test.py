@@ -81,6 +81,22 @@ def acronymcounter(input_dir):
 	return [[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results] 
 	
 
+	
+ff=np.array([[0],[1],[2],[0]])	
+pp=np.array([[0],[1],[200],[100]])
+gg=np.array([[0],[1],[2],[1000.5]])
+print gg.shape
+
+res=np.column_stack([ff,pp, gg])
+print res
+print res.shape
+print res.sum(axis=1)
+t=np.column_stack([res,res.sum(axis=1)])
+print t
+print res.shape
+print res.shape[0]
+
+	
 
 #x=acronymcounter("/home/ps22344/Downloads/craig_0208")
  
