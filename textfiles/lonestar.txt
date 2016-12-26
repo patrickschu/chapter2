@@ -6,10 +6,12 @@ ssh ps22344@ls5.tacc.utexas.edu
 CREATING SLURMS
 launcher_creator.py -n cluster_centroid_test_kmeans -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python LS_analysis_cluster_centroid_0511_kmeans.py > output_centroid_kmeans_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
 
+launcher_creator.py -n egrammar_test_kmeans -q normal -t 10:00:00 -e patrickschultz@utexas.edu -b "python 03_analysis_egrammar_1220.py > output_egrammar_kmeans_`date '+%Y%m%d.%H%M'`.txt" -m "module load python/2.7.11"
+
 
 INSTALL MODULES
 easy_install --user pyenchant
-
+python -m nltk.downloader averaged_perceptron_tagger
 
 
 COPY
