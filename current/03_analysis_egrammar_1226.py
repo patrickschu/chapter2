@@ -115,7 +115,9 @@ def main(distance_metric, testmode=False):
 	#CROSS CLUSTERING COMPARISON
 	for clustering in [c for c in x if c.no_of_clusters > 1]:
 		cati=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels)
+		print "Categorystats done"
 		sili=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cluster_silhouette(distance_metric)
+		print "Clusteringstats done"
 	
 		#GENERAL STATS
 		print headline, headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[1], clustering.no_of_clusters)
