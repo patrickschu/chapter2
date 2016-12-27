@@ -46,7 +46,6 @@ def anyoftheseregex(regexstring):
 ###SECTION 1
 ###TYPOGRAPHY
 
-
 def emoticonfinder(dir):
 	"""
 	THIS STILL NEEDS THE OUTPUT FUNCTION OF PUNCTFINDER
@@ -91,11 +90,11 @@ def emoticonfinder(dir):
 	print "This took us {} minutes".format((endtime-starttime)/60)
 	print "\n\n"
 	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
-	for k in sorted(resultdict, key=resultdict.get, reverse=True):
-		print k, resultdict[k]
+	#for k in sorted(resultdict, key=resultdict.get, reverse=True):
+	#	print k, resultdict[k]
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	#1st list is absolute counts, 2nd div by word count
-	return ([[x[0] for x in i] for i in results], [[x[1] for x in i] for i in results])
+	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
 
 def repeatedpunctuationfinder(dir):
 	"""
@@ -148,7 +147,6 @@ def repeatedpunctuationfinder(dir):
 	#1st list is absolute counts, 2nd div by word count
 	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
 
-
 def leetcounter(dir):
 	"""
 	The leetcounter identifies any words that exhibit leet features, e.g. name --> nam3 
@@ -197,8 +195,6 @@ def leetcounter(dir):
 	#1st list is absolute counts, 2nd div by word count
 	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
 
-
-#the rebusfinder needs to be here; it finds instances of "4" for "for". 
 def rebusfinder_for(input_path):
 	"""
  	This finds words that are represented as numbers. 
@@ -264,8 +260,6 @@ def rebusfinder_for(input_path):
 		print "We have {} post items with a token count of {}".format(len(h2dict.keys()), sum(h2dict.values()))
 		print "We have {} pre items with a token count of {}".format(len(h0dict.keys()), sum(h0dict.values()))
 		return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
-
-# the rebusfinder 2 needs to be here; it finds instances of "2" for "to".
 
 def rebusfinder_to(input_dir):
 	"""
@@ -393,7 +387,6 @@ def rebusfinder_to(input_dir):
 		#print results
 		print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 		return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
-
 
 def rebusfinder_too(input_path):
 	"""
@@ -526,7 +519,6 @@ def rebusfinder_too(input_path):
 		#for u in [[x[1] for x in i] for i in results]:
 		#	print u
 		return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
-
 		
 def capsfinder(input_dir, limit):
 	"""
@@ -582,7 +574,6 @@ def capsfinder(input_dir, limit):
  		print "\n", entry, len(set([i for i in matchesdicti[entry]]))
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
-
 
 def singleletterfinder(input_dir):
 	"""
@@ -788,7 +779,6 @@ def clippingcounter(input_dir):
 	#	print u
 	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
 
-
 #abbreviations
 def acronymcounter(input_dir):
 	"""
@@ -889,7 +879,6 @@ def acronymcounter(input_dir):
 	print "((?:"+anyregex+"))"
 	return "((?:"+anyregex+"))"
 	
-
 def prosodycounter(input_dir):
 	"""
 	This finds representations of prosody and non-linguistic sounds.  
@@ -953,8 +942,6 @@ def prosodycounter(input_dir):
 		# print u
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
-
-
 
 ###SECTION 3
 ###WORD LEVEL
