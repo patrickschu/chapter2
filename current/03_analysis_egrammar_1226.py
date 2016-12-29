@@ -87,14 +87,13 @@ print type(t), t.shape
 completeend=time.time()
 
 #this is the t w/out category
-#they always keep the uniq as thats what the matrixmachine did
-wordmatrix_without_cat=t[:,1:]
-print "matrix w/out cat", wordmatrix_without_cat.shape
-#this one keeps the category but not the uniq
+#it is without category and without unique as in the matrixmachine
+wordmatrix_without_cat=t[:,2:]
+print "matrix w/out cat and uniq", wordmatrix_without_cat.shape
+#this one keeps the category and the uniq
 wordmatrix_with_cat=t
-print "matrix wit cat", wordmatrix_with_cat.shape
+print "matrix with cat and uniq", wordmatrix_with_cat.shape
 catdicti=categories_dict
-
 
 featuredict=[i[0] for i in listi if i[0] not in ["uniqs", "category1"]]
 #flatten it
