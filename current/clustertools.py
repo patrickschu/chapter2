@@ -131,7 +131,7 @@ class Centroidstats(Clustering):
 		self.matrix_without_cats=matrix_without_cats
 		
 	def _centroid_check(self):
-		if self.centroids == None:
+		if not self.centroids:
 			#raise ValueError("Model {} has no centroids".format(self.name))
 			#make a new centroid for each cluster
 			centroids=[]
