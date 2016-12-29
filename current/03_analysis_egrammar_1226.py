@@ -86,7 +86,8 @@ t=np.column_stack([i[1] for i in listi])
 print type(t), t.shape
 completeend=time.time()
 
-#this is the t w/out uniq and category
+#this is the t w/out category
+#they always keep the uniq as thats what the matrixmachine did
 wordmatrix_without_cat=t[:,1:]
 print "matrix w/out cat", wordmatrix_without_cat.shape
 #this one keeps the category but not the uniq
@@ -95,7 +96,7 @@ print "matrix wit cat", wordmatrix_with_cat.shape
 catdicti=categories_dict
 
 
-featuredict=[i[0] for i in listi if i[0] not in ["uniq", "category1"]]
+featuredict=[i[0] for i in listi if i[0] not in ["uniqs", "category1"]]
 #flatten it
 featuredict=[n for i in featuredict for n in i]
 
