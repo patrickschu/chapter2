@@ -12,8 +12,7 @@ dir="/home/ps22344/Downloads/craigbalanced_0601"
 #add uniqs
 uniqs, file_count, filedicti=ct.uniqarraymachine(dir, 0) 	
 print "So many files", file_count
-listi.append(("uniqs", uniqs ))
-print filedicti
+#listi.append(("uniqs", uniqs ))
 
 
 #add cats
@@ -87,14 +86,15 @@ print type(t), t.shape
 completeend=time.time()
 
 #this is the t w/out uniq and category
-wordmatrix_without_cat=t[:,2:]
+wordmatrix_without_cat=t[:,1:]
 print "matrix w/out cat", wordmatrix_without_cat.shape
-wordmatrix_with_cat=t[:,1:]
+#this one keeps the category but not the uniq
+wordmatrix_with_cat=t
 print "matrix wit cat", wordmatrix_with_cat.shape
 catdicti=categories_dict
 
 
-featuredict=[i[0] for i in listi[2:]]
+featuredict=[i[0] for i in listi if i[0] not in ["uniq", "category1"]]
 #flatten it
 featuredict=[n for i in featuredict for n in i]
 
