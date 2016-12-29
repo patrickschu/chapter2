@@ -13,6 +13,7 @@ dir="/home/ps22344/Downloads/craigbalanced_0601"
 uniqs, file_count, filedicti=ct.uniqarraymachine(dir, 0) 	
 print "So many files", file_count
 listi.append(("uniqs", uniqs ))
+print filedicti
 
 
 #add cats
@@ -137,7 +138,7 @@ def main(distance_metric, testmode=False):
 			for entry in [i for i in cats[cat]['cat_per_cluster'] if not i in excludelist]:
 				print "{} items or {} percent in cluster {}".format(cats[cat]['cat_per_cluster'][entry], round(float(cats[cat]['cat_per_cluster'][entry])/float(cats[cat]['total'])*100), entry)
 
-		#PREDICTIVE FEATURES
+		# #PREDICTIVE FEATURES
 		print headline, "Strongly predictive features are"
 		cents=ct.Centroidstats(wordmatrix_without_cat, clustering.name, clustering.labels, clustering.centroids).cluster_predictors(featuredict)
 		if cents:
@@ -158,6 +159,7 @@ def main(distance_metric, testmode=False):
 		if docs:
 			for cluster in docs:
 				print "\nCLUSTER {} \n".format(cluster)
+				print docs[cluster][distance]
 				with open(docs[cluster][distance][0]) as f:
 					print f.read()
 				if len(docs[cluster][distance]) > 8:
@@ -180,10 +182,9 @@ def main(distance_metric, testmode=False):
 	endtime=time.time()
 	process=endtime-starttime
 	print headline, "This took us {} minutes".format(process/60)
-		#or do we want to do predictive features and typical document per cluster as well????	
-	os.system('say "your program has finished"')
 
-#main('manhattan', testmode=False)
+
+main('manhattan', testmode=False)
 
 
 
