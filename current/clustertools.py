@@ -13,7 +13,7 @@ import time
 
 
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']
-
+scipy_distances=['euclidean', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine']
 
 linebreakregex=re.compile(r"(<br>|<br\/>)")
 stopregex=re.compile(r"([\.|\?|\!|\*]+)(\w)")
@@ -250,7 +250,7 @@ class Centroidstats(Clustering):
 			centroids=self._centroiddictmaker()
 			docs={}
 			# note that we can use the distance metric above as well
-			for entry in centroids:
+			for entry in centroids: 
 				centroid=np.array([centroids[entry]])
 				docs[entry]=defaultdict(list)
 				matrix_without_cats=wordmatrix_with_cats[:wordmatrix_with_cats.shape[0], wordmatrix_with_cats.shape[1]-centroid.shape[1]:wordmatrix_with_cats.shape[1]]
@@ -608,7 +608,7 @@ def uniqarraymachine(input_dir, start_no):
 		print pati
 		for fili in [i for i in os.listdir(os.path.join(input_dir, pati)) if not i.startswith(".")]:
 			results.append([count])
-			filedicti[count]=os.path.join(input_dir, pati)
+			filedicti[count]=os.path.join(input_dir, pati, fili)
 			count=count+1
 	return np.array(results), len(results), filedicti
 	
