@@ -9,16 +9,17 @@ listi=[]
 dir="/home/ps22344/Downloads/craigbalanced_0601"
 
 ##prep
-#add uniqs
-uniqs, file_count, filedicti=ct.uniqarraymachine(dir, 0) 	
-print "So many files", file_count
-#listi.append(("uniqs", uniqs ))
-
-
 #add cats
 categories_dict, no_of_categories = ct.categorymachine(dir, "category1")
 category1=ct.categoryarraymachine(dir, "category1", categories_dict)
 listi.append(("category1", category1))
+
+
+#add uniqs
+uniqs, file_count, filedicti=ct.uniqarraymachine(dir, 0) 	
+print "So many files", file_count
+listi.append(("uniqs", uniqs ))
+
 
 ##collect features
 rep_raw, rep_freq= eg.repeatedpunctuationfinder(dir)
