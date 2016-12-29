@@ -7,6 +7,7 @@
 #my folders and files
 outputfiles/
 current/test.py
+*.zip
 
 *.DS_Store
 .AppleDouble
