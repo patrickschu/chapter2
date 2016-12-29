@@ -9,6 +9,14 @@ from string import punctuation
 import json
 from nltk import pos_tag
 
+def fufu(centroids=None):
+	if centroids == None:
+		print "no centies thank you"
+	else:
+		print "this is the centroid", centroidd
+
+fufu()
+
 t=np.array([[1,1],[2,2],[3,3]])
 
 uniq=np.array([0,1,2])
