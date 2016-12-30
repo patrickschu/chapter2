@@ -24,6 +24,7 @@ scp ps22344@ls5.tacc.utexas.edu:/work/01644/ps22344/lonestar/*.txt ~/Downloads/.
 
 to specific working dict on ls
 scp test.txt ps22344@ls5.tacc.utexas.edu:/work/01644/ps22344/lonestar/
+scp upload_1229.zip ps22344@ls5.tacc.utexas.edu:/work/01644/ps22344/lonestar/
 
 
 making file names w/ date
