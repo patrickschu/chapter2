@@ -2,11 +2,18 @@ import egrammartools as eg
 import clustertools as ct
 import numpy as np
 import time
+import scipy
+from guppy import hpy
+h=hpy()
 
-#MAKE THEM ALL NUMPY
+h.setref()
+headline="\n\n-----------\n\n"
+
+print "heap", h.heap()
+
 completestart=time.time()
 listi=[]
-dir="/home/ps22344/Downloads/craigbalanced_0601"
+dir="/home/pss22344/Downloads/craigbalanced_0601"
 
 ##prep
 #add cats
@@ -90,25 +97,29 @@ completeend=time.time()
 #it is without category and without unique as in the matrixmachine
 wordmatrix_without_cat=t[:,2:]
 print "matrix w/out cat and uniq", wordmatrix_without_cat.shape
+print "\n\n\n++++", wordmatrix_without_cat, headline
 #this one keeps the category and the uniq
 wordmatrix_with_cat=t
 print "matrix with cat and uniq", wordmatrix_with_cat.shape
+#zscored matrix
+#wordmatrix_without_cat=scipy.stats.zscore(t[:,2:], axis=0)
+ct.matrixstats(wordmatrix_without_cat, wordmatrix_with_cat)
 catdicti=categories_dict
-
 featuredict=[i[0] for i in listi if i[0] not in ["uniqs", "category1"]]
 #flatten it
 featuredict=[n for i in featuredict for n in i]
 
 
 print "feature dict", featuredict, len(featuredict)
-
-print listi
+print h.heap()
+#print listi
 ##ADD SPELLING!!!!TO DO
 
 def main(distance_metric, testmode=False):
 	starttime=time.time()
-
+	
 	x=ct.clustermachine(wordmatrix_without_cat,distance_metric,4)
+	print h.heap()
 	print "These clusterings have less than 2 clusters\n{}\n\n".format("\n".join([str(c.name) for c in x if c.no_of_clusters < 2]))
 	#PRINTING STUFF
 	headline="\n\n-----------\n\n"
@@ -118,14 +129,17 @@ def main(distance_metric, testmode=False):
 	for clustering in [c for c in x if c.no_of_clusters > 1]:
 		cati=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels)
 		print "Categorystats done"
+		print h.heap()
 		sili=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cluster_silhouette(distance_metric)
 		print "Clusteringstats done"
-	
+		print h.heap()
 		#GENERAL STATS
 		print headline, headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[1], clustering.no_of_clusters)
-		print "Its silhouette score is {}".format(str(sili))
+		#print "Its silhouette score is {}".format(str(sili))
 		stats=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).size_of_clusters()
+		print "stats done"
 		catstats=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cats_per_cluster()
+		print "catstats done"
 		for cluster in stats:
 			print "\nCluster {} contains {} items, {} % of the total".format(cluster, stats[cluster], round(float(stats[cluster])/len(wordmatrix_without_cat)*100))
 			for cat in [i for i in catstats[cluster] if not i in excludelist]:
@@ -183,6 +197,7 @@ def main(distance_metric, testmode=False):
 	endtime=time.time()
 	process=endtime-starttime
 	print headline, "This took us {} minutes".format(process/60)
+	print h.heap()
 
 
 main('manhattan', testmode=False)
