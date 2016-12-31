@@ -8,24 +8,24 @@ from collections import defaultdict
 from string import punctuation
 import json
 from nltk import pos_tag
+import scipy
 
-def fufu(centroids=None):
-	if centroids == None:
-		print "no centies thank you"
-	else:
-		print "this is the centroid", centroidd
+t=np.array([[1,1, 1000],[2,2, 20],[5,3, 5000000]])
 
-fufu()
+print t
+print t.shape
+print scipy.stats.zscore(t, axis=0)
 
-t=np.array([[1,1],[2,2],[3,3]])
+
+
 
 uniq=np.array([0,1,2])
 
 r=np.column_stack([ uniq, t])
 
-print r
+#print r
 
-print "we extract row 1", "\n", r[:,1:]
+#print "we extract row 1", "\n", r[:,1:]
 
 
 
