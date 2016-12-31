@@ -419,7 +419,7 @@ def outlierremover(dataset_without_cats, dataset_with_cats, distance_metric, med
 
 
 
-def matrixstats(matrix, matrix_with_cats, distance_metric, zscores=False, outlier_removal=False, outlier_threshold=2, median_metric='median', compute_distance = False ):
+def matrixstats(matrix, matrix_with_cats, distance_metric=None, zscores=False, outlier_removal=False, outlier_threshold=2, median_metric='median', compute_distance = False ):
 	'''
 	Matrixstats computes basic statistics and optionally normalizes scores and removes outliers.
 	It computes basic statistical values such as the mean, median, standard deviation, and range of values.
@@ -427,11 +427,13 @@ def matrixstats(matrix, matrix_with_cats, distance_metric, zscores=False, outlie
 	For the zscore transformation, degrees of freedom is set to 1 to make results equivalent to R zscores. 
 	'''
 	print "Starting the matrix stats"
+	if np.isnan(np.min(matrix)):
+		print "\n\n---Alarm: NaNs detected in matrix_without_cats\n\n"
 	#print "Sample rows\n", matrix[:3,:], "\n"
 	print "\nInput statistics"
 	inputstats=basicstatsmaker(matrix)
 	for entry in inputstats:
-		print entry, "\n"
+		print "\n", entry, ":"
 		for thing in inputstats[entry]:
 			print thing
 	print "\n"
