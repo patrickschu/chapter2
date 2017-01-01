@@ -114,7 +114,7 @@ class Clusteringstats(Clustering):
 		return featuredicti
 
 	def cluster_silhouette(self, distance_metric):
-		silhouette=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.labels, metric=distance_metric)
+		silhouette=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.labels, metric=distance_metric, sample_size=40000)
 		return silhouette
 
 
