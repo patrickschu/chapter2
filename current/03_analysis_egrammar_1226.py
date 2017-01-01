@@ -13,7 +13,7 @@ print "heap", h.heap()
 
 completestart=time.time()
 listi=[]
-dir="/home/pss22344/Downloads/craigbalanced_0601"
+dir="/home/ps22344/Downloads/craigbalanced_0601"
 
 ##prep
 #add cats
@@ -180,6 +180,7 @@ def main(distance_metric, testmode=False):
 				if len(docs[cluster][distance]) > 8:
 					print "\nOther files close by in cluster {}:\n".format(cluster)
 					print ("{}\n"*8).format(*docs[cluster][distance][1:9])
+	#COMPARING CLUSTERINGS
 	print headline, "Comparing clusterings"
 	for clustering in [c for c in x if c.no_of_clusters > 1]:
 		print headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[0], clustering.no_of_clusters)
