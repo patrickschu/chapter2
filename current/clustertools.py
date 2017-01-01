@@ -613,8 +613,35 @@ def uniqarraymachine(input_dir, start_no):
 			filedicti[count]=os.path.join(input_dir, pati, fili)
 			count=count+1
 	return np.array(results), len(results), filedicti
-	
 
+def meanmachine(input_matrix, category_dict, feature_list, limit=20):
+	"""
+	The meanmachine takes input_matrix, formatted according to guidelines of the matrixmachine: cat - uniq - feature_1, feature_d
+	The category_dict maps categories to numbers. 
+	The feature_list contains the features in the order they occur in the input_matrix. 
+	"""	
+	skips=[]
+	for num, feature in enumerate(feature_list):
+		print "\n\n---", num, "feature: ", feature
+		for key, value in category_dict.items():
+			print value, key
+			tempi=input_matrix[input_matrix[:,0]== value]
+			print "tempi shape", tempi.shape
+			#exclude the category and uniq columns
+			tempi=tempi[:,2:]
+			if tempi.shape[0] > limit:
+				featuretempi=tempi[:,num]
+				frame= featuretempi.shape
+				mean= featuretempi.mean()
+				min= featuretempi.min()
+				max= featuretempi.max()
+				median= np.median(featuretempi)
+				std= featuretempi.std()
+				print "For feature {}, category {} has {} data points. The mean is {} (median: {}) with a range between {} and {}, i.e. {}. Standard deviation: {}".format(feature, key, frame[0], mean, median, min, max, (max-min), std)
+			else:
+				print skips.append(key)
+	print "skipped {} because under {} rows".format(", ".join(skips), limit)	
+	
 def clustermachine(matrix, distance_metric, clusters=4):
 	"""
 	The clustermachine takes a matrix with word freqs and clusters data according to the distance_metric. 
