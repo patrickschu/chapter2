@@ -5,6 +5,7 @@ import scipy
 import itertools
 import sklearn
 from sklearn import cluster
+from sklearn import mixture
 import codecs
 import json
 from collections import defaultdict
@@ -596,7 +597,7 @@ def uniqarraymachine(input_dir, start_no):
 			count=count+1
 	return np.array(results), len(results), filedicti
 
-def meanmachine(input_matrix, category_dict, feature_list, limit=20):
+def meanmachine(input_matrix, category_dict, feature_list, limit=100):
 	"""
 	The meanmachine takes input_matrix, formatted according to guidelines of the matrixmachine: cat - uniq - feature_1, feature_d
 	The category_dict maps categories to numbers. 
@@ -606,11 +607,11 @@ def meanmachine(input_matrix, category_dict, feature_list, limit=20):
 	for num, feature in enumerate(feature_list):
 		print "\n\n---", num, "feature: ", feature
 		for key, value in category_dict.items():
-			print value, key
 			tempi=input_matrix[input_matrix[:,0]== value]
 			#exclude the category and uniq columns
 			tempi=tempi[:,2:]
 			if tempi.shape[0] > limit:
+				print value, key
 				featuretempi=tempi[:,num]
 				frame= featuretempi.shape
 				mean= featuretempi.mean()
