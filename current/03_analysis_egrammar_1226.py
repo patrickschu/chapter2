@@ -7,11 +7,19 @@ import sklearn
 
 headline="\n\n-----------\n\n"
 
-def featurecollector(categories, uniqs):
+def featurecollector(categories, uniqs, mode="freq"):
 	"""
 	collects those features, returns a np array with frequencies. 
 	first item in returned list is a category, 2nd a uniq number. 
+	Parameters
+	----------
+	mode : 'freq' returns a list of items per word, 'count' a list of counts
+	
+	Returns
+	-------
+	np array with frequencies..
 	"""
+	modestring=mode
 	listi=[]
 	listi.append(("category1", category1))
 	listi.append(("uniqs", uniqs ))
@@ -113,13 +121,15 @@ ct.meanmachine(wordmatrix_with_cat, categories_dict, featuredict, 100)
 #zscored matrix
 wordmatrix_without_cat=scipy.stats.zscore(t[:,2:], axis=0)
 wordmatrix_with_cat=np.column_stack([category1, uniqs, scipy.stats.zscore(t[:,2:], axis=0)])
-print "ayayay", wordmatrix_with_cat
+#print "ayayay", wordmatrix_with_cat
 
 ##TFIDF?
-# tfidf=sklearn.feature_extraction.text.TfidfTransformer(norm=u'l2', use_idf=True, smooth_idf=True, sublinear_tf=False)
-# print tfidf.fit()
-# print tfidf.transform(t)
-# print tfidf.transform(t).toarray()
+#textfreq inverse doc freq
+tfidf=sklearn.feature_extraction.text.TfidfTransformer(norm=u'l1', use_idf=True, smooth_idf=True, sublinear_tf=False)
+wordmatrix_without_cat=tfidf.fit_transform(t[:,2:]).toarray()
+wordmatrix_with_cat=np.column_stack([category1, uniqs, wordmatrix_without_cat])
+print "settings from tfidf", tfidf.get_params()
+
 
 
 print "matrix with cat and uniq", wordmatrix_with_cat.shape
@@ -216,7 +226,7 @@ def main(distance_metric, testmode=False):
 	print headline, "This took us {} minutes".format(process/60)
 
 
-main('manhattan', testmode=False)
+#main('manhattan', testmode=False)
 
 
 print "This took us {} minutes. So slow!".format((completeend-completestart)/60)
