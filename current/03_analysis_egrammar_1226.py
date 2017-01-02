@@ -4,16 +4,13 @@ import numpy as np
 import time
 import scipy
 from guppy import hpy
-h=hpy()
 
-h.setref()
 headline="\n\n-----------\n\n"
 
-print "heap", h.heap()
 
 completestart=time.time()
 listi=[]
-dir="/home/ps22344/Downloads/craigbalanced_0601"
+dir="/home/ps22344/Downloads/craigbalanced_0601_small"
 
 ##prep
 #add cats
@@ -111,15 +108,17 @@ featuredict=[n for i in featuredict for n in i]
 
 
 print "feature dict", featuredict, len(featuredict)
-print h.heap()
 #print listi
 ##ADD SPELLING!!!!TO DO
+print wordmatrix_with_cat
+print wordmatrix_with_cat.shape
+ct.meanmachine(wordmatrix_with_cat, categories_dict, featuredict, 4)
+
 
 def main(distance_metric, testmode=False):
 	starttime=time.time()
 	
 	x=ct.clustermachine(wordmatrix_without_cat,distance_metric,4)
-	print h.heap()
 	print "These clusterings have less than 2 clusters\n{}\n\n".format("\n".join([str(c.name) for c in x if c.no_of_clusters < 2]))
 	#PRINTING STUFF
 	headline="\n\n-----------\n\n"
@@ -129,10 +128,8 @@ def main(distance_metric, testmode=False):
 	for clustering in [c for c in x if c.no_of_clusters > 1]:
 		cati=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels)
 		print "Categorystats done"
-		print h.heap()
 		sili=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cluster_silhouette(distance_metric)
 		print "Clusteringstats done"
-		print h.heap()
 		#GENERAL STATS
 		print headline, headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[1], clustering.no_of_clusters)
 		#print "Its silhouette score is {}".format(str(sili))
@@ -192,16 +189,14 @@ def main(distance_metric, testmode=False):
 	for o in options:
 		print "\n---\n"
 		ct.Clusteringsimilarity(wordmatrix_with_cat, wordmatrix_without_cat ,input).similarity_matrix(o)
-	
-	
+		
 	print "\n---\n"
 	endtime=time.time()
 	process=endtime-starttime
 	print headline, "This took us {} minutes".format(process/60)
-	print h.heap()
 
 
-main('manhattan', testmode=False)
+#main('manhattan', testmode=False)
 
 
 
