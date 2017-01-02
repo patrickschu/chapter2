@@ -654,7 +654,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 #	clustering=model.fit(matrix)
 #	centroids=clustering.cluster_centers_
 #	labels=clustering.labels_
-#	meanshift=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+#	meanshift=Clustering(model, clustering.labels_, clustering.cluster_centers_)
 #	result.append(meanshift)
 #	u=time.time()
 #	print [i.name for i in result][len(result)-1]
@@ -668,7 +668,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 # 	labels=clustering.labels_
 # 	aff_matrix=clustering.affinity_matrix_
 # 	its= clustering.n_iter_
-# 	affinity=ct.Clustering(model, clustering.labels_, clustering.cluster_centers_)
+# 	affinity=Clustering(model, clustering.labels_, clustering.cluster_centers_)
 # 	result.append(affinity)
 # 	u=time.time()
 # 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
@@ -679,7 +679,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 # 	clustering=model.fit(matrix)
 # 	labels=clustering.labels_
 # 	aff_matrix=clustering.affinity_matrix_
-# 	spectral= ct.Clustering(model, clustering.labels_)
+# 	spectral= Clustering(model, clustering.labels_)
 # 	result.append(spectral)
 # 	u=time.time()
 # 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
@@ -699,7 +699,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 # 		print "components", len(components)
 # 		labels=clustering.labels_
 # 		print labels
-# 		dbscan= ct.Clustering(model, clustering.labels_, matrix[clustering.core_sample_indices_])
+# 		dbscan= Clustering(model, clustering.labels_, matrix[clustering.core_sample_indices_])
 # 		result.append(dbscan)
 # 		u=time.time()
 # 		print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
@@ -719,7 +719,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 # 		print "\n predict", model.predict(matrix)
 # 		print "means", model.means_
 # 		#print "\n predict probs", model.predict_proba(matrix)
-# 		dirichlet= ct.Clustering(model, model.fit_predict(matrix), model.means_)
+# 		dirichlet= Clustering(model, model.fit_predict(matrix), model.means_)
 #  		u=time.time()
 #  		result.append(dirichlet)
 #  		print (u-t)/60
@@ -736,7 +736,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 # 		print "\n predict", model.predict(matrix)
 # 		print "means", model.means_
 # 		#print "\n predict probs", model.predict_proba(matrix)
-# 		gauss= ct.Clustering(model, model.fit_predict(matrix), model.means_)
+# 		gauss= Clustering(model, model.fit_predict(matrix), model.means_)
 #  		u=time.time()
 #  		result.append(gauss)
 #  		print (u-t)/60
@@ -752,7 +752,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 		# leaves=clustering.n_leaves_
 		# children=clustering.children_
 		# components=clustering.n_components_
-		# ward= ct.Clustering(model, clustering.labels_)
+		# ward= Clustering(model, clustering.labels_)
 		# result.append(ward)
 		# u=time.time()
 		# print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
@@ -770,7 +770,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 # 	labels=clustering.labels_
 # 	leaves=clustering.n_leaves_
 # 	components=clustering.n_components_
-# 	ward= ct.Clustering(model, clustering.labels_)
+# 	ward= Clustering(model, clustering.labels_)
 # 	result.append(ward)
 # 	u=time.time()
 # 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
@@ -782,7 +782,7 @@ def clustermachine(matrix, distance_metric, clusters=4):
 # 	labels=clustering.labels_
 # 	root=clustering.root_
 # 	subcluster_labels=clustering.subcluster_labels_
-# 	birch= ct.Clustering(model, clustering.labels_)
+# 	birch= Clustering(model, clustering.labels_)
 # 	result.append(birch)
 # 	u=time.time()
 # 	print [i.name for i in result][len(result)-1], [i.no_of_clusters for i in result][len(result)-1]
