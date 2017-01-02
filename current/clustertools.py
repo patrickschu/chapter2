@@ -11,10 +11,9 @@ from collections import defaultdict
 import nltk
 import time
 
-
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']
 scipy_distances=['euclidean', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine']
-
+#regexes
 linebreakregex=re.compile(r"(<br>|<br\/>)")
 stopregex=re.compile(r"([\.|\?|\!|\*]+)(\w)")
 htmlregex=re.compile(r"<.*?>")
@@ -62,8 +61,6 @@ class Clustering(object):
 			for item in wordmatrix:
 				clustercatdicti[cluster][item[0]].append(item)
 		return clustercatdicti
-
-
 
 class Clusteringstats(Clustering):
 	"""
@@ -117,8 +114,6 @@ class Clusteringstats(Clustering):
 		silhouette=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.labels, metric=distance_metric, sample_size=40000)
 		return silhouette
 
-
-# remember that we could use z scores		
 class Centroidstats(Clustering):
 	"""
 	Returns statistics and calculations with centroids of a clustering.
@@ -264,8 +259,6 @@ class Centroidstats(Clustering):
 			return docs
 		except ValueError as err:
 			print err
-	
-
 
 class Clusteringsimilarity(Clustering):
 	""" 
@@ -345,9 +338,6 @@ class Clusteringsimilarity(Clustering):
 		for key in self.partitionings.keys():
 			qualitydict[key]=sklearn.metrics.silhouette_score(self.matrix_without_cats, self.partitionings[key].labels)
 		return qualitydict
-		
-		
-
 
 class Categorystats(Clustering):
 	"""
@@ -377,8 +367,6 @@ class Categorystats(Clustering):
 			'cat_per_cluster': {i: len(dict[i][item]) for i in dict.keys() if item in dict[i].keys()}
 			}		
 		return cat_features
-		
-
 
 #
 ###FUNCTIONS
@@ -395,10 +383,10 @@ def basicstatsmaker(dataset):
 		}
 		return statdict
 
-
 def outlierremover(dataset_without_cats, dataset_with_cats, distance_metric, median_metric, standard_deviations):
 	''' 
-	Removes outliers from dataset removed more than standard_deviations * standard deviations removed from median
+	Removes outliers from dataset removed more than standard_deviations * standard deviations removed from median.
+	Note that this relies on distances rather than absolute values. 
 	'''
 	print "We are removing outliers"
 	print "before outlier removal\n", dataset_without_cats
@@ -415,9 +403,6 @@ def outlierremover(dataset_without_cats, dataset_with_cats, distance_metric, med
 	gooddata_with_cats=dataset_with_cats[average < overall_avg+(standard_deviations * overall_std)]
 	print "output\n", gooddata_with_cats
 	return gooddata_without_cats, gooddata_with_cats
-	
-
-
 
 def matrixstats(matrix, matrix_with_cats, distance_metric=None, zscores=False, outlier_removal=False, outlier_threshold=2, median_metric='median', compute_distance = False ):
 	'''
@@ -476,8 +461,10 @@ def matrixstats(matrix, matrix_with_cats, distance_metric=None, zscores=False, o
 	print "\n\ndone with matrix stats"
 	return matrix, matrix_with_cats
 
+#
+##setting up some helper functions
+#
 
-#setting up some helper functions
 def tagextractor(text, tag, fili):
     regexstring="<"+tag+"=(.*?)>"
     result=re.findall(regexstring, text, re.DOTALL)
@@ -502,7 +489,6 @@ def remover(original_list, to_delete):
 	newlist=[s for s in original_list if s not in to_delete]
 	print "We deleted {}".format(",".join(to_delete))
 	return set(newlist)
-	
     
 def dictwriter(file_name, dictionary, sort_dict=True):
 	"""
@@ -517,7 +503,6 @@ def dictwriter(file_name, dictionary, sort_dict=True):
 	with codecs.open(os.path.expanduser(file_name+".json"), "w", "utf-8") as jsonoutputi:
 		json.dump(dictionary, jsonoutputi, ensure_ascii=False)
 	print "Written to",  os.path.join("outputfiles",file_name)
-
 
 def adcleaner(text, replace_linebreak=False, remove_html=False):
 	"""
@@ -536,11 +521,9 @@ def adcleaner(text, replace_linebreak=False, remove_html=False):
 		text=htmlregex.sub(" ", text)
 	return text
 	
-#this is used to add spaces between stops and the following word
+#this is used to add spaces between stops and the following word. note that we have a slightly different version above. 
 stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
-
 #what is the difference btw the tokenizer and the adcleaner??
-
 def tokenizer(input_string):
 	"""
 	The tokenizer takes a string of words.
@@ -580,7 +563,6 @@ def categorymachine(input_dir, category_tag):
 				catnumber=catnumber+1
 				cat=catdicti[tagextractor(inputfile, category_tag, fili)]
 	return (catdicti, catnumber)
-	
 	
 def categoryarraymachine(input_dir, category_tag, cat_dict):
 	"""
@@ -626,7 +608,6 @@ def meanmachine(input_matrix, category_dict, feature_list, limit=20):
 		for key, value in category_dict.items():
 			print value, key
 			tempi=input_matrix[input_matrix[:,0]== value]
-			print "tempi shape", tempi.shape
 			#exclude the category and uniq columns
 			tempi=tempi[:,2:]
 			if tempi.shape[0] > limit:
@@ -639,7 +620,7 @@ def meanmachine(input_matrix, category_dict, feature_list, limit=20):
 				std= featuretempi.std()
 				print "For feature {}, category {} has {} data points. The mean is {} (median: {}) with a range between {} and {}, i.e. {}. Standard deviation: {}".format(feature, key, frame[0], mean, median, min, max, (max-min), std)
 			else:
-				print skips.append(key)
+				skips.append(key)
 	print "skipped {} because under {} rows".format(", ".join(skips), limit)	
 	
 def clustermachine(matrix, distance_metric, clusters=4):
