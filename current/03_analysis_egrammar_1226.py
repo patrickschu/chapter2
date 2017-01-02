@@ -153,7 +153,9 @@ def main(distance_metric, testmode=False):
 	#PRINTING STUFF
 	headline="\n\n-----------\n\n"
 	print "Working with {} distance metric".format(distance_metric)
-	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']
+	#v is a number, k a word
+	excludelist=['total','no_of_categories', 'no_of_clusters', 'no_of_cats']+[v for k,v in catdicti.items() if wordmatrix_with_cat[wordmatrix_with_cat[:,0] == v].shape[0] < 100]
+	print "excludelist", excludelist
 	#CROSS CLUSTERING COMPARISON
 	for clustering in [c for c in x if c.no_of_clusters > 1]:
 		cati=ct.Categorystats(wordmatrix_with_cat, clustering.name, clustering.labels)
@@ -162,7 +164,7 @@ def main(distance_metric, testmode=False):
 		print "Clusteringstats done"
 		#GENERAL STATS
 		print headline, headline, "CLUSTERING CALLED {} HAS {} CLUSTERS". format(clustering.getname()[1], clustering.no_of_clusters)
-		#print "Its silhouette score is {}".format(str(sili))
+		print "Its silhouette score is {}".format(str(sili))
 		stats=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).size_of_clusters()
 		print "stats done"
 		catstats=ct.Clusteringstats(wordmatrix_with_cat, wordmatrix_without_cat, clustering.name, clustering.labels).cats_per_cluster()
@@ -226,7 +228,6 @@ def main(distance_metric, testmode=False):
 	print headline, "This took us {} minutes".format(process/60)
 
 
-#main('manhattan', testmode=False)
-
+main('manhattan', testmode=False)
 
 print "This took us {} minutes. So slow!".format((completeend-completestart)/60)
