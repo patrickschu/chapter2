@@ -611,7 +611,7 @@ def meanmachine(input_matrix, category_dict, feature_list, limit=100):
 			#exclude the category and uniq columns
 			tempi=tempi[:,2:]
 			if tempi.shape[0] > limit:
-				print value, key
+				#print value, key
 				featuretempi=tempi[:,num]
 				frame= featuretempi.shape
 				mean= featuretempi.mean()
@@ -619,7 +619,7 @@ def meanmachine(input_matrix, category_dict, feature_list, limit=100):
 				max= featuretempi.max()
 				median= np.median(featuretempi)
 				std= featuretempi.std()
-				print "For feature {}, category {} has {} data points. The mean is {} (median: {}) with a range between {} and {}, i.e. {}. Standard deviation: {}".format(feature, key, frame[0], mean, median, min, max, (max-min), std)
+				print "For feature {}, category {} has {} data points. The mean per 1 mio words is {} (median: {}) with a range between {} and {}, i.e. {}. Standard deviation: {}".format(feature, key, frame[0], mean*1000000, median*1000000, min*1000000, max*1000000, (max-min)*1000000, std*1000000)
 			else:
 				skips.append(key)
 	print "skipped {} because under {} rows".format(", ".join(skips), limit)	
