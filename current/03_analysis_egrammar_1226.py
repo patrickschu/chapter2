@@ -3,6 +3,7 @@ import clustertools as ct
 import numpy as np
 import time
 import scipy
+import sklearn
 
 headline="\n\n-----------\n\n"
 
@@ -90,6 +91,7 @@ print "So many files", file_count
 #put into one matrix
 listi=featurecollector(category1, uniqs)
 t=np.column_stack([i[1] for i in listi])
+
 print "original matrix",  type(t), t.shape
 
 ##
@@ -112,6 +114,12 @@ ct.meanmachine(wordmatrix_with_cat, categories_dict, featuredict, 100)
 wordmatrix_without_cat=scipy.stats.zscore(t[:,2:], axis=0)
 wordmatrix_with_cat=np.column_stack([category1, uniqs, scipy.stats.zscore(t[:,2:], axis=0)])
 print "ayayay", wordmatrix_with_cat
+
+##TFIDF?
+# tfidf=sklearn.feature_extraction.text.TfidfTransformer(norm=u'l2', use_idf=True, smooth_idf=True, sublinear_tf=False)
+# print tfidf.fit()
+# print tfidf.transform(t)
+# print tfidf.transform(t).toarray()
 
 
 print "matrix with cat and uniq", wordmatrix_with_cat.shape
