@@ -4,7 +4,7 @@ ssh ps22344@ls5.tacc.utexas.edu
 
 
 CREATING SLURMS
-launcher_creator.py -n cluster_egrammar_BAL -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python 03_analysis_egrammar_1226.py > output_egrammar_kmeans_BAL_`date '+%Y%m%d.%H%M'`.txt 2>&1" -m "module load python/2.7.11"
+launcher_creator.py -n cluster_egrammar_FUL -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python 03_analysis_egrammar_1226.py > output_egrammar_kmeans_FUL_`date '+%Y%m%d.%H%M'`.txt 2>&1" -m "module load python/2.7.11"
 
 launcher_creator.py -n cluster_egrammar_FUL -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python 03_analysis_egrammar_1226.py > output_egrammar_kmeans_FUL_`date '+%Y%m%d.%H%M'`.txt 2>&1" -m "module load python/2.7.11"
 
@@ -32,7 +32,9 @@ scp ps22344@ls5.tacc.utexas.edu:/work/01644/ps22344/lonestar/output_*.txt ~/Down
 
 to specific working dict on ls
 scp test.txt ps22344@ls5.tacc.utexas.edu:/work/01644/ps22344/lonestar/
-scp upload_0101.zip ps22344@ls5.tacc.utexas.edu:/work/01644/ps22344/lonestar/
+
+
+scp upload_0102.zip ps22344@ls5.tacc.utexas.edu:/work/01644/ps22344/lonestar/
 
 
 making file names w/ date
