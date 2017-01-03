@@ -606,6 +606,7 @@ def meanmachine(input_matrix, category_dict, feature_list, limit=100):
 	skips=[]
 	for num, feature in enumerate(feature_list):
 		print "\n\n---", num, "feature: ", feature
+		featuretotal=input_matrix[:,2+num]
 		for key, value in category_dict.items():
 			tempi=input_matrix[input_matrix[:,0]== value]
 			#exclude the category and uniq columns
