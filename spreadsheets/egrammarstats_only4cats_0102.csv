@@ -1,4 +1,8 @@
 Feature	Category	N	Mean	Range	StandardDeviation	Rank
+RepeatedPunctuation	w4w	12169	11778.72	0 – 260869	23581.92	3
+RepeatedPunctuation	w4m	15769	9192.96	0 – 317073	20403.91	4
+RepeatedPunctuation	m4w	48772	8428.23	0 – 846153 	21529.99	1
+RepeatedPunctuation	m4m	25671	11431.64	0 – 40000 	26060.33	2
 Leetspeak	w4w	12169	7.47	0 – 41095.89	480.58	1
 Leetspeak	w4m	15769	5.04	0 – 50000.00	422.967	3
 Leetspeak	m4w	48772	4.07	0 – 45454.54	290.29	4
