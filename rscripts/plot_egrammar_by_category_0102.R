@@ -12,6 +12,10 @@ sep="\t")
 tt[["Category"]]=ordered(tt[["Category"]], levels=c("m4m", "m4w", "w4w", "w4m"))
 
 rankplotter = function(data_set, category_column, rank_column)
+
+#this plots a barplot per category (as listed in category_column
+#with the category's rank (from rank_column) in each feature
+
 {
 print (summary(data_set));
 print (colnames(data_set));
