@@ -607,6 +607,7 @@ def meanmachine(input_matrix, category_dict, feature_list, limit=100):
 	for num, feature in enumerate(feature_list):
 		print "\n\n---", num, "feature: ", feature
 		featuretotal=input_matrix[:,2+num]
+		print "FEATURE {} has {} DATA POINTS. THE MEAN PER 1 MIO WORDS IS {} (MEDIAN: {}) WITH A RANGE BETWEEN {} AND {}, I.E. {}. Stdev: {}".format(feature, featuretotal.shape[0], featuretotal.mean()*1000000, np.median(featuretotal)*1000000, featuretotal.min()*1000000, featuretotal.max()*1000000, featuretotal.std()*1000000)
 		for key, value in category_dict.items():
 			tempi=input_matrix[input_matrix[:,0]== value]
 			#exclude the category and uniq columns
