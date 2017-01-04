@@ -137,7 +137,7 @@ featuredict=[n for i in featuredict for n in i]
 wordmatrix_without_cat=t[:,2:]
 #this one keeps the category and the uniq
 wordmatrix_with_cat=t
-ct.meanmachine(wordmatrix_with_cat, categories_dict, featuredict, 100)
+ct.meanmachine(wordmatrix_with_cat, categories_dict, featuredict, verbose="csv", limit=10)
 
 ##ZSCORES?
 #zscored matrix
@@ -162,7 +162,7 @@ ct.matrixstats(wordmatrix_without_cat, wordmatrix_with_cat)
 print "feature dict", featuredict, len(featuredict)
 #print listi
 ##ADD SPELLING!!!!TO DO
-print wordmatrix_with_cat
+#print wordmatrix_with_cat
 print wordmatrix_with_cat.shape
 
 completeend=time.time()

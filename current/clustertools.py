@@ -597,7 +597,7 @@ def uniqarraymachine(input_dir, start_no):
 			count=count+1
 	return np.array(results), len(results), filedicti
 
-def meanmachine(input_matrix, category_dict, feature_list, limit=100):
+def meanmachine(input_matrix, category_dict, feature_list, verbose, limit=100):
 	"""
 	The meanmachine takes input_matrix, formatted according to guidelines of the matrixmachine: cat - uniq - feature_1, feature_d
 	The category_dict maps categories to numbers. 
@@ -608,6 +608,8 @@ def meanmachine(input_matrix, category_dict, feature_list, limit=100):
 		print "\n\n---", num, "feature: ", feature
 		featuretotal=input_matrix[:,2+num]
 		print "FEATURE {} has {} DATA POINTS. THE MEAN PER 1 MIO WORDS IS {} (MEDIAN: {}) WITH A RANGE BETWEEN {} AND {}, I.E. {}. Stdev: {}".format(feature, featuretotal.shape[0], featuretotal.mean()*1000000, np.median(featuretotal)*1000000, featuretotal.min()*1000000, featuretotal.max()*1000000, (featuretotal.max() - featuretotal.min())*1000000, featuretotal.std()*1000000)
+		if verbose=="csv":
+			print "feature,category,N,mean,median,min,max,range,std"
 		for key, value in category_dict.items():
 			tempi=input_matrix[input_matrix[:,0]== value]
 			#exclude the category and uniq columns
@@ -621,7 +623,10 @@ def meanmachine(input_matrix, category_dict, feature_list, limit=100):
 				max= featuretempi.max()
 				median= np.median(featuretempi)
 				std= featuretempi.std()
-				print "For feature {}, category {} has {} data points. The mean per 1 mio words is {} (median: {}) with a range between {} and {}, i.e. {}. Standard deviation: {}".format(feature, key, frame[0], mean*1000000, median*1000000, min*1000000, max*1000000, (max-min)*1000000, std*1000000)
+				if verbose=="full":
+					print "For feature {}, category {} has {} data points. The mean per 1 mio words is {} (median: {}) with a range between {} and {}, i.e. {}. Standard deviation: {}".format(feature, key, frame[0], mean*1000000, median*1000000, min*1000000, max*1000000, (max-min)*1000000, std*1000000)
+				if verbose=="csv":
+					print "{},{},{},{},{},{},{},{},{}".format(feature, key, frame[0], mean*1000000, median*1000000, min*1000000, max*1000000, (max-min)*1000000, std*1000000)
 			else:
 				skips.append(key)
 	print "skipped {} because under {} rows".format(", ".join(skips), limit)	
