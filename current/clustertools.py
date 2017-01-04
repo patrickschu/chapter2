@@ -11,9 +11,11 @@ import json
 from collections import defaultdict
 import nltk
 import time
+import string
 
 scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']
 scipy_distances=['euclidean', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine']
+punctuation_list=list(string.punctuation)
 #regexes
 linebreakregex=re.compile(r"(<br>|<br\/>)")
 stopregex=re.compile(r"([\.|\?|\!|\*]+)(\w)")
@@ -525,16 +527,21 @@ def adcleaner(text, replace_linebreak=False, remove_html=False):
 #this is used to add spaces between stops and the following word. note that we have a slightly different version above. 
 stopregex=re.compile(r"([\.|\?|\!|\-|,]+)(\w)")
 #what is the difference btw the tokenizer and the adcleaner??
-def tokenizer(input_string):
+def tokenizer(input_string, remove_punctuation=False):
 	"""
 	The tokenizer takes a string of words.
 	It fixes quirky punctuation that trips us the NLTK Word Tokenizer. 
 	Removes html.
-	Then it runs nltk.word_tokenize() to return a list of words>
+	Then it runs nltk.word_tokenize() to return a list of words.
+	Removes punctuation if remove_punctuation set to True. 
 	"""
 	no_html=htmlregex.sub(" ", input_string)
 	addspace=stopregex.sub(r"\g<1> \g<2>", no_html)
 	splittext=nltk.word_tokenize(addspace)
+	if remove_punctuation:
+		print "before", len(splittext)
+		splittext=[i for i in splittext if not i in punctuation_list]
+		print "after", len(splittext)
 	return splittext
 
 def categorymachine(input_dir, category_tag):
