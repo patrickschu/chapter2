@@ -533,15 +533,13 @@ def tokenizer(input_string, remove_punctuation=False):
 	It fixes quirky punctuation that trips us the NLTK Word Tokenizer. 
 	Removes html.
 	Then it runs nltk.word_tokenize() to return a list of words.
-	Removes punctuation if remove_punctuation set to True. 
+	Removes punctuation if remove_punctuation set to True. (note that repeated punct is not caught)
 	"""
 	no_html=htmlregex.sub(" ", input_string)
 	addspace=stopregex.sub(r"\g<1> \g<2>", no_html)
 	splittext=nltk.word_tokenize(addspace)
 	if remove_punctuation:
-		print "before", len(splittext)
 		splittext=[i for i in splittext if not i in punctuation_list]
-		print "after", len(splittext)
 	return splittext
 
 def categorymachine(input_dir, category_tag):
