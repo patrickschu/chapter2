@@ -23,6 +23,7 @@ def featurecollector(categories, uniqs, result_mode):
 	"freq":1,
 	"count":0}
 	
+	print "result mode", result_mode
 	index=modeindexes[result_mode]
 	listi=[]
 	listi.append(("category1", category1))
@@ -106,7 +107,7 @@ def featurecollector(categories, uniqs, result_mode):
 
 completestart=time.time()
 
-dir="/home/ps22344/Downloads/craigbalanced_0601_small"
+dir="/home/ps22344/Downloads/craig_0208"
 
 ##prep
 #add cats
@@ -119,7 +120,7 @@ print "So many files", file_count
 
 
 #put into one matrix
-listi=featurecollector(category1, uniqs, result_mode="freq")
+listi=featurecollector(category1, uniqs, result_mode="count")
 t=np.column_stack([i[1] for i in listi])
 
 print "original matrix",  type(t), t.shape
@@ -137,7 +138,7 @@ featuredict=[n for i in featuredict for n in i]
 wordmatrix_without_cat=t[:,2:]
 #this one keeps the category and the uniq
 wordmatrix_with_cat=t
-ct.meanmachine(wordmatrix_with_cat, categories_dict, featuredict, verbose="csv", limit=10)
+ct.meanmachine(wordmatrix_with_cat, categories_dict, featuredict, verbose="csv", limit=100)
 
 ##ZSCORES?
 #zscored matrix
@@ -147,7 +148,7 @@ ct.meanmachine(wordmatrix_with_cat, categories_dict, featuredict, verbose="csv",
 
 ##TFIDF?
 #textfreq inverse doc freq
-#tfidf=sklearn.feature_extraction.text.TfidfTransformer(norm=u'l1', use_idf=True, smooth_idf=True, sublinear_tf=False)
+#tfidf=sklearn.feature_extraction.text.TfidfTransformer(norm='l2', use_idf=True, smooth_idf=True, sublinear_tf=False)
 #wordmatrix_without_cat=tfidf.fit_transform(t[:,2:]).toarray()
 #wordmatrix_with_cat=np.column_stack([category1, uniqs, wordmatrix_without_cat])
 #print "settings from tfidf", tfidf.get_params()
