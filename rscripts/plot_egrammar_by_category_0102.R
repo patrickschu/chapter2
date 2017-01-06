@@ -2,14 +2,26 @@
 #so excel changes the encoding to ASCII. Thanks for that. 
 setwd('E:/cygwin/home/ps22344/Downloads/chapter2/spreadsheets/')
 
-
+##READ IN
 tt=read.csv(
-'E:/cygwin/home/ps22344/Downloads/chapter2/spreadsheets/egrammarstats_only4cats_0102.csv', 
+'E:/cygwin/home/ps22344/Downloads/chapter2/spreadsheets/egrammarstats_only4_0106.csv', 
 header=T, 
-fileEncoding="ascii", 
+fileEncoding="UTF-8")
+
+overall=read.csv(
+'E:/cygwin/home/ps22344/Downloads/chapter2/spreadsheets/wordcounter_categories_only4_0106.csv', 
+header=T,
+fileEncoding="UTF-8",
 sep="\t")
 
-tt[["Category"]]=ordered(tt[["Category"]], levels=c("m4m", "m4w", "w4w", "w4m"))
+##COMPUTE MEANS AND RANKS
+tt
+tt=cbind(tt, overall)
+tt[["mean"]]= (tt[["sum"]])/(tt[["Wordcount"]])
+
+#FORMAT aka C&P
+tt[["category"]]=ordered(tt[["category"]], levels=c("m4m", "m4w", "w4w", "w4m"))
+
 
 rankplotter = function(data_set, category_column, rank_column)
 
