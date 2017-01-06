@@ -14,20 +14,22 @@ header=T,
 fileEncoding="UTF-8",
 sep="\t")
 
+
+
+
 ##COMPUTE MEANS AND RANKS
-tt
 tt=cbind(tt, overall)
 tt[["mean"]]= (tt[["sum"]])/(tt[["Wordcount"]])
+write.csv(tt, "outi.csv", fileEncoding="UTF-8")
+#tt[["rank"]]= order(tt[["mean"]], decreasing=TRUE)
 
 #FORMAT aka C&P
 tt[["category"]]=ordered(tt[["category"]], levels=c("m4m", "m4w", "w4w", "w4m"))
 
 
 rankplotter = function(data_set, category_column, rank_column)
-
 #this plots a barplot per category (as listed in category_column
 #with the category's rank (from rank_column) in each feature
-
 {
 print (summary(data_set));
 print (colnames(data_set));
