@@ -2,6 +2,8 @@
 ME
 ssh ps22344@ls5.tacc.utexas.edu
 
+launcher_creator.py -n wordcounter -q normal -t 2:00:00 -e patrickschultz@utexas.edu -b "python getting_word_counts_0105.py > output_wordcount_`date '+%Y%m%d.%H%M'`.txt 2>&1" -m "module load python/2.7.11"
+
 
 CREATING SLURMS
 launcher_creator.py -n cluster_egrammar_FUL -q normal -t 5:00:00 -e patrickschultz@utexas.edu -b "python 03_analysis_egrammar_1226.py > output_egrammar_kmeans_FUL_`date '+%Y%m%d.%H%M'`.txt 2>&1" -m "module load python/2.7.11"
