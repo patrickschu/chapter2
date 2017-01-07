@@ -107,7 +107,7 @@ def featurecollector(categories, uniqs, result_mode):
 
 completestart=time.time()
 
-dir="/home/ps22344/Downloads/craig_0208"
+dir="craig_0208"
 
 ##prep
 #add cats
@@ -120,7 +120,7 @@ print "So many files", file_count
 
 
 #put into one matrix
-listi=featurecollector(category1, uniqs, result_mode="count")
+listi=featurecollector(category1, uniqs, result_mode="freq")
 t=np.column_stack([i[1] for i in listi])
 
 print "original matrix",  type(t), t.shape
@@ -142,8 +142,8 @@ ct.meanmachine(wordmatrix_with_cat, categories_dict, featuredict, verbose="csv",
 
 ##ZSCORES?
 #zscored matrix
-#wordmatrix_without_cat=scipy.stats.zscore(t[:,2:], axis=0)
-#wordmatrix_with_cat=np.column_stack([category1, uniqs, scipy.stats.zscore(t[:,2:], axis=0)])
+wordmatrix_without_cat=scipy.stats.zscore(t[:,2:], axis=0)
+wordmatrix_with_cat=np.column_stack([category1, uniqs, scipy.stats.zscore(t[:,2:], axis=0)])
 #print "ayayay", wordmatrix_with_cat
 
 ##TFIDF?
@@ -251,6 +251,6 @@ def main(distance_metric, testmode=False):
 	print headline, "This took us {} minutes".format(process/60)
 
 
-#main('manhattan', testmode=False)
+main('manhattan', testmode=False)
 
 print "This took us {} minutes. So slow!".format((completeend-completestart)/60)
