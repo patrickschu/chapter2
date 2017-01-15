@@ -570,7 +570,7 @@ def capsfinder(input_dir, limit):
 					#print len(matches[0]), 'total', len(matches)
 					#matchesdicti collects the matches per regex, dicti per feature
 					matchesdicti[pattern]=matchesdicti[pattern]+matches
-	#print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True) if dicti[i] > 100])	
+	print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True) if dicti[i] > 100])	
 	for entry in {k:v for k,v in matchesdicti.items()}:
  		print "\n", entry, len(set([i for i in matchesdicti[entry]]))
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
