@@ -185,6 +185,7 @@ def leetcounter(dir):
 				print os.path.join(dir, pati, fili), "\n"
 				#os.system("cygstart "+os.path.join(dir, pati, fili))
 	endtime=time.time()
+	print "resultdict", resultdict
 	print len(results), "files processed"
 	print "\n\n"
 	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
