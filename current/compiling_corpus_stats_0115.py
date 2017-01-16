@@ -9,7 +9,7 @@ timestamp = time.strftime("%Y%m%d-%H%M%S")
 
 """Compiling corpus stats"""
 
-input_dir="/Users/ps22344/Downloads/craig_0208"
+input_dir="/Users/ps22344/Downloads/craig_0208/plat"
 
 
 def wordcounter(input_dir, tag, output_json=False):
@@ -25,18 +25,19 @@ def wordcounter(input_dir, tag, output_json=False):
 			catdicti[inputad.meta[tag]]=catdicti[inputad.meta[tag]]+1
 			worddicti[inputad.meta[tag]]=worddicti[inputad.meta[tag]]+inputad.wordcount
 	if output_json:
-		with codecs.open(tag+"_categorydict"+timestamp+".txt", "w", "utf-8") as categoryout:
+		with codecs.open(tag+"_categorydict_plat"+timestamp+".txt", "w", "utf-8") as categoryout:
 			json.dump(catdicti, categoryout)
-		with codecs.open(tag+"_wordcountdict"+timestamp+".txt", "w", "utf-8") as wordout:
+		with codecs.open(tag+"_wordcountdict_plat"+timestamp+".txt", "w", "utf-8") as wordout:
 			json.dump(worddicti, wordout)
 	for dict in [worddicti, catdicti]:
 		sorteddict=sorted(dict, key=lambda x:dict[x], reverse=True)
 		print "\n".join([",".join([i, unicode(dict[i])]) for i in sorteddict])
+		print "\ntotal count", sum([v for k,v in dict.items()])
 	
 			
 			
 		
-wordcounter(input_dir, "gender", output_json=True)
+wordcounter(input_dir, "category1", output_json=True)
 
 
 def dictprinter(file_name):
