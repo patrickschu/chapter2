@@ -46,7 +46,7 @@ def anyoftheseregex(regexstring):
 ###SECTION 1
 ###TYPOGRAPHY
 
-def emoticonfinder(dir):
+def emoticonfinder(dir, emo_file):
 	"""
 	THIS STILL NEEDS THE OUTPUT FUNCTION OF PUNCTFINDER
 	The emoticonfinder takes a directory with corpus files as input. 
@@ -64,7 +64,7 @@ def emoticonfinder(dir):
 	results=[]
 	resultdict=defaultdict(float)
 	
-	with codecs.open('/home/ps22344/Downloads/chapter2/textfiles/emolist_final_2.txt', "r", "utf-8") as inputtext:
+	with codecs.open(emo_file, "r", "utf-8") as inputtext:
 		for line in inputtext.readlines():
 			#print line.rstrip("\n")
 			search_terms.append(re.compile("\W("+re.escape(line.rstrip("\n"))+")(?: |<)"))
@@ -90,8 +90,8 @@ def emoticonfinder(dir):
 	print "This took us {} minutes".format((endtime-starttime)/60)
 	print "\n\n"
 	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
-	#for k in sorted(resultdict, key=resultdict.get, reverse=True):
-	#	print k, resultdict[k]
+	for k in sorted(resultdict, key=resultdict.get, reverse=True):
+		print k, resultdict[k]
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	#1st list is absolute counts, 2nd div by word count
 	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
@@ -570,7 +570,7 @@ def capsfinder(input_dir, limit):
 					#print len(matches[0]), 'total', len(matches)
 					#matchesdicti collects the matches per regex, dicti per feature
 					matchesdicti[pattern]=matchesdicti[pattern]+matches
-	print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True) if dicti[i] > 100])	
+	print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
 	for entry in {k:v for k,v in matchesdicti.items()}:
  		print "\n", entry, len(set([i for i in matchesdicti[entry]]))
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
