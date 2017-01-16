@@ -83,7 +83,6 @@ def featurecollector(categories, uniqs, result_mode):
 	clip_freq=clip_freq.sum(axis=1)
 	listi.append((["clippings"+str(count) for count in range(0, [int(1) if len(clip_freq.shape) < 2 else clip_freq.shape[1] for i in [1]][0])], clip_freq))
 
-	acro_raw, acro_freq=eg.acronymcounter(dir)
 	result= eg.acronymcounter(dir)
 	acro_freq= result[index]
 	print "shape", acro_freq.shape
@@ -97,7 +96,6 @@ def featurecollector(categories, uniqs, result_mode):
 	listi.append((["emoticons"+str(count) for count in range(0, [int(1) if len(emos_freq.shape) < 2 else emos_freq.shape[1] for i in [1]][0])], emos_freq))
 
 
-	pros_raw, pros_freq=eg.prosodycounter(dir)
 	result= eg.prosodycounter(dir)
 	pros_freq= result[index]
 	print "shape", pros_freq.shape
