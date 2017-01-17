@@ -78,7 +78,8 @@ def emoticonfinder(dir, emo_file):
 			result=[k.findall(inputad) for k in search_terms]
 			for no, item in enumerate(result):
 				resultdict[no]=resultdict[no]+len(item)
-				itemdict[" ".join(item)]=itemdict[" ".join(item)]+len(item)
+				for i in item:
+					itemdict[i]=itemdict[i]+1
 			results.append([(len(i), len(i)/wordcount) for i in result])
 			# if 11 > sum([len(i) for i in result]) > 6:
 				# for n, i in enumerate(result):
@@ -91,7 +92,7 @@ def emoticonfinder(dir, emo_file):
 	print "This took us {} minutes".format((endtime-starttime)/60)
 	print "\n\n"
 	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
-	for k in sorted(itemdict, key=resultdict.get, reverse=True):
+	for k in sorted(itemdict, key=itemdict.get, reverse=True):
 		print k.encode('utf-8'), itemdict[k]
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	#1st list is absolute counts, 2nd div by word count
