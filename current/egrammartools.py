@@ -78,7 +78,7 @@ def emoticonfinder(dir, emo_file):
 			result=[k.findall(inputad) for k in search_terms]
 			for no, item in enumerate(result):
 				resultdict[no]=resultdict[no]+len(item)
-				itemdict[item]=itemdict[item]+len(item)
+				itemdict[" ".join(item)]=itemdict[" ".join(item)]+len(item)
 			results.append([(len(i), len(i)/wordcount) for i in result])
 			# if 11 > sum([len(i) for i in result]) > 6:
 				# for n, i in enumerate(result):
