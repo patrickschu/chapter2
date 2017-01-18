@@ -21,6 +21,61 @@ linebreakregex=re.compile(r"(<br>|<br\/>)")
 stopregex=re.compile(r"([\.|\?|\!|\*]+)(\w)")
 htmlregex=re.compile(r"<.*?>")
 
+class Ad(object):
+	"""
+	Basic features of an ad.
+	"""
+	
+	def __init__(self, file_name):
+		self.filename = file_name
+		self.fullfile = codecs.open(file_name, "r", 'utf-8').read()
+		self.fulltext = self._adtextextractor(self.fullfile)
+		self.charcount = float(len(self.fulltext))
+		self.wordcount = float(len(tokenizer(self.fulltext, remove_punctuation=True)))
+		self.metalist= [
+		"title",
+		"plat",
+		"date", 
+		"time", 
+		"link",
+		"clid",
+		"gender",
+		"category1",
+		"addressee1"
+		]
+		
+		self.uniq = os.path.splitext(os.path.split(file_name)[len(os.path.split(file_name))-1])[0]
+		self.meta = {k:re.sub("(\t+|\n+|\r+)", " ", self._tagextractor(self.fullfile, k)) for k in self.metalist}
+		
+	def test(self):
+		print "fulltext", len(self.fulltext)
+		print "charcount", self.charcount
+		print self.meta
+	
+	def _tagextractor(self, text, tag):
+		#from clustertools
+		regexstring="<"+tag+"=(.*?)>"
+		result=re.findall(regexstring, text, re.DOTALL)
+		if len(result) != 1:
+			print "alarm in tagextractor", result, tag
+		return result[0]
+	
+	def gettag(self, tag):
+		#flexible tag extractor; returns what _tagextractor finds for relevant tag
+		result=self._tagextractor(self.fullfile, tag)
+		print result
+		return result
+		
+	def _adtextextractor(self, text):
+		#from clustertools
+		regexstring="<text>(.*?)</text>"
+		result=re.findall(regexstring, text, re.DOTALL)
+		if len(result) != 1:
+			print "alarm in adtextextractor", fili, result
+		return result[0]
+
+
+
 class Clustering(object):
 	"""
 	Collect features of a clustering, compute basic features.
@@ -544,7 +599,7 @@ def tokenizer(input_string, remove_punctuation=False):
 
 def categorymachine(input_dir, category_tag):
 	"""
-	The cateorymachine finds all categories (category1) of the files in the input_dir.
+	The categorymachine finds all categories (category1) of the files in the input_dir.
 	The tag given in category_tag is fed into the tagextractor. 
 	It maps them to numbers so they can be added to numpy arrays.
 	Returns a dictionary mapping those two and and the number of categories. 
@@ -573,7 +628,9 @@ def categorymachine(input_dir, category_tag):
 def categoryarraymachine(input_dir, category_tag, cat_dict):
 	"""
 	The categoryarraymachine iterates over the input_dir and collects category info for all files.
-	It maps the categories to the numbers contained in cat_dict and returns a np.array with results. (The cat_dict will usually come out of the categorymachine above.
+	It maps the categories to the numbers contained in cat_dict and returns a np.array with results. 
+	(The cat_dict will usually come out of the categorymachine above.
+	(Used to make the "column" with category info
 	"""
 	results=[]
 	for pati in [i for i in os.listdir(input_dir) if not i.startswith(".")]:

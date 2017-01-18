@@ -46,12 +46,11 @@ def anyoftheseregex(regexstring):
 ###SECTION 1
 ###TYPOGRAPHY
 
-def emoticonfinder(dir):
+def emoticonfinder(dir, emo_file):
 	"""
-	THIS STILL NEEDS THE OUTPUT FUNCTION OF PUNCTFINDER
 	The emoticonfinder takes a directory with corpus files as input. 
 	It returns a list of lists with counts of each emoticon in each file in dir.
-	Emoticons are read from file.
+	Emoticons are read from file emo_file.
 	list=[[x1feature1, x1feature2, ...], [x2feature1, x2feature2, ...]]
 	We might consider making the file with emoticons an argument as well. 
 	--- Original Source file is /Users/ps22344/Downloads/chapter2/current/emoticoncounter.py ---
@@ -63,8 +62,9 @@ def emoticonfinder(dir):
 	search_terms=[]
 	results=[]
 	resultdict=defaultdict(float)
+	itemdict=defaultdict(float)
 	
-	with codecs.open('/home/ps22344/Downloads/chapter2/textfiles/emolist_final_2.txt', "r", "utf-8") as inputtext:
+	with codecs.open(emo_file, "r", "utf-8") as inputtext:
 		for line in inputtext.readlines():
 			#print line.rstrip("\n")
 			search_terms.append(re.compile("\W("+re.escape(line.rstrip("\n"))+")(?: |<)"))
@@ -78,6 +78,7 @@ def emoticonfinder(dir):
 			result=[k.findall(inputad) for k in search_terms]
 			for no, item in enumerate(result):
 				resultdict[no]=resultdict[no]+len(item)
+				itemdict[" ".join(item)]=itemdict[" ".join(item)]+len(item)
 			results.append([(len(i), len(i)/wordcount) for i in result])
 			# if 11 > sum([len(i) for i in result]) > 6:
 				# for n, i in enumerate(result):
@@ -90,8 +91,8 @@ def emoticonfinder(dir):
 	print "This took us {} minutes".format((endtime-starttime)/60)
 	print "\n\n"
 	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
-	#for k in sorted(resultdict, key=resultdict.get, reverse=True):
-	#	print k, resultdict[k]
+	for k in sorted(itemdict, key=resultdict.get, reverse=True):
+		print k.encode('utf-8'), itemdict[k]
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	#1st list is absolute counts, 2nd div by word count
 	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
@@ -185,6 +186,7 @@ def leetcounter(dir):
 				print os.path.join(dir, pati, fili), "\n"
 				#os.system("cygstart "+os.path.join(dir, pati, fili))
 	endtime=time.time()
+	print "resultdict", resultdict
 	print len(results), "files processed"
 	print "\n\n"
 	resultdict={search_terms[k].pattern:v for k,v in resultdict.items() if v > 0}
@@ -515,6 +517,8 @@ def rebusfinder_too(input_path):
 		print "\n".join([": ".join([k, unicode(predict[k])]) for k in sorted(predict, key=predict.get, reverse=True)])
 		print "POST CONTEXT"
 		print "\n".join([": ".join([k, unicode(postdict[k])]) for k in sorted(postdict, key=postdict.get, reverse=True)])
+		print "based on postdict overall,", sum([v for k,v in postdict.items()]),"tokens"
+		print "based on predict overall,", sum([v for k,v in predict.items()]),"tokens"
 		print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 		#for u in [[x[1] for x in i] for i in results]:
 		#	print u
@@ -569,7 +573,7 @@ def capsfinder(input_dir, limit):
 					#print len(matches[0]), 'total', len(matches)
 					#matchesdicti collects the matches per regex, dicti per feature
 					matchesdicti[pattern]=matchesdicti[pattern]+matches
-	#print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True) if dicti[i] > 100])	
+	print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
 	for entry in {k:v for k,v in matchesdicti.items()}:
  		print "\n", entry, len(set([i for i in matchesdicti[entry]]))
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
