@@ -33,4 +33,4 @@ def dictbuilder(input_dir, output_name, lowercase=False, print_dict=False):
 	print "Written dictionary with {} items to ".format(len(dicti)), output_name
 	return dicti
 	
-dictbuilder('/Users/ps22344/Downloads/craig_0208', "fulldict_1115",lowercase=True, print_dict=True)
+dictbuilder('/Users/ps22344/Downloads/craig_0208', "fulldict_0116", lowercase=True, print_dict=False)
