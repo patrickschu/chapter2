@@ -1,0 +1,6 @@
+TO DO
+
+-fix italics for words in tables
+-table column names
+-fix plot for word2vec clustering
+-cluster word2vec on whole dataset
