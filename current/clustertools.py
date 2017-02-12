@@ -13,10 +13,9 @@ import nltk
 import time
 import string
 
-scipy_distances=['euclidean', 'minkowski', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine', 'correlation','hamming', 'jaccard', 'chebyshev', 'canberra', 'braycurtis', 'mahalanobis', 'yule', 'matching', 'dice', 'kulsinski', 'rogerstanimoto', 'russellrao', 'sokalmichener', 'sokalsneath']
+#misc
 scipy_distances=['euclidean', 'cityblock', 'seuclidean', 'sqeuclidean', 'cosine']
 punctuation_list=list(string.punctuation)
-#regexes
 linebreakregex=re.compile(r"(<br>|<br\/>)")
 stopregex=re.compile(r"([\.|\?|\!|\*]+)(\w)")
 htmlregex=re.compile(r"<.*?>")
