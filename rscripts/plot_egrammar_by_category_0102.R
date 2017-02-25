@@ -1,5 +1,3 @@
-
-#so excel changes the encoding to ASCII. Thanks for that. 
 setwd('E:/cygwin/home/ps22344/Downloads/chapter2/spreadsheets/')
 
 ##READ IN
