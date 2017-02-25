@@ -8,6 +8,8 @@ A Python module used for cluster analysis and inspection. Implements the methodo
 ###[Egrammartools](https://github.com/patrickschu/chapter2/blob/master/current/egrammartools.py)
 A Python module used for extraction of e-grammar features. Implements search algorithms for features of e-grammar listed in Herring, ["Grammar and electronic communication"](http://info.ils.indiana.edu/~herring/e-grammar.pdf).
 
+###[R-scripts](https://github.com/patrickschu/chapter2/blob/master/rscripts/plot_egrammar_by_category_0102.R)
+Scripts to plot the study results: which group uses which feature?
 
-
+![alt text](https://github.com/patrickschu/chapter2/blob/master/textfiles/plot.png?raw=true "Plot feature by category")
 
