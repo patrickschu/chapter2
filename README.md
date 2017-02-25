@@ -11,5 +11,6 @@ A Python module used for extraction of e-grammar features. Implements search alg
 ###[R-scripts](https://github.com/patrickschu/chapter2/blob/master/rscripts/plot_egrammar_by_category_0102.R)
 Visualize the study results: which group uses which feature?
 
+---
 ![alt text](https://github.com/patrickschu/chapter2/blob/master/textfiles/plot.png?raw=true "Plot feature by category")
-
+---
