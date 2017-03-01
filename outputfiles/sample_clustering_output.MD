@@ -3,7 +3,7 @@
 ---
 
 
-CLUSTERING CALLED __ HAS 2 CLUSTERS
+####CLUSTERING CALLED __ HAS 2 CLUSTERS
 
 Its silhouette score is __
 
@@ -90,7 +90,7 @@ file3
 
 -----------
 
-Comparing clusterings
+####Comparing clusterings
 
 
 -----------
