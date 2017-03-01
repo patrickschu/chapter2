@@ -1,4 +1,4 @@
-*Allows us to inspect [individual clusterings](https://github.com/patrickschu/chapter2/blob/master/outputfiles/sample_clustering_output.MD#clustering-called-__-has-2-clusters) as well as [compare several clusterings](https://github.com/patrickschu/chapter2/blob/master/outputfiles/sample_clustering_output.MD#comparing-clusterings)*
+*Output to allows us to inspect [individual clusterings](https://github.com/patrickschu/chapter2/blob/master/outputfiles/sample_clustering_output.MD#clustering-called-__-has-2-clusters) as well as [compare several clusterings](https://github.com/patrickschu/chapter2/blob/master/outputfiles/sample_clustering_output.MD#comparing-clusterings)*
 
 ---
 
