@@ -159,6 +159,8 @@ Metric:  completeness_sim
                 Clustering1 	***				          	__                 
 
 ---
+Metric:  homogeneity_sim
+
 
                           	Clustering1                	Clustering2  
                             
@@ -167,6 +169,8 @@ Metric:  completeness_sim
                 Clustering1 	***				          	__                
 
 ---
+
+Metric:  silhouette_score_sim
 
                           	Clustering1                	Clustering2      
                             
