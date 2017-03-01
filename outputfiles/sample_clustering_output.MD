@@ -3,7 +3,7 @@
 ---
 
 
-####CLUSTERING CALLED X HAS 3 CLUSTERS
+####CLUSTERING CALLED X HAS __ CLUSTERS
 
 Its silhouette score is __
 
