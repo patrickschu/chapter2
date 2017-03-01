@@ -24,7 +24,7 @@ Cluster 2 contains __ items, __ % of the total
 
 -----------
 
-Statistics per category
+#####Statistics per category
 
 Category __ has __ items
 
@@ -42,7 +42,7 @@ __ items or __ percent in cluster 0
 
 -----------
 
-Strongly predictive features are
+#####Strongly predictive features are
 
 Cluster 0 and cluster 1 are differentiated by 
 
@@ -56,7 +56,7 @@ feature : __, feature : __, ...
 
 -----------
 
-Here is a central document for each cluster
+#####Here is a central document for each cluster
 
 CLUSTER 0 
 
