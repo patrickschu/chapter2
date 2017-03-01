@@ -3,7 +3,7 @@
 ---
 
 
-####CLUSTERING CALLED __ HAS 2 CLUSTERS
+####CLUSTERING CALLED X HAS 2 CLUSTERS
 
 Its silhouette score is __
 
@@ -113,66 +113,66 @@ Its silhouette score is __
 
 Metric:  adjustedrand_sim
 
-                          	Cluster1                	Cluster2   
+                          	Clustering1                	Clustering2   
                             
-                Cluster2 	__				          	***       
+                Clustering2 	__				          	***       
                 
-                Cluster1 	***				          	__         
+                Clustering1 	***				          	__         
                 
 
 ---
 
 Metric:  adjustedmutualinfo_sim
 
-                          	Cluster1                	Cluster2     
+                          	Clustering1                	Clustering2     
                             
-                Cluster2 	__				          	***              
+                Clustering2 	__				          	***              
                 
-                Cluster1 	***				          	__          
+                Clustering1 	***				          	__          
 ---
 
 Metric:  jaccard_sim
 
-                          	Cluster1                	Cluster2     
+                          	Clustering1                	Clustering2     
                             
-                Cluster2 	__				          	***      
+                Clustering2 	__				          	***      
                 
-                Cluster1 	***				          	__          
+                Clustering1 	***				          	__          
 ---
 
 Metric:  v_sim
 
-                          	Cluster1                	Cluster2  
+                          	Clustering1                	Clustering2  
                             
-                Cluster2 	__				          	***         
+                Clustering2 	__				          	***         
                 
-                Cluster1 	***				          	__                 
+                Clustering1 	***				          	__                 
 
 ---
 
 Metric:  completeness_sim
 
-                          	Cluster1                	Cluster2  
+                          	Clustering1                	Clustering2  
                             
-                Cluster2 	__				          	***          
+                Clustering2 	__				          	***          
                 
-                Cluster1 	***				          	__                 
+                Clustering1 	***				          	__                 
 
 ---
 
-                          	Cluster1                	Cluster2  
+                          	Clustering1                	Clustering2  
                             
-                Cluster2 	__				          	***            
+                Clustering2 	__				          	***            
                 
-                Cluster1 	***				          	__                
+                Clustering1 	***				          	__                
 
 ---
 
-                          	Cluster1                	Cluster2      
+                          	Clustering1                	Clustering2      
                             
-                Cluster2 	__				          	***            
+                Clustering2 	__				          	***            
                 
-                Cluster1 	***				          	__                 
+                Clustering1 	***				          	__                 
 
 ---
 
