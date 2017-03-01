@@ -1,6 +1,6 @@
 # Clustertools and E-grammar features
 
-A computational text analysis: gender differences in writing. Who uses emoticons, abbreviations, clippings, the most? We extract features, cluster them and plot the results. 
+These tools were used for a computational text analysis, analyzing gender differences in writin: who uses emoticons, abbreviations, clippings, the most? Covers feature extraction, text clustering by features, and plotting of results. 
 
 This repository contains 
 
