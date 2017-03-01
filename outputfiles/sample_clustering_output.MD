@@ -46,11 +46,11 @@ __ items or __ percent in cluster 0
 
 Cluster 0 and cluster 1 are differentiated by 
 
-feature : __, feature : __, ...
+feature1 : __, feature2 : __, ...
 
 Cluster 1 and cluster 2 are differentiated by 
 
-feature : __, feature : __, ...
+feature1 : __, feature2 : __, ...
 
 
 
