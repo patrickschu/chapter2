@@ -3,12 +3,12 @@ setwd('E:/cygwin/home/ps22344/Downloads/chapter2/spreadsheets/')
 
 
 tt=read.csv(
-'E:/cygwin/home/ps22344/Downloads/chapter2/spreadsheets/egrammarstats_only4_0106.csv', 
+'../spreadsheets/egrammarstats_only4_0106.csv', 
 header=T, 
 fileEncoding="UTF-8")
 
 overall=read.csv(
-'E:/cygwin/home/ps22344/Downloads/chapter2/spreadsheets/wordcounter_categories_only4_0106.csv', 
+'../spreadsheets/wordcounter_categories_only4_0106.csv', 
 header=T, 
 fileEncoding="UTF-8",
 sep="\t")
@@ -43,7 +43,7 @@ plot(
 xlim=c(0, length(levels(data_set[[feature_column]]))), 
 xlab="Feature",
 ylim=c(-2, 2), 
-ylab= "Distance to feature mean",
+ylab= "Distance to feature mean (standard deviations)",
 xaxt="n",
 type="n")
 axis(1,at=1:9, labels=c("Acronyms", "Capitals", "Clippings", "Emoticons", "Leetspeak", "Prosody", "Rebus", "Punctuation", "Single Letters"), cex.axis=0.8);
