@@ -684,6 +684,7 @@ def meanmachine(input_matrix, category_dict, feature_list, verbose, limit=100):
 				max= featuretempi.max()
 				median= np.median(featuretempi)
 				std= featuretempi.std()
+				#note that sum requires raw count input, i.e. set feature collector to "count"
 				summ= featuretempi.sum()
 				if verbose=="full":
 					print "For feature {}, category {} has {} data points. The mean per 1 mio words is {} (median: {}) with a range between {} and {}, i.e. {}. Standard deviation: {}. Sum of counts: {}".format(feature, key, frame[0], mean*1000000, median*1000000, min*1000000, max*1000000, (max-min)*1000000, std*1000000, summ)
