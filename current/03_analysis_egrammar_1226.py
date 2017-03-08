@@ -105,12 +105,12 @@ def featurecollector(categories, uniqs, result_mode):
 
 completestart=time.time()
 
-dir="craig_0208"
+dir="/Users/ps22344/Downloads/craig_0208"
 
 ##prep
 #add cats
-categories_dict, no_of_categories = ct.categorymachine(dir, "category1")
-category1=ct.categoryarraymachine(dir, "category1", categories_dict)
+categories_dict, no_of_categories = ct.categorymachine(dir, "gender")
+category1=ct.categoryarraymachine(dir, "gender", categories_dict)
 
 #add uniqs
 uniqs, file_count, filedicti=ct.uniqarraymachine(dir, 0) 	
@@ -118,7 +118,7 @@ print "So many files", file_count
 
 
 #put into one matrix
-listi=featurecollector(category1, uniqs, result_mode="freq")
+listi=featurecollector(category1, uniqs, result_mode="count")
 t=np.column_stack([i[1] for i in listi])
 
 print "original matrix",  type(t), t.shape
