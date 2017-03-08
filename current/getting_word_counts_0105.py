@@ -3,9 +3,10 @@ import codecs
 import clustertools as ct
 import json
 
-dir = "/home/ps22344/Downloads/craig_0208"
+dir="/Users/ps22344/Downloads/craig_0208"
 
-categorydict, catnumber = ct.categorymachine(dir, "category1")
+
+categorydict, catnumber = ct.categorymachine(dir, "gender")
 
 print categorydict
 
@@ -42,6 +43,6 @@ def wordcounter(input_dir, category_tag, category_dict):
 		json.dump(resultdict, jsonout)
 
 		
-wordcounter(dir, "category1", categorydict)	
+wordcounter(dir, "gender", categorydict)	
 	
 	
