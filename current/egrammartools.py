@@ -164,7 +164,7 @@ def leetcounter(dir):
 	results=[]
 	resultdict=defaultdict(float)
 	
-	with codecs.open('/home/ps22344/Downloads/chapter2/textfiles/leetwords_1216.txt', "r", "utf-8") as inputtext:
+	with codecs.open('/Users/ps22344/Downloads/chapter2/textfiles/leetwords_1216.txt', "r", "utf-8") as inputtext:
 		for line in inputtext.readlines():
 			#print line.rstrip("\n")
 			search_terms.append(re.compile(" ("+line.rstrip("\n")+") "))
@@ -866,23 +866,23 @@ def acronymcounter(input_dir):
 
 #spellings representing prosody or non-linguistic sounds such as laughter 
 
-	"""
-	The anyofthesregex iterates over all instances with "+" in a regex to construct a new pattern.
-	THe new pattern replaces one instance of + with a {2,}. 
-	Thus, this will get us a string to match Hhello, Heeeeello but not Hheello.
-	"""
-	print "we run the anyoftheseregex on", regexstring
-	#print regexstring.split("+")
-	result=[i for i in regexstring.split("+") if i]
-	outputregex=[]
-	for number, item in enumerate(result):
-		temp=[i for i in regexstring.split("+") if i]
-		temp[number]=item+"{2,}"
-		outputregex.append(temp)
-		
-	anyregex=")|(?:".join(["".join(i) for i in outputregex])
-	print "((?:"+anyregex+"))"
-	return "((?:"+anyregex+"))"
+# 	"""
+# 	The anyofthesregex iterates over all instances with "+" in a regex to construct a new pattern.
+# 	THe new pattern replaces one instance of + with a {2,}. 
+# 	Thus, this will get us a string to match Hhello, Heeeeello but not Hheello.
+# 	"""
+# 	print "we run the anyoftheseregex on", regexstring
+# 	#print regexstring.split("+")
+# 	result=[i for i in regexstring.split("+") if i]
+# 	outputregex=[]
+# 	for number, item in enumerate(result):
+# 		temp=[i for i in regexstring.split("+") if i]
+# 		temp[number]=item+"{2,}"
+# 		outputregex.append(temp)
+# 		
+# 	anyregex=")|(?:".join(["".join(i) for i in outputregex])
+# 	print "((?:"+anyregex+"))"
+# 	return "((?:"+anyregex+"))"
 	
 def prosodycounter(input_dir):
 	"""
