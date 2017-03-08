@@ -89,7 +89,7 @@ def featurecollector(categories, uniqs, result_mode):
 	acro_freq=acro_freq.sum(axis=1)
 	listi.append((["acronyms"+str(count) for count in range(0, [int(1) if len(acro_freq.shape) < 2 else acro_freq.shape[1] for i in [1]][0])], acro_freq))
 
-	result= eg.emoticonfinder(dir)
+	result= eg.emoticonfinder(dir, '/Users/ps22344/Downloads/chapter2/textfiles/emolist_final_2.txt')
 	emos_freq= result[index]
 	print "shape", emos_freq.shape
 	emos_freq=emos_freq.sum(axis=1)
