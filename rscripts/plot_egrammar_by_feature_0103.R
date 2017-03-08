@@ -1,6 +1,5 @@
-
 setwd('E:/cygwin/home/ps22344/Downloads/chapter2/spreadsheets/')
-
+setwd('../spreadsheets/')
 
 tt=read.csv(
 '../spreadsheets/egrammarstats_only4_0106.csv', 
@@ -8,7 +7,7 @@ header=T,
 fileEncoding="UTF-8")
 
 overall=read.csv(
-'../spreadsheets/wordcounter_categories_only4_0106.csv', 
+'/Users/ps22344/Downloads/chapter2/current/wordcount_bygender_0308.csv', 
 header=T, 
 fileEncoding="UTF-8",
 sep="\t")
@@ -33,7 +32,8 @@ meanplotter = function(data_set, feature_column, category_column, mean_column, f
 {
 #order dataset alphabetically
 data_set=data_set[order(data_set[["feature"]], decreasing=F),]
-data_set[[category_column]]=ordered(data_set[[category_column]], levels=c("m4m", "m4w", "w4w", "w4m"))
+#data_set[[category_column]]=ordered(data_set[[category_column]], levels=c("m4m", "m4w", "w4w", "w4m"))
+data_set[[category_column]]=ordered(data_set[[category_column]], levels=c("m", "w"))
 
 count=0
 print (length(levels(data_set[[feature_column]])))
@@ -46,7 +46,7 @@ ylim=c(-2, 2),
 ylab= "Distance to feature mean (standard deviations)",
 xaxt="n",
 type="n")
-axis(1,at=1:9, labels=c("Acronyms", "Capitals", "Clippings", "Emoticons", "Leetspeak", "Prosody", "Rebus", "Punctuation", "Single Letters"), cex.axis=0.8);
+axis(1,at=1:9, labels=c("Abbreviations", "Capitals", "Clippings", "Emoticons", "Leetspeak", "Prosody", "Rebus", "Punctuation", "Single Letters"), cex.axis=0.8);
 abline(a=0,b=0)
 
 #iterate over features, add points
@@ -74,5 +74,5 @@ for (f in levels(tt[[feature_column]]))
 dev.off()
 }
 
-meanplotter(tt, "feature", "category", "mean", "overfeatures")
+meanplotter(tt, "feature", "category", "mean", "overfeatures_edited")
 
