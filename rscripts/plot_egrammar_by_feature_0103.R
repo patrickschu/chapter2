@@ -73,7 +73,7 @@ for (f in levels(data_set[[feature_column]]))
 	xval=rep(count, length(temp))
 	cat ("xval", xval)
 	cat ("\nlabels", featureset[[category_column]], "\n")	
-	text(xval, temp, label= featureset[[category_column]], col=col=palette()[ featureset[[category_column]] ])
+	text(xval, temp, label= featureset[[category_column]], col=palette()[ featureset[[category_column]]])
 	}
 dev.off()
 }
