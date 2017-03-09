@@ -118,10 +118,23 @@ print "So many files", file_count
 
 
 #put into one matrix
-listi=featurecollector(category1, uniqs, result_mode="count")
-t=np.column_stack([i[1] for i in listi])
+listi=featurecollector(category1, uniqs, result_mode="freq")
+print ",".join(['mean','min','max','median','std'])
+for item in listi:
+	frame= item[1].shape
+	mean= item[1].mean()
+	min= item[1].min()
+	max= item[1].max()
+	median= np.median(item[1])
+	std= item[1].std()
+	print '***', item[0]
+	#print "For item {}, overall mean is {}, min is {}, max is {}, median is {}, st is {}, shape: {}".format(mean, min, max, median, std, frame)
+	print ",".join([str(i) for i in [mean, min, max, median, std]])
 
+
+t=np.column_stack([i[1] for i in listi])
 print "original matrix",  type(t), t.shape
+
 
 ##
 ###category and feature dicts
@@ -169,7 +182,7 @@ completeend=time.time()
 def main(distance_metric, testmode=False):
 	starttime=time.time()
 	
-	x=ct.clustermachine(wordmatrix_without_cat,distance_metric,4)
+	#x=ct.clustermachine(wordmatrix_without_cat,distance_metric,4)
 	print "These clusterings have less than 2 clusters\n{}\n\n".format("\n".join([str(c.name) for c in x if c.no_of_clusters < 2]))
 	#PRINTING STUFF
 	headline="\n\n-----------\n\n"
