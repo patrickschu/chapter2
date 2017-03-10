@@ -9,6 +9,7 @@ from string import punctuation
 import json
 from nltk import pos_tag
 import sklearn
+from scipy import stats
 
 def featurecollector(categories, uniqs, mode="freq"):
 	"""
@@ -102,20 +103,20 @@ def featurecollector(categories, uniqs, mode="freq"):
 
 
 
-#from sklearn import feature_extraction
-import scipy
-catdict={"m4m":1, "w4m":2, "w4w":3}
-feature_list=['fet1', 'fet2']
-#array is cat - uniq - data
-t=np.array([[1,1,2.],[0,0, 0.],[5,3, 5000000.], [3,3,3]])
-cats=np.array([1,2,1,1])
-t=np.column_stack([cats, t])
-print t
 
-tfidf=sklearn.feature_extraction.text.TfidfTransformer(norm=u'l2', use_idf=True, smooth_idf=True, sublinear_tf=False)
-print tfidf.fit(t)
-print tfidf.transform(t)
-print tfidf.transform(t).toarray()
+t=np.array([[1,1,2.],[0,0, 0.],[5,3, 5000000.], [3,3,3,5,10]])
+cats=np.array([1,2,1,1])
+
+print stats.mannwhitneyu(t[3],cats)
+
+# 
+# t=np.column_stack([cats, t])
+# print t
+# 
+# tfidf=sklearn.feature_extraction.text.TfidfTransformer(norm=u'l2', use_idf=True, smooth_idf=True, sublinear_tf=False)
+# print tfidf.fit(t)
+# print tfidf.transform(t)
+# print tfidf.transform(t).toarray()
 
 #print t.shape
 #mean, median, range, min-max, n
