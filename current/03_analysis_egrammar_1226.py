@@ -4,6 +4,7 @@ import numpy as np
 import time
 import scipy
 import sklearn
+import os
 
 headline="\n\n-----------\n\n"
 
@@ -118,10 +119,11 @@ print "So many files", file_count
 
 
 #put into one matrix
-listi=featurecollector(category1, uniqs, result_mode="count")
+listi=featurecollector(category1, uniqs, result_mode="freq")
 print ",".join(['mean','min','max','median','std'])
 for item in listi:
 	frame= item[1].shape
+	
 	mean= item[1].mean()
 	min= item[1].min()
 	max= item[1].max()
@@ -178,7 +180,7 @@ print "feature dict", featuredict, len(featuredict)
 print wordmatrix_with_cat.shape
 
 completeend=time.time()
-
+os.system('say "your program has finished"')
 def main(distance_metric, testmode=False):
 	starttime=time.time()
 	
@@ -265,3 +267,5 @@ def main(distance_metric, testmode=False):
 main('manhattan', testmode=False)
 
 print "This took us {} minutes. So slow!".format((completeend-completestart)/60)
+
+os.system('say "your program has finished"')
