@@ -1,13 +1,15 @@
 setwd('E:/cygwin/home/ps22344/Downloads/chapter2/spreadsheets/')
 setwd('../spreadsheets/')
 
+#features
 tt=read.csv(
-'/Users/ps22344/Downloads/chapter2/spreadsheets/egrammarstats_only4_0309.csv', 
+'/Users/ps22344/Downloads/chapter2/spreadsheets/egrammarstats_bygender_0309.csv', 
 header=T, 
 fileEncoding="UTF-8")
 
+#mean to compare to
 overall=read.csv(
-'/Users/ps22344/Downloads/chapter2/spreadsheets/generalstats_perfeature_0309.csv', 
+'/Users/ps22344/Downloads/chapter2/spreadsheets/generalstats_perfeature_0312.csv', 
 header=T, 
 fileEncoding="UTF-8")
 
@@ -31,9 +33,9 @@ meanplotter = function(data_set, feature_column, category_column, mean_column, f
 {
 #order dataset alphabetically
 data_set=data_set[order(data_set[[feature_column]], decreasing=F),]
-data_set[[category_column]]=ordered(data_set[[category_column]], levels=c("m4m", "m4w", "w4w", "w4m"))
+#data_set[[category_column]]=ordered(data_set[[category_column]], levels=c("m4m", "m4w", "w4w", "w4m"))
 print (levels(data_set[[category_column]]))
-#data_set[[category_column]]=ordered(data_set[[category_column]], levels=c("m", "w"))
+data_set[[category_column]]=ordered(data_set[[category_column]], levels=c("m", "w"))
 
 count=0
 print (length(levels(data_set[[feature_column]])))
@@ -78,5 +80,5 @@ for (f in levels(data_set[[feature_column]]))
 dev.off()
 }
 
-meanplotter(tt, "feature", "category", "mean", "overfeatures_test")
+meanplotter(tt, "feature", "category", "mean", "gender_0312")
 
