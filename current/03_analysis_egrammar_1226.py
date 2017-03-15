@@ -110,8 +110,8 @@ dir="/Users/ps22344/Downloads/craig_0208"
 
 ##prep
 #add cats
-categories_dict, no_of_categories = ct.categorymachine(dir, "gender")
-category1=ct.categoryarraymachine(dir, "gender", categories_dict)
+categories_dict, no_of_categories = ct.categorymachine(dir, "category1")
+category1=ct.categoryarraymachine(dir, "category1", categories_dict)
 
 #add uniqs
 uniqs, file_count, filedicti=ct.uniqarraymachine(dir, 0) 	
