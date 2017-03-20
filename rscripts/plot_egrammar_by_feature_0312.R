@@ -13,7 +13,7 @@ fileEncoding="UTF-8")
 
 #features
 tt=read.csv(
-'/Users/ps22344/Downloads/chapter2/spreadsheets/mw/categories_mw_0312.csv', 
+'/Users/ps22344/Downloads/chapter2/spreadsheets/egrammarstate_byaddressee_0316.csv', 
 header=T, 
 fileEncoding="UTF-8")
 
@@ -70,5 +70,5 @@ for (f in levels(data_set[[feature_column]]))
 dev.off()
 }
 
-meanplotter(tt, "feature", "category", "mean", "gender_0312")
+meanplotter(tt, "feature", "category", "mean", "addresee_0312")
 
