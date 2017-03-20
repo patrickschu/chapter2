@@ -107,7 +107,7 @@ def featurecollector(categories, uniqs, result_mode):
 completestart=time.time()
 
 dir="/Users/ps22344/Downloads/craig_0208"
-category_to_extract= 'addressee1'
+category_to_extract= 'category1'
 ##prep
 #add cats
 categories_dict, no_of_categories = ct.categorymachine(dir, category_to_extract)
