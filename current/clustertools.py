@@ -20,58 +20,6 @@ linebreakregex=re.compile(r"(<br>|<br\/>)")
 stopregex=re.compile(r"([\.|\?|\!|\*]+)(\w)")
 htmlregex=re.compile(r"<.*?>")
 
-class Ad(object):
-	"""
-	Basic features of an ad.
-	"""
-	
-	def __init__(self, file_name):
-		self.filename = file_name
-		self.fullfile = codecs.open(file_name, "r", 'utf-8').read()
-		self.fulltext = self._adtextextractor(self.fullfile)
-		self.charcount = float(len(self.fulltext))
-		self.wordcount = float(len(tokenizer(self.fulltext, remove_punctuation=True)))
-		self.metalist= [
-		"title",
-		"plat",
-		"date", 
-		"time", 
-		"link",
-		"clid",
-		"gender",
-		"category1",
-		"addressee1"
-		]
-		
-		self.uniq = os.path.splitext(os.path.split(file_name)[len(os.path.split(file_name))-1])[0]
-		self.meta = {k:re.sub("(\t+|\n+|\r+)", " ", self._tagextractor(self.fullfile, k)) for k in self.metalist}
-		
-	def test(self):
-		print "fulltext", len(self.fulltext)
-		print "charcount", self.charcount
-		print self.meta
-	
-	def _tagextractor(self, text, tag):
-		#from clustertools
-		regexstring="<"+tag+"=(.*?)>"
-		result=re.findall(regexstring, text, re.DOTALL)
-		if len(result) != 1:
-			print "alarm in tagextractor", result, tag
-		return result[0]
-	
-	def gettag(self, tag):
-		#flexible tag extractor; returns what _tagextractor finds for relevant tag
-		result=self._tagextractor(self.fullfile, tag)
-		print result
-		return result
-		
-	def _adtextextractor(self, text):
-		#from clustertools
-		regexstring="<text>(.*?)</text>"
-		result=re.findall(regexstring, text, re.DOTALL)
-		if len(result) != 1:
-			print "alarm in adtextextractor", fili, result
-		return result[0]
 
 
 
@@ -694,6 +642,65 @@ def meanmachine(input_matrix, category_dict, feature_list, verbose, limit=100):
 			else:
 				skips.append(key)
 	print "skipped {} because under {} rows".format(", ".join(skips), limit)	
+	
+	
+
+	
+class Ad(object):
+	"""
+	Basic features of an ad.
+	"""
+	
+	def __init__(self, file_name):
+		self.filename = file_name
+		self.fullfile = codecs.open(file_name, "r", 'utf-8').read()
+		self.fulltext = self._adtextextractor(self.fullfile)
+		self.charcount = float(len(self.fulltext))
+		self.wordcount = float(len(tokenizer(self.fulltext, remove_punctuation=True)))
+		self.metalist= [
+		"title",
+		"plat",
+		"date", 
+		"time", 
+		"link",
+		"clid",
+		"gender",
+		"category1",
+		"addressee1"
+		]
+		
+		self.uniq = os.path.splitext(os.path.split(file_name)[len(os.path.split(file_name))-1])[0]
+		self.meta = {k:re.sub("(\t+|\n+|\r+)", " ", self._tagextractor(self.fullfile, k)) for k in self.metalist}
+		
+	def test(self):
+		print "fulltext", len(self.fulltext)
+		print "charcount", self.charcount
+		print self.meta
+	
+	def _tagextractor(self, text, tag):
+		#from clustertools
+		regexstring="<"+tag+"=(.*?)>"
+		result=re.findall(regexstring, text, re.DOTALL)
+		if len(result) != 1:
+			print "alarm in tagextractor", result, tag
+		return result[0]
+	
+	def gettag(self, tag):
+		#flexible tag extractor; returns what _tagextractor finds for relevant tag
+		result=self._tagextractor(self.fullfile, tag)
+		print result
+		return result
+		
+	def _adtextextractor(self, text):
+		#from clustertools
+		regexstring="<text>(.*?)</text>"
+		result=re.findall(regexstring, text, re.DOTALL)
+		if len(result) != 1:
+			print "alarm in adtextextractor", fili, result
+		return result[0]
+	
+	
+	
 	
 def clustermachine(matrix, distance_metric, clusters=4):
 	"""
