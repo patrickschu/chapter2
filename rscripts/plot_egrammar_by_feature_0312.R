@@ -1,22 +1,20 @@
 setwd('E:/cygwin/home/ps22344/Downloads/chapter2/spreadsheets/')
 setwd('../spreadsheets/')
 
-#ovi2= aggregate(list("wordcount"=tt[['wordcount']]), list("feature"=tt[['feature']]), sum)
-#ovi= aggregate(list("sum"= tt[['sum']]), list("feature"=tt[['feature']]), sum)
-#merge
 
 #mean to compare to
 overall=read.csv(
-'/Users/ps22344/Downloads/chapter2/spreadsheets/mw/overall_0312.csv', 
+'~/Downloads/chapter2/spreadsheets/mw/overall_0312.csv', 
 header=T, 
 fileEncoding="UTF-8")
+
+#overall=as.data.frame(sapply(overall, function(x) if (is.numeric(x)) {x*1000} else {as.character(x)}))
 
 #features
 tt=read.csv(
-'/Users/ps22344/Downloads/chapter2/spreadsheets/egrammarstate_byaddressee_0316.csv', 
+'/Users/ps22344/Downloads/chapter2/spreadsheets/categories/catstats_0326.csv', 
 header=T, 
 fileEncoding="UTF-8")
-
 
 
 
@@ -26,7 +24,9 @@ meanplotter = function(data_set, feature_column, category_column, mean_column, f
 {
 #order dataset alphabetically
 data_set=data_set[order(data_set[[feature_column]], decreasing=F),]
-data_set[[category_column]]=ordered(data_set[[category_column]], levels=c("m", "w"))
+#data_set[[category_column]]=ordered(data_set[[category_column]], levels=c("m4m", "w"))
+tt[['category']]=ordered(tt[['category']], levels=c("m4m", "m4w", "w4w", "w4m"))
+
 count=0
 print (length(levels(data_set[[feature_column]])))
 png(paste(filename,".png"), width=279.4, height=215.9, unit="mm", res=500)
@@ -51,8 +51,10 @@ for (f in levels(data_set[[feature_column]]))
 	featureset= data_set[data_set[[feature_column]] == f,]
 	cat ("\nlabels", featureset[[category_column]], "\n")
 	print (featureset[[category_column]])
-	grandmean= overall[overall[["feature"]] == f, ][["mean"]];
-	grandstdev= overall[overall[["feature"]] == f, ][["std"]];
+	#grandmean= overall[overall[["feature"]] == f, ][["mean"]];
+	#grandstdev= overall[overall[["feature"]] == f, ][["std"]];
+	grandmean= mean(featureset[['mean']])
+	grandstdev= sd(featureset[['std']])
 	cat ("grand mean for this feature", grandmean, length(grandmean), "\n");
 	cat ("stdev for this feature", grandstdev, length(grandstdev), "\n");
 	temp= xtabs(featureset[[mean_column]]~featureset[[category_column]]);
@@ -65,7 +67,7 @@ for (f in levels(data_set[[feature_column]]))
 	xval=rep(count, length(temp))
 	cat ("xval", xval)
 	cat ("\nlabels", featureset[[category_column]], "\n")	
-	text(xval, temp, label= featureset[[category_column]], col=c('red','green')[ featureset[[category_column]]], cex = 1.1)
+	text(xval, temp, label= featureset[[category_column]], col=seq(1,4))
 	}
 dev.off()
 }
