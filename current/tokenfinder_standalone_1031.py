@@ -10,11 +10,11 @@ import json
 
 
 #dataset
-dir='/Users/ps22344/Downloads/craig_0208/'
+dir='/Users/ps22344/Downloads/chapter2/current/w4w/'
 #search terms
-search_terms=[r'\Wcams?\W']
+search_terms=[r'(?:\w| )\*{2,} ']
 
-
+print dir
 
 def tokenfinder(input_list, input_path, lower_case):
 	"""
