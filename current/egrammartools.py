@@ -543,7 +543,7 @@ def capsfinder(input_dir, limit):
 	}
 	print {i.pattern for i,v in capsdict.items()}
 	
-	abbreviations=["LTR"]
+	abbreviations=[]
 	results=[]
 	#dicti is results by word/item
 	dicti=defaultdict(float)
@@ -577,6 +577,8 @@ def capsfinder(input_dir, limit):
 	print "\n".join([":".join((i, str(dicti[i]))) for i in sorted(dicti, key=dicti.get, reverse=True)])	
 	for entry in {k:v for k,v in matchesdicti.items()}:
  		print "\n", entry, len(set([i for i in matchesdicti[entry]]))
+	print dicti
+	print [(k, dicti[k]) for k in sorted(dicti, key=dicti.get, reverse=True)]
 	print "shape of results, number of lists:", len(results),  "-- length of lists", set([len(i) for i in results])
 	return [np.array([[x[0] for x in i] for i in results]), np.array([[x[1] for x in i] for i in results])]
 
