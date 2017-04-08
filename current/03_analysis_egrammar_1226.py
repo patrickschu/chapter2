@@ -123,7 +123,6 @@ listi=featurecollector(category1, uniqs, result_mode="freq")
 print ",".join(['mean','min','max','median','std'])
 for item in listi:
 	frame= item[1].shape
-	
 	mean= item[1].mean()
 	min= item[1].min()
 	max= item[1].max()
@@ -133,7 +132,7 @@ for item in listi:
 	#print "For item {}, overall mean is {}, min is {}, max is {}, median is {}, st is {}, shape: {}".format(mean, min, max, median, std, frame)
 	print ",".join([str(i) for i in [mean, min, max, median, std]])
 
-
+#merge output inot one array
 t=np.column_stack([i[1] for i in listi])
 print "original matrix",  type(t), t.shape
 
