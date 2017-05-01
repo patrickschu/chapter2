@@ -66,4 +66,59 @@ for (c in colnames(dataframe))
 dev.off()	
 }
 
-clusterplotter(clustering, "clusti")
+
+clusterbarplotter = function(dataframe, filename)
+#this takes a dataframe as input
+#needs to be formatted colnames = clustering, categories and mean as row names
+{
+#we need to subtract 1 because of Python counting
+no_of_clusters=c(0:(length(colnames(dataframe))-1));
+print (no_of_clusters);
+count=0;
+#these are the x axis labels for each barplot
+xlabels= c("Cluster 1 (52 % of data)", "Cluster 2 (22 % of data)", "Cluster 3 (17 % of data)", "Cluster 4 (9 % of data)")
+png(paste(filename,".png"), width=279.4, height=215.9, unit="mm", res=500)
+par(mfrow=c(2,2))
+
+for (c in colnames(dataframe))
+	{
+	count=count+1
+	cat ('c: ', c, "\n");
+	cat ('count', count, "\n");
+	cat ('cluster: ', no_of_clusters[count], "\n");
+	subseti=data.frame(dataframe[[c]]);
+	rownames(subseti) = rownames(dataframe);
+	#add label for expected value
+	#text (x=count, y=0, as.character(subseti['mean',]), cex=1.5, col='red');	
+	#compute percentages
+	cat ("subseti");
+	print (subseti);
+	print((subseti-subseti['mean',])/(subseti['mean',]/100));
+	
+	percentageframe=(subseti-subseti['mean',])/(subseti['mean',]/100);
+	colnames(percentageframe) = c("vals")
+	print ("perc fraome")
+	print (percentageframe)
+	print ("rownames");
+	cat (class(percentageframe))
+	#set color setting numer
+	colcount=0
+	#set color vector
+	colvec = c('red', 'black', 'green', 'blue')
+	barplot(
+	percentageframe[-(rownames(percentageframe)=='mean'), ], 
+	main = xlabels[count],
+	names.arg= rownames(percentageframe[-(rownames(percentageframe)=='mean'), ]),
+	#ylim = c(-100, 200),
+	ylab="Distance to expected value in percent", 
+	xlab= "Category")
+	
+
+	}
+dev.off()	
+}
+
+
+
+
+clusterbarplotter(clustering, "barclusti")
