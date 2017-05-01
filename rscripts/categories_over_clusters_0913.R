@@ -109,7 +109,7 @@ for (c in colnames(dataframe))
 	percentageframe[-which(rownames(percentageframe)=='mean'), ], 
 	main = xlabels[count],
 	names.arg=c('m4w','m4m','w4m','w4w'),
-	#ylim = c(-100, 200),
+	ylim = c(min(percentageframe[['vals']])-18, max(percentageframe[['vals']])+15),
 	ylab="Distance to expected value in percent", 
 	xlab= "Category")
 	
