@@ -12,7 +12,7 @@ fileEncoding="UTF-8")
 
 #features
 tt=read.csv(
-'/Users/ps22344/Downloads/chapter2/spreadsheets/categories/catstats_0326.csv', 
+'~/Downloads/chapter2/spreadsheets/mw/categories_mw_0312.csv', 
 header=T, 
 fileEncoding="UTF-8")
 
@@ -26,7 +26,7 @@ meanplotter = function(data_set, feature_column, category_column, mean_column, f
 data_set=data_set[order(data_set[[feature_column]], decreasing=F),]
 #data_set[[category_column]]=ordered(data_set[[category_column]], levels=c("m4m", "w"))
 tt[['category']]=ordered(tt[['category']], levels=c("m4m", "m4w", "w4w", "w4m"))
-
+print(summary(tt))
 count=0
 print (length(levels(data_set[[feature_column]])))
 png(paste(filename,".png"), width=279.4, height=215.9, unit="mm", res=500)
@@ -34,7 +34,7 @@ plot(
 1,1, 
 xlim=c(0, length(levels(data_set[[feature_column]]))), 
 xlab="Feature",
-ylim=c(-2, 2), 
+ylim=c(-1, 1), 
 ylab= "Distance to feature mean (standard deviations)",
 xaxt="n",
 type="n")
@@ -72,5 +72,5 @@ for (f in levels(data_set[[feature_column]]))
 dev.off()
 }
 
-meanplotter(tt, "feature", "category", "mean", "addresee_0312")
+meanplotter(tt, "feature", "category", "mean", "gender_0501")
 
