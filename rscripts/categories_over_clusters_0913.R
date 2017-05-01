@@ -106,9 +106,9 @@ for (c in colnames(dataframe))
 	#set color vector
 	colvec = c('red', 'black', 'green', 'blue')
 	barplot(
-	percentageframe[-(rownames(percentageframe)=='mean'), ], 
+	percentageframe[-which(rownames(percentageframe)=='mean'), ], 
 	main = xlabels[count],
-	names.arg= rownames(percentageframe[-(rownames(percentageframe)=='mean'), ]),
+	names.arg=c('m4w','m4m','w4m','w4w'),
 	#ylim = c(-100, 200),
 	ylab="Distance to expected value in percent", 
 	xlab= "Category")
