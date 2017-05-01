@@ -23,7 +23,7 @@ no_of_clusters=c(0:(length(colnames(dataframe))-1));
 print (no_of_clusters);
 count=.5;
 png(paste(filename,".png"), width=279.4, height=215.9, unit="mm", res=500)
-plot(c(100, 250), ylim=c(-250, 250), xlim=c(0, length(colnames(dataframe))), ylab="Distance to expected value in percent", xlab= "Cluster (percentage of data set)", type="n", axes=FALSE);
+plot(c(100, 250), ylim=c(-150, 250), xlim=c(0, length(colnames(dataframe))), ylab="Distance to expected value in percent", xlab= "Cluster (percentage of data set)", type="n", axes=FALSE);
 axis(1,at=.5:3.5, labels=c("1 (52 %)", "2 (22 %)", "3 (17 %)", "4 (9 %)"), cex.axis=1)
 #axis(side=1,seq(0, length(colnames(dataframe))-1, by=1));
 axis(side=2, seq(-250, 250, by=50))
@@ -45,12 +45,19 @@ for (c in colnames(dataframe))
 	percentageframe=(subseti-subseti['mean',])/(subseti['mean',]/100);
 	print ("rownames");
 	print (rownames(percentageframe))
+	#set color setting numer
+	colcount=0
+	#set color vector
+	colvec = c('red', 'black', 'green', 'blue')
 	for (row in rownames(percentageframe))
 	{
+		
 		if (row != 'mean')
 		{
-			print (row);
-			text(x=count, y=percentageframe[row,], as.character(row), col=palette()[rownames(dataframe)[row]])
+			colcount = colcount +1 
+			cat ("row", row, "\n");
+			text(x=count, y=percentageframe[row,], as.character(row), col = colvec[colcount])
+			cat ("col count", colcount, "\n")
 		}
 	}
 	
@@ -59,4 +66,4 @@ for (c in colnames(dataframe))
 dev.off()	
 }
 
-clusterplotter(clustering, "assikind")
+clusterplotter(clustering, "clusti")
