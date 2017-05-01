@@ -76,16 +76,16 @@ no_of_clusters=c(0:(length(colnames(dataframe))-1));
 print (no_of_clusters);
 count=0;
 #these are the x axis labels for each barplot
-xlabels= c("Cluster 1 (52 % of data)", "Cluster 2 (22 % of data)", "Cluster 3 (17 % of data)", "Cluster 4 (9 % of data)")
+xlabels= c("Cluster 0 (52 % of data)", "Cluster 1 (22 % of data)", "Cluster 2 (17 % of data)", "Cluster 3 (9 % of data)")
 png(paste(filename,".png"), width=279.4, height=215.9, unit="mm", res=500)
 par(mfrow=c(2,2))
 
 for (c in colnames(dataframe))
 	{
-	count=count+1
 	cat ('c: ', c, "\n");
 	cat ('count', count, "\n");
 	cat ('cluster: ', no_of_clusters[count], "\n");
+	count=count+1
 	subseti=data.frame(dataframe[[c]]);
 	rownames(subseti) = rownames(dataframe);
 	#add label for expected value
