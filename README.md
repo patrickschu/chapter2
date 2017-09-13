@@ -14,5 +14,5 @@ A Python module used for extraction of e-grammar features. Implements search alg
 Visualize the study results: which group uses which feature?
 
 ---
-![alt text](https://github.com/patrickschu/chapter2/blob/master/rscripts/overfeatures%20.png "Plot feature by category")
+![alt text](https://github.com/patrickschu/chapter2/blob/master/spreadsheets/overfeatures_edited%20.png "Plot feature by category")
 ---
